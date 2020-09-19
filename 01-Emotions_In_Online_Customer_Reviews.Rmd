@@ -1,5 +1,12 @@
 ---
 title: "Emotions_In_Online_Customer_Reviews"
+output:
+  html_document:
+    toc: yes
+    df_print: paged
+  html_notebook: default
+  pdf_document:
+    toc: yes
 ---
 
 # Emotions In Online Customer Reviews 

@@ -13,7 +13,6 @@ library(skmeans)
 library(clue)
 library(fpc)
 library(cluster)
-library(tm)
 library(wordcloud)
 library(stringdist)
 library(slam)
@@ -29,6 +28,7 @@ library(udpipe)
 library(igraph)
 library(SnowballC)
 library(textstem)
+
 ```
 
 Downloading Novels 'The Awakening' and 'The Aspern Papers'
@@ -178,16 +178,19 @@ commonality.cloud(cc.m,max.words = 100,colors = "steelblue1",min.frrandom.order=
 
 
 Sentiment timeline
-```{r}
+```{r, echo=FALSE}
 library(tidytext)
 library(dplyr)
 library(tidyr)
 library(plotly)
 library(ggthemes)
+library(sentimentr)
+library(syuzhet)
 data("sentiments")
-afinn <- subset(sentiments, sentiments$lexicon=='AFINN')
-bing <- subset(sentiments, sentiments$lexicon=='bing')
-nrc <- subset(sentiments, sentiments$lexicon=='nrc')
+afinn <- get_sentiments("afinn")
+bing <- get_sentiments("bing")
+loughran <- get_sentiments("loughran")
+nrc <- get_sentiment_dictionary('nrc', language = "english")
 ```
 
 
@@ -206,11 +209,11 @@ awakening.tidy <- tidy(awakening.dtm)
 awakening.tidy$count <-as.numeric(awakening.tidy$count)
 colnames(awakening.tidy)[2]<- 'word'
 awakening.tidy$document <- as.numeric(awakening.tidy$document)
-nrc.joy <- subset(sentiments, sentiments$lexicon=="nrc" & sentiments$sentiment=="joy")
+nrc.joy <- subset(nrc, nrc$sentiment=="joy")
 joy.words <- inner_join(awakening.tidy, nrc.joy)
 joy.words <- count(joy.words, word)
 
-bing <- subset(sentiments, sentiments$lexicon=='bing')[,-4]
+bing <- get_sentiments("bing")
 awakening.sentiment <- inner_join(awakening.tidy, bing)
 awakening.sentiment <- count(awakening.sentiment, sentiment, index=document)
 awakening.sentiment <- spread(awakening.sentiment, sentiment, n, fill=0)
@@ -239,11 +242,11 @@ aspern.tidy <- tidy(aspern.dtm)
 aspern.tidy$count <-as.numeric(aspern.tidy$count)
 colnames(aspern.tidy)[2]<- 'word'
 aspern.tidy$document <- as.numeric(aspern.tidy$document)
-nrc.joy <- subset(sentiments, sentiments$lexicon=="nrc" & sentiments$sentiment=="joy")
+nrc.joy <- subset(nrc, nrc$sentiment=="joy")
 joy.words <- inner_join(aspern.tidy, nrc.joy)
 joy.words <- count(joy.words, word)
 
-bing <- subset(sentiments, sentiments$lexicon=='bing')[,-4]
+#bing <- subset(sentiments, sentiments$lexicon=='bing')[,-4]
 aspern.sentiment <- inner_join(aspern.tidy, bing)
 aspern.sentiment <- count(aspern.sentiment, sentiment, index=document)
 aspern.sentiment <- spread(aspern.sentiment, sentiment, n, fill=0)
@@ -327,18 +330,18 @@ aspern.top10termsPerTopic
 
 
 Extract verbs
-```{r}
+```{r,message=FALSE,error=FALSE,warning=FALSE}
 library(udpipe)
 library(igraph)
 library(SnowballC)
 library(textstem)
 model <- udpipe_download_model(language = "english")
-udmodel_english <- udpipe_load_model(file = 'english-ewt-ud-2.3-181115.udpipe')
+udmodel_english <- udpipe_load_model(file = 'data/english-ewt-ud-2.3-181115.udpipe')
 ```
 
 1.Awakening
 
-```{r}
+```{r,error=FALSE,warning=FALSE,message=FALSE}
 awakening.corpus <- VCorpus(VectorSource(sent.awakening))
 awakening.corpus <- tm_map(awakening.corpus, content_transformer(tolower))
 awakening.corpus <- tm_map(awakening.corpus, removeNumbers)
