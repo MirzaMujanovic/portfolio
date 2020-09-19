@@ -1,7 +1,4 @@
-# Applications {-}
+# Emotions In Online Customer Reviews {-}
 
-Some _significant_ applications are demonstrated in this chapter.
 
-## Example one
 
-## Example two
