@@ -10,3 +10,5 @@ link-citations: yes
 
 # About myself {-}
 
+My name is Mirza Mujanović, I am an ever-curious, eager to learn and ready to adapt student in his third semester of Marketing master program at the Vienna University of Economics and Business. Originally, I come from Bosnia & Herzegovina, however, I completed a bachelor’s program in business administration at the Vienna University of Economics and Business (WU). Currently, I hold a part-time position of teaching and eLearning assistant at the WU. Thinking of my future plans I see myself working in the field of data analytics or data science for marketing purposes. 
+
