@@ -2,7 +2,9 @@
 title: '"CO2mustGO" Iniciative'
 ---
 
-```{r, echo=FALSE}
+# Twitter Analysis for CO2mustGo initiative
+
+```{r, echo=FALSE, error=FALSE, message=FALSE, warning=FALSE}
 library(shinycssloaders)
 library(reshape2)
 library(ggplot2)
@@ -52,7 +54,151 @@ library(syuzhet)
 ```
 
 
-# Twitter Analysis for CO2mustGo initiative
+```{r, echo=FALSE,fig.align='center',out.width="100%",warning=FALSE,error=FALSE, message=FALSE}
+
+# Packages
+library(networkD3)
+library(tidyr)
+library(tidyverse)
+library(plotly)
+
+
+# Major
+table <- read.csv("data/capacity_data.csv", stringsAsFactors = T)
+
+# Creation of source
+table$typ_11 <- factor(table$typ_11,levels = c("c1","c2","g1","g2","g3","g4","n","o1","o2","o3","o4","r1","res"),labels = c("0","1","2","3","4","5","6","7","8","9","10","11","12"))
+source1 <- as.vector.factor(table$typ_11)
+source1 <- as.numeric(source1)
+
+
+#Country as mediator
+table2 <- table
+table2$country<-as.character(table2$country)
+table2$country[table$country=="AT"] <- 14
+table2$country[table$country=="BE"] <- 15
+table2$country[table$country=="BG"] <- 16
+table2$country[table$country=="CH"] <- 17
+table2$country[table$country=="CY"] <- 18
+table2$country[table$country=="CZ"] <- 19
+table2$country[table$country=="DE"] <- 20
+table2$country[table$country=="DK"] <- 21
+table2$country[table$country=="EE"] <- 22
+table2$country[table$country=="ES"] <- 23
+table2$country[table$country=="FI"] <- 24
+table2$country[table$country=="FR"] <- 25
+table2$country[table$country=="GR"] <- 26
+table2$country[table$country=="HR"] <- 27
+table2$country[table$country=="HU"] <- 28
+table2$country[table$country=="IE"] <- 29
+table2$country[table$country=="IT"] <- 30
+table2$country[table$country=="LT"] <- 31
+table2$country[table$country=="LU"] <- 32
+table2$country[table$country=="LV"] <- 33
+table2$country[table$country=="NL"] <- 34
+table2$country[table$country=="NO"] <- 35
+table2$country[table$country=="PL"] <- 36
+table2$country[table$country=="PT"] <- 37
+table2$country[table$country=="RO"] <- 38
+table2$country[table$country=="SE"] <- 39
+table2$country[table$country=="SI"] <- 40
+table2$country[table$country=="SK"] <- 41
+table2$country[table$country=="UK"] <- 42
+target1<- table2$country
+
+#Creation of mediator(country),source and value
+value <- table2 %>% group_by(country,typ_11) %>%
+  count(mw_2018)
+
+#1st part of Target
+target1 <- value$country
+target1<-as.numeric(target1)
+
+#1st part of Value
+value1<-value$mw_2018
+
+#Creation of the final target
+value.df <-table2 %>% group_by(country)%>% summarise(sum(mw_2018))
+value.df$country<-as.numeric(value.df$country)
+
+#2nd part of Source(from countries to total capacity)
+target1.2 <-value.df$country
+
+#2nd part of Values (total of countries to the grand total)
+value1.2<-value.df$`sum(mw_2018)`
+
+#Final target
+
+ft<-rep(13,29)
+final_target <- c(target1,ft)
+
+#final source
+final_soruce <-c(source1,target1.2)
+
+#final value
+final_value <-c(value1,value1.2)
+
+fig <- plot_ly(
+  type = "sankey",
+  orientation = "h",
+  valuesuffix = "MW",
+  arrangement = "snap",
+  node = list(
+    label = c(
+      "Coal-lignite", # Node 0
+      "Coal-hard", # Node 1
+      "G1-gas", # Node 2
+      "G2-gas", # Node 3
+      "G3-gas", # Node 4
+      "G4-gas", # Node 5
+      "Nunclear",  # Node 6
+      "O1-oil", # Node 7
+      "O2-oil", # Node 8
+      "O3-oil", # Node 9
+      "O4-oil", # Node 10
+      "Renewables",# Node 11
+      "Hydro", # Node 12
+      "Total capacity", # Node 13
+      "AT",#Node 14
+      "BE",#Node 15
+      "BG",#Node 16
+      "CH",#Node 17
+      "CY",#Node 18
+      "CZ",#Node 19
+      "DE",#Node 20
+      "DK",#Node 21
+      "EE",#Node 22
+      "ES",#Node 23
+      "FI",#Node 24
+      "FR",#Node 25
+      "GR",#Node 26
+      "HR",#Node 27
+      "HU",#Node 28
+      "IE",#Node 29
+      "IT",#Node 30
+      "LT",#Node 31
+      "LU",#Node 32
+      "LV",#Node 33
+      "NL",#Node 34
+      "NO",#Node 35
+      "PL",#Node 36
+      "PT",#Node 37
+      "RO",#Node 38
+      "SE",#Node 39
+      "SI",#Node 40
+      "SK",#Node 41
+      "UK")),#Node 42
+  link = list(
+    source = final_soruce,
+    target = final_target,
+    value = final_value))
+
+total.capacity <- fig %>% layout(title = "Energy Production Capacity")
+total.capacity
+
+```
+
+
 
 Tweets downloaded on 10.06.2020
 
@@ -438,3 +584,11 @@ comm_1$`44`
 # Tweet accounts in the Community 16 (the second biggest community)
 comm_1$`16`
 ```
+
+
+
+
+
+
+
+

@@ -1,6 +1,7 @@
 ---
 title: "Text Analysis and Novels"
 ---
+# Text Analysis of Novels
 
 ```{r, echo=FALSE}
 options(warn = -1)
