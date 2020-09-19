@@ -3,7 +3,7 @@ title: "Text Analysis and Novels"
 ---
 # Text Analysis of Novels
 
-```{r, echo=FALSE,error=TRUE,warning=TRUE,message=TRUE}
+```{r, echo=FALSE,error=FALSE,warning=FALSE,message=FALSE}
 options(warn = -1)
 library(NLP)
 library(RColorBrewer)
@@ -178,7 +178,7 @@ commonality.cloud(cc.m,max.words = 100,colors = "steelblue1",min.frrandom.order=
 
 
 Sentiment timeline
-```{r, echo=FALSE, error=TRUE, message=TRUE, warning=TRUE}
+```{r, echo=FALSE, error=FALSE, message=FALSE, warning=FALSE}
 library(tidytext)
 library(dplyr)
 library(tidyr)
