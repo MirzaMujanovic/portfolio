@@ -3,7 +3,7 @@ title: "Text Analysis and Novels"
 ---
 # Text Analysis of Novels
 
-```{r, echo=FALSE}
+```{r, echo=FALSE,error=TRUE,warning=TRUE,message=TRUE}
 options(warn = -1)
 library(NLP)
 library(RColorBrewer)
@@ -29,7 +29,6 @@ library(udpipe)
 library(igraph)
 library(SnowballC)
 library(textstem)
-
 ```
 
 Downloading Novels 'The Awakening' and 'The Aspern Papers'
@@ -179,7 +178,7 @@ commonality.cloud(cc.m,max.words = 100,colors = "steelblue1",min.frrandom.order=
 
 
 Sentiment timeline
-```{r, echo=FALSE}
+```{r, echo=FALSE, error=TRUE, message=TRUE, warning=TRUE}
 library(tidytext)
 library(dplyr)
 library(tidyr)
@@ -330,59 +329,6 @@ aspern.top10termsPerTopic
 ```
 
 
-Extract verbs
-```{r,message=FALSE,error=FALSE,warning=FALSE}
-library(udpipe)
-library(igraph)
-library(SnowballC)
-library(textstem)
-model <- udpipe_download_model(language = "english")
-udmodel_english <- udpipe_load_model(file = 'data/english-ewt-ud-2.3-181115.udpipe')
-```
-
-1.Awakening
-
-```{r,error=FALSE,warning=FALSE,message=FALSE}
-awakening.corpus <- VCorpus(VectorSource(sent.awakening))
-awakening.corpus <- tm_map(awakening.corpus, content_transformer(tolower))
-awakening.corpus <- tm_map(awakening.corpus, removeNumbers)
-awakening.corpus <- tm_map(awakening.corpus, removeWords, stopwords("english"))
-awakening.corpus <- tm_map(awakening.corpus, removePunctuation)
-awakening.corpus <- tm_map(awakening.corpus, stripWhitespace)
-awakening.corpus <- tm_map(awakening.corpus, lemmatize_strings)
-awakening.corpus <-SnowballC::wordStem(awakening.corpus, language = 'en')
-awakening.verbs.s <- udpipe_annotate(udmodel_english, awakening.corpus)
-awakening.verbs.x <- data.frame(awakening.verbs.s)
-library(lattice)
-awakening.stats <- subset(awakening.verbs.x, upos %in% c("VERB")) 
-awakening.stats <- txt_freq(awakening.stats$token)
-awakening.stats$key <- factor(awakening.stats$key, levels = rev(awakening.stats$key))
-awakening.verbs.barchart<- barchart(key ~ freq, data = head(awakening.stats, 20), col = "gold", 
-         main = "Most occurring Verbs - Awakening", xlab = "Freq")
-awakening.verbs.barchart
-```
-
-2. Aspern
-
-```{r}
-aspern.corpus <- VCorpus(VectorSource(sent.aspern))
-aspern.corpus <- tm_map(aspern.corpus, content_transformer(tolower))
-aspern.corpus <- tm_map(aspern.corpus, removeNumbers)
-aspern.corpus <- tm_map(aspern.corpus, lemmatize_strings)
-aspern.corpus <- tm_map(aspern.corpus, removeWords, stopwords("english"))
-aspern.corpus <- tm_map(aspern.corpus, removePunctuation)
-aspern.corpus <- tm_map(aspern.corpus, stripWhitespace)
-aspern.corpus <-SnowballC::wordStem(aspern.corpus, language = 'en')
-aspern.verbs.s <- udpipe_annotate(udmodel_english, aspern.corpus)
-aspern.verbs.x <- data.frame(aspern.verbs.s)
-library(lattice)
-aspern.stats <- subset(aspern.verbs.x, upos %in% c("VERB")) 
-aspern.stats <- txt_freq(aspern.stats$token)
-aspern.stats$key <- factor(aspern.stats$key, levels = rev(aspern.stats$key))
-aspern.verbs.barchart <- barchart(key ~ freq, data = head(aspern.stats, 20), col = "gold", 
-         main = "Most occurring Verbs - Aspern", xlab = "Freq")
-aspern.verbs.barchart
-```
 
 Main points of interpretation:
 
