@@ -1,7 +1,0 @@
----
-title:"About_this_page"
----
-
-# About this page {-}
-
-This page is a collection of projects I have done in the field of data analytics and data science.
