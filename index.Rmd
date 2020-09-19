@@ -1,6 +1,6 @@
 --- 
 knit: "bookdown::render_book"
-title: "  "
+title: "Mirza Mujanovic - Portfolio"
 site: bookdown::bookdown_site
 output_dir: "docs"
 documentclass: book
@@ -28,8 +28,8 @@ My name is Mirza Mujanović, I am an ever-curious, eager to learn and ready to a
 Random facts about me:
 
 * Big basketball fan. Nowadays, fan of sports analytics.
-* Interested in psychology-related topics
+* Interested in psychology-related topics.
 * Used to collect old money together with my older sister. 
-* Favorite food: Bulgogi and pudding (but not together, of course!)
+* Favorite food: Bulgogi and pudding (but not together, of course!).
 
 </div>

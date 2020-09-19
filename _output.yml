@@ -2,6 +2,7 @@ bookdown::gitbook:
   css: style.css
   config:
     toc:
+      collapse: section
       before: |
         <li><a href="./"><B>Mirza Mujanovic Portfolio</B></a></li>
     edit: https://github.com/rstudio/bookdown-demo/edit/master/%s

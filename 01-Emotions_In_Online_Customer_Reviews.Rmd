@@ -1,0 +1,394 @@
+---
+title: "Emotions_In_Online_Customer_Reviews"
+---
+
+# Emotions In Online Customer Reviews 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error= FALSE, message = FALSE, warning = FALSE, fig.align = "center")
+```
+
+<div style="text-align: justify"> 
+
+Consumers usually seek quality and relevant information when buying new products. With the expansion and availability of the Internet, online consumer reviews have become a valuable resource to look at. Several studies tried to demystify relationship between product sales and online customer reviews. On the one hand, some of them, such as [Senecal and Nantel (2004)](https://www.researchgate.net/publication/222519112_The_Influence_of_Online_Product_Recommendations_on_Consumers'Online_Choices), suggest that participants who consulted product recommendations selected these products twice as often as those who did not consult recommendations. On the other hand, [Zhang and Dellarocas (2006)](https://www.researchgate.net/publication/227600950_Exploring_the_Value_of_Online_Product_Reviews_in_Forecasting_Sales_The_Case_of_Motion_Pictures) find that online reviews and do not influence sales and serve solely as prediction.
+
+Between these two opinion fronts, one thing is certain: both sides aim to find out how consumers perceive and process word-of-mouth in a digital environment. In the academic paper [The Role of Emotions for the Perceived Usefulness in Online Customer Reviews](#https://www.jstor.org/stable/pdf/20619095.pdf
+) authors suggests that emotions impact the helpfulness ratings, i.e., the quality of online reviews as perceived by other customers. They found that, on average, the most prominent emotion dimensions that influence helpfulness ratings are **trust, joy, and anticipation**. Inspired by these findings, I decided to apply natural language processing techniques to analyze online customer reviews of a bestselling product on Amazon and try to detect those emotions using available lexicons. Final insights will show us whether trust, joy and anticipation can be identified in the reviews, thus improve helpfulness of reviews for potential customers.
+
+</div>
+
+## What to expect in this article? {-}
+
+First, I will extract text via web-scrapping and form a corpus. Next, the text in the corpus will be pre-processed. Subsequently, from the pre-processed text will be stored in form of document-term-matrices or term-document matrices. Finally, an exploratory text analysis will be conducted and corresponding marketing implications pointed out.
+
+```{r,echo=FALSE}
+# Packages ----
+library(sentimentr)
+library(purrr)
+library(textdata)
+library(ggplot2)
+library(ggthemes)
+library(xml2)
+library(rvest)
+library(wordcloud)
+library(RColorBrewer)
+library(NLP)
+library(tm)
+library(tidytext)
+library(dplyr)
+library(tidyr)
+library(ggthemes)
+library(plotly)
+library(tidyverse)
+library(broom)
+library(remotes)
+library(janeaustenr)
+library(qdap)
+library(syuzhet)
+library(sjmisc)
+library(topicmodels)
+```
+
+## Dictionaries for NLP
+
+For this exercise I will use 3 different lexicons available for R.
+One of them is AFINN, a lexicon of words rated for valence between minus five (indicating negative valence) and plus five (indicating positive valence). Next, I will use NRC Emotion Lexicon, which consists of English words and their labels for eight basic emotions (anger, fear, anticipation, trust, surprise, sadness, joy, and disgust) and two sentiments (negative and positive).
+
+```{r}
+# Dictionaries ----
+afinn <- get_sentiments("afinn")
+bing <- get_sentiments("bing")
+loughran <- get_sentiments("loughran")
+nrc <- get_sentiment_dictionary('nrc', language = "english")
+```
+
+## Data set
+
+```{r,eval=FALSE, echo=FALSE}
+# Web scraping ----
+scraping <- function(ASIN, page_num){
+  
+  url_reviews <- paste0("https://www.amazon.com/product-reviews/",ASIN,"/?pageNumber=",page_num)
+  
+  doc <- read_html(url_reviews)
+  
+  # Review Title
+review_title <- doc %>% 
+    html_nodes("[class='a-size-base a-link-normal review-title a-color-base review-title-content a-text-bold']") %>%
+    html_text()
+  
+  # Review Text
+review_text <- doc %>% 
+    html_nodes("[class='a-size-base review-text review-text-content']") %>%
+    html_text()
+  
+  # Number of stars in review
+review_star <-  doc %>%
+    html_nodes("[data-hook='review-star-rating']") %>%
+    html_text()
+  
+  # Return a tibble
+  tibble(review_title,
+         review_text,
+         review_star,
+         page = page_num) %>% return()
+}
+
+#scraping(ASIN = "B087LW2KFG", page_num = 5)
+
+#----
+ASIN <- "B081FZV45H" # New Apple MacBook Pro (16-inch, 16GB RAM, 512GB Storage, 2.6GHz Intel Core i7) - Space Gray
+page_range <- 1:20 # Let's say we want to scrape pages 1 to 10
+
+# Create a table that scrambles page numbers using `sample()`
+# For randomising page reads!
+match_key <- tibble(n = page_range,
+                    key = sample(page_range,length(page_range)))
+
+lapply(page_range, function(i){
+  j <- match_key[match_key$n==i,]$key
+  
+  message("Getting page ",i, " of ",length(page_range), "; Actual: page ",j) # Progress bar
+  
+  Sys.sleep(3) # Take a three second break
+  
+  if((i %% 3) == 0){ # After every three scrapes... take another two second break
+    
+    message("Taking a break...") # Prints a 'taking a break' message on your console
+    
+    Sys.sleep(2) # Take an additional two second break
+  }
+  scraping(ASIN = ASIN, page_num = j) # Scrape
+}) -> output_list
+```
+
+
+For our analysis, we will use text of 200 online customer reviews from *Apple MacBook Pro (16-inch, 16GB RAM, 512GB Storage, 2.6GHz Intel Core i7)* obtained in unpre-processed form:
+
+```{r, echo=FALSE}
+# Load in data
+output_list <- readRDS("data/MacBook.rds")
+# Compile online customer reviews with corresponding page
+review <- bind_rows(output_list, .id = "page")
+# Transform the text to UTF-8 
+review$review_text <- iconv(review$review_text, 'utf-8', 'ascii', sub='')
+# Observe the text
+head(review$review_text,10)
+```
+
+## Corpus cleaning
+
+From the results above we could see that text contains unnecessary characters. Therefore, I will use some usual procedure to clean up the reviews' text and make it more understandable.
+
+For the purpose of this exercise and for efficiency reasons, we will use the volatile corpus, that stores the collection of documents in RAM memory. To create a volatile corpus, I need to pass reviews' text in such a form that each review text is interpretated as a document.
+
+```{r}
+# Creation of volatile corpus
+review.corpus <- VCorpus(VectorSource(review$review_text))
+```
+We see that the volatile corpus contains as many documents as many online reviews we collected.
+
+To undertake a custom transformation, I will use `tm` package and `content_transformer()` function.
+It takes a custom function as input, which defines what transformation needs to be done: 
+
+```{r}
+review.toSpace<- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+review.corpus <- tm_map(review.corpus, review.toSpace, "/") # remove "/"
+review.corpus <- tm_map(review.corpus, review.toSpace, "@") # remove "@"
+review.corpus <- tm_map(review.corpus, review.toSpace, "\\|") # remove "\\|"
+review.corpus <- tm_map(review.corpus, content_transformer(tolower)) # convert all capital letters to small
+review.corpus <- tm_map(review.corpus, removeNumbers) # convert all capital letters to small
+review.corpus <- tm_map(review.corpus, removeWords, stopwords("english")) # remove stop-words 
+review.corpus <- tm_map(review.corpus, removePunctuation) # remove punctuation
+review.corpus <- tm_map(review.corpus, stripWhitespace) # strip extra whitespace from a document
+```
+
+After cleaning the corpus, we can use document-term-matrix to store our cleaned corpus:
+
+```{r}
+review.dtm <- DocumentTermMatrix(review.corpus)
+```
+
+However, document-term-matrix is not the most suitable to work with, because it stores review texts in rows and terms frequencies in columns. We will transform it with `tidy` function:
+
+```{r}
+# Tidy up the document-term-matrix
+review.tidy <- tidy(review.dtm)
+review.tidy$count <-as.numeric(review.tidy$count) # Ensure correct class
+colnames(review.tidy)[2]<- 'word' # change name of the column from "term" to "word"
+review.tidy$document <- as.numeric(review.tidy$document) # Ensure correct class
+```
+
+Our tidy format has dimensions 6907 (the total number of terms) x 3 (document, term and count of the term in corresponding document):
+
+```{r}
+dim(review.tidy) # Dimensions
+head(review.tidy)# Display first 6 rows
+```
+
+## Visualisations of terms frequency
+
+### Bar charts with the most frequent terms
+
+We would be interested in the most frequent words used in customer reviews. Sometimes just a glimpse of the most frequent words is sufficient to get some insights. 
+
+Here we see that word "love" and "great" appears among most frequent terms.
+
+```{r}
+# Most frequent terms ----
+review.tdm <- TermDocumentMatrix(review.corpus)
+review.m <- as.data.frame.matrix(review.tdm)
+review.v <- sort(rowSums(review.m),decreasing=TRUE)
+word.names<-names(review.v)
+df.review.v<-data.frame(review.v,word.names)
+colnames(df.review.v)<-c("n","word")
+p<-ggplot(data=df.review.v[1:20,], aes(x=reorder(word,n), y=n)) +
+  geom_bar(stat="identity",fill="steelblue") + 
+  coord_flip() + 
+  ggtitle("20 most frequent words in customer reviews - MacBook Pro")+
+  xlab("Count")+
+  ylab("Word")+
+  theme_test()
+ggplotly(p)
+
+```
+
+### Wordcloud with the most frequent terms
+
+Similarly to the bar chart with the most frequent words, we could use **wordcloud** as well. It displays words from the corpus and signalizes their frequency by displaying more frequent words bigger relative to those that appear less frequently in the corpus. In the wordcloud below you can see 200 most frequent words, where the minimum frequency was set to 1.
+
+```{r}
+# Wordcloud
+review.tdm <- TermDocumentMatrix(review.corpus)
+review.m <- as.matrix(review.tdm)
+review.v <- sort(rowSums(review.m),decreasing=TRUE)
+review.d <- data.frame(word = names(review.v),freq=review.v)
+set.seed(1234)
+wordcloud(words = review.d$word, freq = review.d$freq, min.freq = 1,
+          max.words=200, random.order=FALSE, rot.per=0.35,
+          colors=brewer.pal(8, "Dark2"))
+
+```
+
+### The most frequent terms indicating emotions
+
+When it comes to anticipation, words such as "good","time","happy" or "powerful" indicates that this emotion can be identified among customer reviews. On the other hand, there are some words that could be a signal both for good and bad experience: "finally","money" or "wait". 
+
+```{r}
+# Anticipation words----
+nrc.anticipation <- subset(nrc, nrc$sentiment=="anticipation")
+review.anticipation.words <- inner_join(review.tidy, nrc.anticipation)
+review.anticipation.words <- count(review.anticipation.words, word)
+review.anticipation.words <- review.anticipation.words[order(review.anticipation.words$n,decreasing = TRUE),]
+p<-ggplot(data=review.anticipation.words[1:20,], aes(x=reorder(word,n), y=n)) +
+  geom_bar(stat="identity",fill="orange") + 
+  coord_flip() + 
+  ggtitle("20 most frequent anticipation words in customer reviews")+
+  xlab("Count")+
+  ylab("Word")+
+  theme_minimal()
+ggplotly(p)
+```
+
+Similarly to anticipation, now we observe a list of top 20 words that indicate trust. It reveals new quite frequent term in the corpus: "recommend". 
+
+```{r}
+# Trust words----
+nrc.trust <- subset(nrc, nrc$sentiment=="trust")
+review.trust.words <- inner_join(review.tidy, nrc.trust)
+review.trust.words <- count(review.trust.words, word)
+review.trust.words <- review.trust.words[order(review.trust.words$n,decreasing = TRUE),]
+p<-ggplot(data=review.trust.words[1:20,], aes(x=reorder(word,n), y=n)) +
+  geom_bar(stat="identity",fill="royalblue1") + 
+  coord_flip() + 
+  ggtitle("20 most frequent trust words in customer reviews")+
+  xlab("Count")+
+  ylab("Word")+
+  theme_minimal()
+ggplotly(p)
+```
+
+Although at the bottom of the list, "The top 20 list" of joy words displays some additional words that we did not observe previously such as "beautiful","gorgeous","wonderful","improvement","excellent".
+
+```{r}
+# Joy words ----
+nrc.joy <- subset(nrc, nrc$sentiment=="joy")
+review.joy.words <- inner_join(review.tidy, nrc.joy)
+review.joy.words <- count(review.joy.words, word)
+review.joy.words <- review.joy.words[order(review.joy.words$n,decreasing = TRUE),]
+p<-ggplot(data=review.joy.words[1:20,], aes(x=reorder(word,n), y=n)) +
+  geom_bar(stat="identity",fill="darkorange1") + 
+  coord_flip() + 
+  ggtitle("20 most frequent trust words in customer reviews")+
+  xlab("Count")+
+  ylab("Word")+
+  theme_minimal()
+ggplotly(p)
+```
+
+## Sentiment analysis
+
+### Polarity timeline
+
+One usual way to compare and quantify emotions in text is via polarity. We simply count number of unique words in each document (=review) labelled as negative and deduct from the count of unique positive words. For instance, the first review contains 2 unique positive words ("great" and "strong") and none negative unique words. Therefore, its polarity score is 2.
+
+This polarity timeline suggests very important implication: the reviews' sentiment is moving above the 0, bearly going even below +2, giving an indication that this product continuously meet customers' expectations. That is a good signal to believe that customers are rather satisfied with the product.    
+
+```{r}
+# Polarity timeline ----
+review.sentiment <- inner_join(review.tidy, bing)
+review.sentiment <- count(review.sentiment, sentiment, index=document)
+review.sentiment <- spread(review.sentiment, sentiment, n, fill=0)
+review.sentiment$polarity <- review.sentiment$positive - review.sentiment$negative
+review.sentiment$pos <- ifelse(review.sentiment$polarity >=0, "Positive", "Negative")
+p<-ggplot(review.sentiment, aes(x=index, y=polarity, fill=pos))+geom_bar(stat="identity", position="identity", width=1)+theme_gdocs()+ggtitle(label="Polarity timeline")
+ggplotly(p)
+
+# Smooth curve
+review.smooth <- ggplot(review.sentiment, aes(index, polarity))
+p<-review.smooth + stat_smooth() + theme_gdocs() + ggtitle("Polarity timeline - smooth")
+ggplotly(p)
+
+```
+
+In the polarity graph at index 81 we identify a review with sentiment score of even 34! This seems to be a thrilled customer every brand loves! Let us take closer look:
+
+```{r}
+review.sentiment <- inner_join(review.tidy, bing)
+doc_81<-filter(review.sentiment, document=="81")
+head(doc_81[order(doc_81$count,decreasing = T),])
+```
+
+Finally, it certainly pays off to check the actual review:
+
+```{r, out.width="50%"}
+# Outlier in polarity score
+review$review_text[81]
+```
+
+It seems that our assumption was correct! The customer was definitely thrilled! This is a nice example how you can identify and take closer look at reviews that stand out based on its polarity score.
+
+### Analysis on sentence-level
+
+Text analysis provides freedom to choose level of observation. So far, we explored words and their frequencies, we explored customer reviews and quantified their sentiment in two dimensions (positive and negative). Next, we will approach the task of identifying the most negative and positive reviews by organizing text by sentences. By doing so, we will directly access those sentences whose average sentiment stand out.   
+
+```{r}
+# Calculating the average sentiment
+review.highlighted<-review$review_text%>%
+  get_sentences() %>%
+  sentiment_by()
+head(review.highlighted)
+```
+
+```{r}
+# Preparing data
+review.score <- subset(review.highlighted, select = c("ave_sentiment","element_id"))
+review.worst <- review.score[order(review.score$ave_sentiment,decreasing = FALSE),]
+review.worst<-review.worst$element_id[1:10]
+review.best <- review.score[order(review.score$ave_sentiment, decreasing = TRUE),]
+review.best <- review.best$element_id[1:10]
+sentences<-review$review_text %>% get_sentences()
+sentences<-as.matrix(sentences)
+```
+
+And here we have "the worst 10 sentences" from customer reviews;
+```{r}
+# 10 worst sentences
+sentences[review.worst]
+```
+Despite the fact that positive sentiment prevails, we see that there are certain problems associated with MacBook laptop. Issues with screen, problems with woofers, disappointment that there are no ports, unsatisfying value-price ratio.
+
+```{r}
+# 10 most positive sentences
+sentences[review.best]
+```
+If we take a look at "10 most positive sentences" from customer reviews, we would find a similar evidence as we obtained with polarity score. However, by reading those sentences a reader can have better feeling what the reviewer is actually satisfied or unsatisfied with. Here we see that some people admire the speed for instance.
+
+### What are the most emotional reviews?
+
+Package `sentimentr` provides nice function `emotion()` which uses a dictionary to find emotion words and then compute the rate per sentence. The final emotion score ranges between 0 (no emotion used) and 1 (all words used were emotional).
+
+```{r}
+# Extract emotions terms
+reviews.emotion <- review$review_text %>% get_sentences() %>% emotion()
+
+# Top 50 sentences with the highest emotion score 
+top_emotional_sentences <- unique(reviews.emotion[order(reviews.emotion$emotion,decreasing = TRUE),]$element_id[1:50])
+
+# The most emotional reviews
+sentences[top_emotional_sentences,]
+```
+
+We can see that identified sentences very clearly reflect emotions that customers expressed. It seems that intensity of emotions is high in both positive and negative direction.
+
+Finally, we can plot detected emotions in order to get a bit more clear insight in emotional structure detected in the reviews:
+
+```{r}
+# Plot of emotion
+plot(reviews.emotion,
+     transformation.function = syuzhet::get_dct_transform,
+     drop.unused.emotions = TRUE, facet = TRUE)
+```
+
+INTERPRETATION
+

@@ -1,6 +1,6 @@
-book_filename: "mirza_mujanovic_portfolio"
+book_filename: "_main_mirza_mujanovic_portfolio"
 output_dir: "docs"
 language:
   ui:
-    chapter_name: "Chapter "
+    chapter_name: ""
 delete_merged_file: true

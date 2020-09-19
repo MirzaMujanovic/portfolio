@@ -1,0 +1,440 @@
+---
+title: '"CO2mustGO" Iniciative'
+---
+
+```{r, echo=FALSE}
+library(shinycssloaders)
+library(reshape2)
+library(ggplot2)
+library(dplyr)
+library(rvest)
+library(plotly)
+library(scales)
+library(tidyverse)
+library(wesanderson)    
+library(shiny)
+library(shinydashboard)
+library(twitteR)
+library(rtweet)
+library(sentimentr)
+library(tidyverse)
+library(rvest)
+library(purrr)
+library(devtools)
+library(textdata)
+library(ggplot2)
+library(ggthemes)
+library(xml2)
+library(qdap)
+library(rvest)
+library(wordcloud)
+library(RColorBrewer)
+library(NLP)
+library(tm)
+library(tidytext)
+library(dplyr)
+library(tidyr)
+library(ggthemes)
+library(plotly)
+library(tidyverse)
+library(broom)
+library(remotes)
+library(janeaustenr)
+library(qdap)
+library(glue)
+library(syuzhet)
+library(rtweet)
+library(ggplot2)
+library(igraph)
+library(ggraph)
+library(widyr)
+library(syuzhet)
+```
+
+
+# Twitter Analysis for CO2mustGo initiative
+
+Tweets downloaded on 10.06.2020
+
+```{r,fig.width=12,error=FALSE, message=FALSE, warning=FALSE}
+carbon_tweets <- read_twitter_csv("data/#carbonfootprintOR#greenhouse-tweets.csv", unflatten = T)
+carbon_tweets <- carbon_tweets[, colSums(is.na(carbon_tweets)) != nrow(carbon_tweets)]
+```
+
+
+```{r,fig.width=12,error=FALSE, message=FALSE, warning=FALSE}
+# Removing any character that you don’t want to show in our text such as hyperlinks, @ mentions or punctuations
+carbon_tweets$stripped_text <- gsub("https\\S*","",  carbon_tweets$text)
+carbon_tweets$stripped_text <- gsub("@\\S*","", carbon_tweets$stripped_text)
+carbon_tweets$stripped_text <- gsub("amp","",carbon_tweets$stripped_text)
+carbon_tweets$stripped_text <- gsub("[\r\n]","",carbon_tweets$stripped_text)
+carbon_tweets$stripped_text <- gsub("[[:punct:]]", "",carbon_tweets$stripped_text)
+
+# Convert text to lowercase, punctuation is removed, occurrence/frequency of the each word will be added
+carbon_tweets_clean <- carbon_tweets %>%
+  dplyr::select(stripped_text) %>%
+  unnest_tokens(word, stripped_text)
+
+# Remove stop words
+data("stop_words")
+carbon_tweets_words <- carbon_tweets_clean %>%
+  anti_join(stop_words)
+```
+
+## Tweets distribution 
+
+```{r,out.width="100%",error=FALSE, message=FALSE, warning=FALSE}
+# Distribution of tweets considered in the data.
+search_term <- '#carbonfootprint OR #co2'
+by <- 'hour'
+p <- ts_plot(carbon_tweets, by = by, trim = 2) + geom_point() + theme_minimal() + labs(title = paste0("Tweets with ",search_term," by ",by),x = 'Date', y = 'Count', caption = 'Source: Twitter API')
+ggplotly(p)
+```
+
+The peak of tweets has been registered on 6th of June. This happening has to be more closely analysed.
+
+
+## Word Frequency in tweets with  #carbonfootprint or #co2 
+```{r,fig.width=12,error=FALSE, message=FALSE, warning=FALSE}
+p <- carbon_tweets_words %>%
+  dplyr::count(word, sort=T) %>%
+  top_n(10) %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(x = word, y = n)) +
+  geom_col() +
+  theme_minimal()+
+  xlab(NULL) +
+  coord_flip() +
+  labs(x = "Count",
+       y = "Unique words",
+       title = "Count of unique words found in tweets")
+ggplotly(p)
+```
+
+No major surprises regarding the most frequent words. 
+
+##  Word Network in tweets with #carbonfootprint or #co2
+```{r,fig.width=12,error=FALSE, message=FALSE, warning=FALSE}
+# Remove punctuation, convert to lowercase, add id for each tweet!
+carbon_tweets_paired_words <- carbon_tweets %>%
+  dplyr::select(stripped_text) %>%
+  unnest_tokens(paired_words, stripped_text, token = "ngrams", n = 2)
+
+#carbon_tweets_paired_words %>%
+ # dplyr::count(paired_words, sort = TRUE)
+
+#library(tidyr)
+carbon_tweets_separated_words <- carbon_tweets_paired_words %>%
+  separate(paired_words, c("word1", "word2"), sep = " ")
+
+carbon_tweets_filtered <- carbon_tweets_separated_words %>%
+  filter(!word1 %in% stop_words$word) %>%
+  filter(!word2 %in% stop_words$word)
+
+carbon_words_counts <- carbon_tweets_filtered %>%
+  dplyr::count(word1, word2, sort = TRUE)
+
+#library(igraph)
+#library(ggraph)
+
+# Plot carbon change word network
+p<- carbon_words_counts %>%
+  filter(n >=30) %>%
+  graph_from_data_frame() %>%
+  ggraph(layout = "fr") +
+  geom_edge_link(aes(edge_alpha = 0.5, edge_width = n)) +
+  geom_node_point(color = "darkslategray4", size = 3) +
+  geom_node_text(aes(label = name), vjust = 1.8, size = 3) +
+  labs(title = "Word Network: Tweets using the hashtag #carbonfootprint or #co2",
+       subtitle = "Text mining twitter data ",
+       x = "", y = "")
+p
+
+```
+
+The word network is made based on bi-grams. Basically, based on the number of times two words shows up together. Interesting observation is that the word network shows the word "justiceforvinayaki" appering together with "climatecrisis". More specifically, "justiceforvinayaki" is actually a hashtag related to the story behind the pregnant elephant's killing in Kerala's Palakkad. More you can read [here](https://zeenews.india.com/india/justiceforvinayaki-story-behind-the-pregnant-elephants-killing-in-keralas-palakkad-2288223.html).
+
+## Wordcloud of words with #carbonfootprint #co2
+```{r,fig.width=12,error=FALSE, message=FALSE, warning=FALSE}
+# Text preparation
+carbon_tweets$stripped_text <- iconv(carbon_tweets$stripped_text, 'utf-8', 'ascii', sub='')
+review.docs <- Corpus(VectorSource(carbon_tweets$stripped_text))
+review.toSpace<- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+review.docs <- tm_map(review.docs, review.toSpace, "/")
+review.docs <- tm_map(review.docs, review.toSpace, "@")
+review.docs <- tm_map(review.docs, review.toSpace, "\\|")
+review.docs <- tm_map(review.docs, content_transformer(tolower))
+review.docs <- tm_map(review.docs, removeNumbers)
+review.docs <- tm_map(review.docs, removeWords, stopwords("english"))
+review.docs <- tm_map(review.docs, content_transformer(tolower))
+review.docs <- tm_map(review.docs, removePunctuation)
+review.docs <- tm_map(review.docs, stripWhitespace)
+# Text stemming
+#review.docs <- tm_map(review.docs, stemDocument)
+review.tdm <- TermDocumentMatrix(review.docs)
+review.m <- as.matrix(review.tdm)
+review.v <- sort(rowSums(review.m),decreasing=TRUE)
+review.d <- data.frame(word = names(review.v),freq=review.v)
+set.seed(1234)
+wordcloud(words = review.d$word, freq = review.d$freq,
+               max.words = 200,
+               min.freq = 10,
+               random.order=FALSE, rot.per=0.15,
+               colors=brewer.pal(8, "Dark2"), scale=c(8,.3), vfont=c("sans serif","plain"))
+```
+
+Minimum word frequency: 10
+Number of words in the wordcloud: 200
+
+
+```{r,fig.width=12,error=FALSE, message=FALSE, warning=FALSE}
+library(wordcloud) 
+library(reshape2)
+par(mar = rep(0, 4))
+set.seed(1234)
+carbon_tweets_words%>%
+  inner_join(get_sentiments("bing")) %>%
+  count(word, sentiment,sort = TRUE) %>%
+  acast(word ~ sentiment, value.var = "n", fill = 0) %>%
+  comparison.cloud(colors = c("darkred","darkgreen"),
+                   max.words = 400,
+                   min.freq= 10,
+                   scale = c(4.0,0.25))
+```
+
+
+## Sentiment analysis:
+```{r,fig.width=12,error=FALSE, message=FALSE, warning=FALSE}
+# Sentiment analysis 
+sentiment <- carbon_tweets[,3:5] %>% unnest_tokens(output = 'word', input = 'text')
+#Add sentiment dataset
+sentiment_dataset <- get_sentiments("afinn")
+sentiment_dataset <- arrange(sentiment_dataset, -value)
+
+#Merge
+sentiment <- merge(sentiment, sentiment_dataset, by = 'word')
+
+#Clean
+sentiment$word <- NULL
+sentiment$screen_name <- NULL
+
+#Time
+sentiment$hour <- format(base::round.POSIXt(sentiment$created_at, units="hours"), format="%H:%M")
+
+#Pivot
+pivot <- sentiment %>%
+  group_by(hour) %>%
+  summarise(sentiment = mean(value))
+
+#head(pivot)
+
+#plot
+p <- ggplot(pivot[-1,], aes(x = hour, y = sentiment)) + geom_line(group = 1) + geom_point() + theme_minimal() + labs(title = paste0('Average sentiment of tweetings mentioning "',search_term,'"'),x = 'Date', y = 'Sentiment', caption = 'Source: Twitter API')
+
+#p <- ggplot(pivot[-1,], aes(x = hour, y = sentiment)) + geom_line(group = 1) + geom_point() + theme_minimal() + labs(title = paste0('Average sentiment of tweetings mentioning "',search_term,'"'),subtitle = paste0(pivot$hour[2],' - ',pivot$hour[nrow(pivot)],' on ',format(sentiment$created_at[1],'%d %B %Y')),x = 'Date', y = 'Sentiment', caption = 'Source: Twitter API')
+
+
+ggplotly(p)
+```
+
+##Visualize the emotions
+```{r, fig.width=12,error=FALSE, message=FALSE, warning=FALSE}
+# Get sentiments using the four different lexicons
+syuzhet <- get_sentiment(carbon_tweets$stripped_text, method="syuzhet")
+bing <- get_sentiment(carbon_tweets$stripped_text, method="bing")
+afinn <- get_sentiment(carbon_tweets$stripped_text, method="afinn")
+nrc <- get_sentiment(carbon_tweets$stripped_text, method="nrc")
+sentiments <- data.frame(syuzhet, bing, afinn, nrc)
+
+# get the emotions using the NRC dictionary
+nrc.sentiment <- get_nrc_sentiment(carbon_tweets$stripped_text)
+emo_bar = colSums(nrc.sentiment)
+emo_sum = data.frame(count=emo_bar, emotion=names(emo_bar))
+emo_sum$emotion = factor(emo_sum$emotion, levels=emo_sum$emotion[order(emo_sum$count, decreasing = TRUE)])
+
+# Visualize the emotions from NRC sentiments
+plot_ly(emo_sum, x=~emotion, y=~count, type="bar", color=~emotion) %>%
+  layout(xaxis=list(title=""), showlegend=FALSE,
+         title="Distribution of emotion categories")
+```
+
+```{r,fig.width=12,error=FALSE, message=FALSE, warning=FALSE}
+# Comparison word cloud
+all = c(
+  paste(carbon_tweets$stripped_text[nrc.sentiment$anger > 0], collapse=" "),
+  paste(carbon_tweets$stripped_text[nrc.sentiment$anticipation > 0], collapse=" "),
+  paste(carbon_tweets$stripped_text[nrc.sentiment$disgust > 0], collapse=" "),
+  paste(carbon_tweets$stripped_text[nrc.sentiment$fear > 0], collapse=" "),
+  paste(carbon_tweets$stripped_text[nrc.sentiment$joy > 0], collapse=" "),
+  paste(carbon_tweets$stripped_text[nrc.sentiment$sadness > 0], collapse=" "),
+  paste(carbon_tweets$stripped_text[nrc.sentiment$surprise > 0], collapse=" "),
+  paste(carbon_tweets$stripped_text[nrc.sentiment$trust > 0], collapse=" ")
+)
+all <- removeWords(all, stopwords("english"))
+# create corpus
+corpus = Corpus(VectorSource(all))
+#
+# create term-document matrix
+tdm = TermDocumentMatrix(corpus)
+#
+# convert as matrix
+tdm = as.matrix(tdm)
+tdm1 <- tdm[nchar(rownames(tdm)) < 11,]
+#
+# add column names
+colnames(tdm) = c('anger', 'anticipation', 'disgust', 'fear', 'joy', 'sadness', 'surprise', 'trust')
+colnames(tdm1) <- colnames(tdm)
+comparison.cloud(tdm1, random.order=FALSE,
+                 colors = c("#00B2FF", "red", "#FF0099", "#6600CC", "green", "orange", "blue", "brown"), title.size=1, max.words=250, scale=c(2.5, 0.4),rot.per=0.4)
+```
+
+
+## Top retweeted Tweets
+
+### Top retweets (with equal or more than 60 mentions)
+```{r, fig.width=12,error=FALSE, message=FALSE, warning=FALSE}
+# Select top retweeted tweets
+selected <- which(carbon_tweets$retweet_count >= 60)
+
+# Plot 
+dates <-as.POSIXct(strptime(carbon_tweets$created_at, format="%Y-%m-%d"))
+plot(x=dates, y=carbon_tweets$retweet_count, type="l", col="grey",
+     xlab="Date", ylab="Times retweeted")
+colors <- rainbow(10)[1:length(selected)]
+points(dates[selected], carbon_tweets$retweet_count[selected],
+       pch=19, col=colors)
+```
+
+
+### Interactive graph with retweets' text 
+```{r, fig.width=12,error=FALSE, message=FALSE, warning=FALSE}
+# Plotly
+carbon_tweets$created_at <-as.POSIXct(strptime(carbon_tweets$created_at, format="%Y-%m-%d"))
+p<-ggplot(carbon_tweets, aes(x=created_at, y=retweet_count, col=retweet_count, size=retweet_count, retweet_text=retweet_text, created_at=created_at, retweet_name=retweet_name))+geom_point() +xlab(label="Date")+ylab(label="Retweet count")+ggtitle(label="Top retweeted tweets(hover over points to see text)")
+
+ggplotly(p,tooltip = c("retweet_text","retweet_name"))
+```
+
+## Network of retweets
+```{r,fig.width=12,error=FALSE, message=FALSE, warning=FALSE}
+# Create data frame for the network
+rt_df <- carbon_tweets[, c("screen_name" , "retweet_screen_name" )]
+
+# Remove rows with missing values
+rt_df_new <- rt_df[complete.cases(rt_df), ]
+
+# Convert to matrix
+matrx <- as.matrix(rt_df_new)
+
+# Create the retweet network
+nw_rtweet <- graph_from_edgelist(el = matrx, directed = TRUE)
+
+# View the retweet network
+print.igraph(nw_rtweet)
+```
+
+### Follower count of network users
+```{r,fig.width=12,error=FALSE, message=FALSE, warning=FALSE}
+followers <-carbon_tweets[, c("screen_name" , "followers_count" )]
+# Remove rows with missing values
+followers <- followers[complete.cases(rt_df), ]
+followers <-unique(followers)
+# Categorize high and low follower count
+dim(followers)
+followers$follow <- ifelse(followers$followers_count > 500, "1", "0")
+# Assign external network attributes to retweet network
+V(nw_rtweet)$followers <- followers$follow
+
+```
+
+
+### Putting twitter data on the map (use plotly zoom in locations!)
+```{r,error=FALSE, message=FALSE, warning=FALSE,fig.width=12}
+# Extract geolocation data and append new columns
+library(rtweet)
+library(sf)
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(rgeos)
+
+pol_coord <- lat_lng(carbon_tweets)
+pol_geo <- na.omit(pol_coord[, c("lat", "lng","location","retweet_count")])
+world <- ne_countries(scale = "medium", returnclass = "sf")
+p<-ggplot(data = world) +
+    geom_sf() +
+    xlab("Longitude") + ylab("Latitude") +
+    geom_point(data= pol_geo,aes(x=lng, y=lat,loc=location,retweet_count=retweet_count),col = "#00acee")+
+    theme(panel.grid.major = element_line(color = gray(.25), linetype ="dashed",    size = 0.15),panel.background = element_rect(fill = "aliceblue"))+
+    ggtitle("World map with tweets location and retweet count", subtitle = paste0("(", length(unique(pol_geo$location)), " countries)"))
+ggplotly(p,tooltip = c("location","retweet_count"))  
+
+```
+
+
+### Users who retweet the most
+```{r,fig.width=12,error=FALSE, message=FALSE, warning=FALSE}
+# Calculate the out-degree scores
+out_degree <- degree(nw_rtweet, mode = c("out"))
+
+# Sort the users in descending order of out-degree scores
+out_degree_sort <- sort(out_degree, decreasing = TRUE)
+head(out_degree_sort,10)
+# INTERPRETATION: Users who retweeted the most.
+
+#Hubs: Tweeter accounts with a lot of outgoing edges.
+hs <- hub_score(nw_rtweet, weights=NA)$vector
+sort(hs, decreasing = TRUE)[1:20]
+# #Ex-kurs: An edge (a set of two elements) is drawn as a line connecting two vertices, called endpoints or end vertices or end vertices.
+# They are likely to retweet.
+```
+
+### Users who are the most retweeted
+```{r,error=FALSE, message=FALSE, warning=FALSE,fig.width=12}
+# Calculate the in-degree scores
+in_degree <- degree(nw_rtweet, mode = c("in"))
+# Sort the users in descending order of in-degree scores
+in_degree_sort <- sort(in_degree, decreasing = TRUE)
+head(in_degree_sort,10)
+# INTERPRETATION: Users whose posts were retweeted most.
+
+#Authorities: Tweeter accounts with a lot of incoming edges.
+as <- authority_score(nw_rtweet, weights=NA)$vector
+sort(as, decreasing = TRUE)[1:20]
+#Ex-kurs: An edge (a set of two elements) is drawn as a line connecting two vertices, called endpoints or end vertices or end vertices.
+# They are likely to be retweeted.
+```
+
+### Users with important role in allowing information to pass through network
+Users with higher betweenness has more control over the network.
+```{r,error=FALSE, message=FALSE, warning=FALSE,fig.width=12}
+# Calculate the betweenness scores of the network
+betwn_nw <- betweenness(nw_rtweet, directed = TRUE)
+# Sort the users in descending order of betweenness scores
+betwn_nw_sort <- betwn_nw %>%
+  sort(decreasing = TRUE) %>%
+  round() %>% head(10)
+betwn_nw_sort
+```
+
+
+### Clustering
+```{r,fig.width=12,error=FALSE, message=FALSE, warning=FALSE}
+largest_cliques(nw_rtweet) #list only 20 vertices in that cluster
+```
+
+### Community detection 
+```{r,error=FALSE, message=FALSE, warning=FALSE,fig.width=12}
+#https://rpubs.com/cosmopolitanvan/twitternetworks
+
+#Community detection based on edge betweenness (Newman-Girvan)
+comm <- cluster_edge_betweenness(nw_rtweet)
+sort(sizes(comm), decreasing = T)[1:20]
+comm_1 <- communities(comm)
+
+# Tweet accounts in the Community 60 (the biggest community)
+comm_1$`60` 
+# Tweet accounts in the Community 44 (the second biggest community)
+comm_1$`44`
+# Tweet accounts in the Community 16 (the second biggest community)
+comm_1$`16`
+```
