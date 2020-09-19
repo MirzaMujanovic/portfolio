@@ -1,5 +1,6 @@
 --- 
-title: "Mirza Mujanovic"
+knit: "bookdown::render_book"
+title: "  "
 site: bookdown::bookdown_site
 output_dir: "docs"
 documentclass: book
@@ -8,7 +9,12 @@ biblio-style: apalike
 link-citations: yes
 ---
 
-# About myself {-}
+# About me {-}
+
+```{r, out.width = "40%", echo = FALSE, fig.align = "center"}
+knitr::include_graphics("Graphics/my_picture.jpg")
+```
+
 
 <div style="text-align: justify"> 
 
@@ -19,7 +25,7 @@ My name is Mirza Mujanović, I am an ever-curious, eager to learn and ready to a
  
 <div style="text-align: justify"> 
 
-Random Facts about me:
+Random facts about me:
 
 * Big basketball fan. Nowadays, fan of sports analytics.
 * Interested in psychology-related topics
