@@ -30,7 +30,7 @@
   
   
 <link rel="prev" href="twitter-analysis-for-co2mustgo-initiative.html"/>
-
+<link rel="next" href="covid-19-dashboard-for-balkan-countries.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -177,6 +177,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="text-analysis-of-novels.html"><a href="text-analysis-of-novels.html"><i class="fa fa-check"></i><b>3</b> Text Analysis of Novels</a></li>
+<li class="chapter" data-level="4" data-path="covid-19-dashboard-for-balkan-countries.html"><a href="covid-19-dashboard-for-balkan-countries.html"><i class="fa fa-check"></i><b>4</b> COVID 19 Dashboard for Balkan countries*</a><ul>
+<li class="chapter" data-level="4.1" data-path="covid-19-dashboard-for-balkan-countries.html"><a href="covid-19-dashboard-for-balkan-countries.html#data"><i class="fa fa-check"></i><b>4.1</b> Data</a></li>
+<li class="chapter" data-level="4.2" data-path="covid-19-dashboard-for-balkan-countries.html"><a href="covid-19-dashboard-for-balkan-countries.html#curve-of-confirmed-cases"><i class="fa fa-check"></i><b>4.2</b> Curve of confirmed cases</a></li>
+<li class="chapter" data-level="4.3" data-path="covid-19-dashboard-for-balkan-countries.html"><a href="covid-19-dashboard-for-balkan-countries.html#deaths-vs-recovered"><i class="fa fa-check"></i><b>4.3</b> Deaths vs Recovered</a></li>
+<li class="chapter" data-level="4.4" data-path="covid-19-dashboard-for-balkan-countries.html"><a href="covid-19-dashboard-for-balkan-countries.html#total-cases-vs-new-cases"><i class="fa fa-check"></i><b>4.4</b> Total cases vs new cases</a></li>
+</ul></li>
 </ul>
 
       </nav>
@@ -284,7 +290,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb85-2"><a href="text-analysis-of-novels.html#cb85-2"></a><span class="kw">wordcloud</span>(<span class="dt">words =</span> awakening.d<span class="op">$</span>word, <span class="dt">freq =</span> awakening.d<span class="op">$</span>freq, <span class="dt">min.freq =</span> <span class="dv">1</span>,</span>
 <span id="cb85-3"><a href="text-analysis-of-novels.html#cb85-3"></a>          <span class="dt">max.words=</span><span class="dv">200</span>, <span class="dt">random.order=</span><span class="ot">FALSE</span>, <span class="dt">rot.per=</span><span class="fl">0.35</span>,</span>
 <span id="cb85-4"><a href="text-analysis-of-novels.html#cb85-4"></a>          <span class="dt">colors=</span><span class="kw">brewer.pal</span>(<span class="dv">8</span>, <span class="st">&quot;Dark2&quot;</span>))</span></code></pre></div>
-<p><img src="_main_files/figure-html/unnamed-chunk-52-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-53-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Aspern</p>
 <ol style="list-style-type: decimal">
 <li>Cutting in chapters and corpus creation</li>
@@ -332,7 +338,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb90-2"><a href="text-analysis-of-novels.html#cb90-2"></a><span class="kw">wordcloud</span>(<span class="dt">words =</span> aspern.d<span class="op">$</span>word, <span class="dt">freq =</span> aspern.d<span class="op">$</span>freq, <span class="dt">min.freq =</span> <span class="dv">1</span>,</span>
 <span id="cb90-3"><a href="text-analysis-of-novels.html#cb90-3"></a>          <span class="dt">max.words=</span><span class="dv">200</span>, <span class="dt">random.order=</span><span class="ot">FALSE</span>, <span class="dt">rot.per=</span><span class="fl">0.35</span>,</span>
 <span id="cb90-4"><a href="text-analysis-of-novels.html#cb90-4"></a>          <span class="dt">colors=</span><span class="kw">brewer.pal</span>(<span class="dv">8</span>, <span class="st">&quot;Dark2&quot;</span>))</span></code></pre></div>
-<p><img src="_main_files/figure-html/unnamed-chunk-55-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-56-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Commonality cloud and Comparison cloud</p>
 <ol style="list-style-type: decimal">
 <li>Creation of a corpus out of the both texts</li>
@@ -355,9 +361,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb93-2"><a href="text-analysis-of-novels.html#cb93-2"></a>cc.m &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(<span class="kw">t</span>(cc.dtm))</span>
 <span id="cb93-3"><a href="text-analysis-of-novels.html#cb93-3"></a><span class="kw">colnames</span>(cc.m)&lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Awakening&quot;</span>,<span class="st">&quot;Aspern&quot;</span>)</span>
 <span id="cb93-4"><a href="text-analysis-of-novels.html#cb93-4"></a><span class="kw">comparison.cloud</span>(cc.m,<span class="dt">max.words =</span> <span class="dv">100</span>,<span class="dt">min.frrandom.order=</span><span class="ot">FALSE</span>)</span></code></pre></div>
-<p><img src="_main_files/figure-html/unnamed-chunk-58-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-59-1.png" width="672" style="display: block; margin: auto;" /></p>
 <div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb94-1"><a href="text-analysis-of-novels.html#cb94-1"></a><span class="kw">commonality.cloud</span>(cc.m,<span class="dt">max.words =</span> <span class="dv">100</span>,<span class="dt">colors =</span> <span class="st">&quot;steelblue1&quot;</span>,<span class="dt">min.frrandom.order=</span><span class="ot">FALSE</span>)</span></code></pre></div>
-<p><img src="_main_files/figure-html/unnamed-chunk-58-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-59-2.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Sentiment timeline</p>
 <p>1.Awakening</p>
 <div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb95-1"><a href="text-analysis-of-novels.html#cb95-1"></a>sent.awakening &lt;-<span class="st"> </span><span class="kw">readLines</span>(<span class="st">&quot;http://www.gutenberg.org/files/160/160-0.txt&quot;</span>)</span>
@@ -384,11 +390,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb95-22"><a href="text-analysis-of-novels.html#cb95-22"></a>awakening.sentiment<span class="op">$</span>polarity &lt;-<span class="st"> </span>awakening.sentiment<span class="op">$</span>positive <span class="op">-</span><span class="st"> </span>awakening.sentiment<span class="op">$</span>negative</span>
 <span id="cb95-23"><a href="text-analysis-of-novels.html#cb95-23"></a>awakening.sentiment<span class="op">$</span>pos &lt;-<span class="st"> </span><span class="kw">ifelse</span>(awakening.sentiment<span class="op">$</span>polarity <span class="op">&gt;=</span><span class="dv">0</span>, <span class="st">&quot;pos&quot;</span>, <span class="st">&quot;neg&quot;</span>)</span>
 <span id="cb95-24"><a href="text-analysis-of-novels.html#cb95-24"></a><span class="kw">ggplot</span>(awakening.sentiment, <span class="kw">aes</span>(<span class="dt">x=</span>index, <span class="dt">y=</span>polarity, <span class="dt">fill=</span>pos))<span class="op">+</span><span class="kw">geom_bar</span>(<span class="dt">stat=</span><span class="st">&quot;identity&quot;</span>, <span class="dt">position=</span><span class="st">&quot;identity&quot;</span>, <span class="dt">width=</span><span class="dv">1</span>)</span></code></pre></div>
-<p><img src="_main_files/figure-html/unnamed-chunk-60-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-61-1.png" width="672" style="display: block; margin: auto;" /></p>
 <div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb96-1"><a href="text-analysis-of-novels.html#cb96-1"></a>awakening.smooth &lt;-<span class="st"> </span><span class="kw">ggplot</span>(awakening.sentiment, <span class="kw">aes</span>(index, polarity))</span>
 <span id="cb96-2"><a href="text-analysis-of-novels.html#cb96-2"></a></span>
 <span id="cb96-3"><a href="text-analysis-of-novels.html#cb96-3"></a>(p2&lt;-awakening.smooth <span class="op">+</span><span class="st"> </span><span class="kw">stat_smooth</span>())</span></code></pre></div>
-<p><img src="_main_files/figure-html/unnamed-chunk-60-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-61-2.png" width="672" style="display: block; margin: auto;" /></p>
 <p>2.Aspern</p>
 <div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb97-1"><a href="text-analysis-of-novels.html#cb97-1"></a>sent.aspern &lt;-<span class="st"> </span><span class="kw">readLines</span>(<span class="st">&quot;http://www.gutenberg.org/files/211/211-0.txt&quot;</span>)</span>
 <span id="cb97-2"><a href="text-analysis-of-novels.html#cb97-2"></a>aspern.corpus &lt;-<span class="st"> </span><span class="kw">VCorpus</span>(<span class="kw">VectorSource</span>(sent.aspern))</span>
@@ -414,11 +420,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb97-22"><a href="text-analysis-of-novels.html#cb97-22"></a>aspern.sentiment<span class="op">$</span>polarity &lt;-<span class="st"> </span>aspern.sentiment<span class="op">$</span>positive <span class="op">-</span><span class="st"> </span>aspern.sentiment<span class="op">$</span>negative</span>
 <span id="cb97-23"><a href="text-analysis-of-novels.html#cb97-23"></a>aspern.sentiment<span class="op">$</span>pos &lt;-<span class="st"> </span><span class="kw">ifelse</span>(aspern.sentiment<span class="op">$</span>polarity <span class="op">&gt;=</span><span class="dv">0</span>, <span class="st">&quot;pos&quot;</span>, <span class="st">&quot;neg&quot;</span>)</span>
 <span id="cb97-24"><a href="text-analysis-of-novels.html#cb97-24"></a><span class="kw">ggplot</span>(aspern.sentiment, <span class="kw">aes</span>(<span class="dt">x=</span>index, <span class="dt">y=</span>polarity, <span class="dt">fill=</span>pos))<span class="op">+</span><span class="kw">geom_bar</span>(<span class="dt">stat=</span><span class="st">&quot;identity&quot;</span>, <span class="dt">position=</span><span class="st">&quot;identity&quot;</span>, <span class="dt">width=</span><span class="dv">1</span>)</span></code></pre></div>
-<p><img src="_main_files/figure-html/unnamed-chunk-61-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-62-1.png" width="672" style="display: block; margin: auto;" /></p>
 <div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb98-1"><a href="text-analysis-of-novels.html#cb98-1"></a>aspern.smooth &lt;-<span class="st"> </span><span class="kw">ggplot</span>(aspern.sentiment, <span class="kw">aes</span>(index, polarity))</span>
 <span id="cb98-2"><a href="text-analysis-of-novels.html#cb98-2"></a></span>
 <span id="cb98-3"><a href="text-analysis-of-novels.html#cb98-3"></a>(p3&lt;-aspern.smooth <span class="op">+</span><span class="st"> </span><span class="kw">stat_smooth</span>())</span></code></pre></div>
-<p><img src="_main_files/figure-html/unnamed-chunk-61-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-62-2.png" width="672" style="display: block; margin: auto;" /></p>
 <ol start="3" style="list-style-type: decimal">
 <li>Merging Aspern and Awakening</li>
 </ol>
@@ -428,7 +434,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb99-4"><a href="text-analysis-of-novels.html#cb99-4"></a>g<span class="op">$</span>widths &lt;-<span class="st"> </span><span class="kw">unit.pmax</span>(g2<span class="op">$</span>widths, g3<span class="op">$</span>widths)</span>
 <span id="cb99-5"><a href="text-analysis-of-novels.html#cb99-5"></a><span class="kw">grid.newpage</span>()</span>
 <span id="cb99-6"><a href="text-analysis-of-novels.html#cb99-6"></a><span class="kw">grid.draw</span>(g)</span></code></pre></div>
-<p><img src="_main_files/figure-html/unnamed-chunk-62-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-63-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Topic Modelling - Pick up 5 topics and try to make sense of the topics giving a label to them</p>
 <p>1.Awakening</p>
 <div class="sourceCode" id="cb100"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb100-1"><a href="text-analysis-of-novels.html#cb100-1"></a>top.mod.awakening.dtm &lt;-<span class="st"> </span><span class="kw">DocumentTermMatrix</span>(awakening.corpus, <span class="dt">control =</span> <span class="kw">list</span>(<span class="dt">weighting=</span>weightTf))</span>
@@ -560,8 +566,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="twitter-analysis-for-co2mustgo-initiative.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-
+<a href="twitter-analysis-for-co2mustgo-initiative.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="covid-19-dashboard-for-balkan-countries.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

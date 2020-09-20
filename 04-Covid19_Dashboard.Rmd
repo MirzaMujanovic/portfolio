@@ -136,3 +136,88 @@ p <- ggplot(total_and_new, aes(x=Country.Other, y=value, fill=variable)) +
 ggplotly(p, tooltip = "text")
 ```
 
+## Hospitalization
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE,error=FALSE}
+hospitalization <- read.csv("data/Hospitalization_all_locs.csv")
+hospitalization$X <- NULL
+
+columns <- colnames(hospitalization)[3:ncol(hospitalization)]
+pivot_hospitalization<-as.data.frame(pivot_longer(hospitalization, cols = columns))
+colnames(pivot_hospitalization) <- c("Country","Date","Variable","Value") 
+pivot_hospitalization.mean.EU <- filter(pivot_hospitalization,
+                                          Variable == "admis_mean"|
+                                          Variable == "allbed_mean"|
+                                          Variable == "bedover_mean"|
+                                          Variable == "ICUbed_mean"|
+                                          Variable == "icuover_mean"|
+                                          Variable == "invVen_mean"|
+                                          Variable == "newICU_mean")
+pivot_hospitalization.mean.EU <- filter(pivot_hospitalization.mean.EU, Value > 0)
+pivot_hospitalization.mean.EU$Date <- as.Date(as.POSIXct(pivot_hospitalization.mean.EU$Date,"%Y%M%D"))
+```
+
+### Croatia
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE,error=FALSE}
+#Croatia
+table(pivot_hospitalization.mean.EU$Country)
+pivot_hospitalization.mean.cro <- filter(pivot_hospitalization.mean.EU,Country == "Croatia")
+
+p <- ggplot(pivot_hospitalization.mean.cro,aes(x=Date,y=Value)) +
+  geom_line(aes(color=Variable), size=1) +
+  scale_color_brewer(palette = "Set1") +
+  theme(legend.title = element_text(size = 6),legend.text = element_text(size = 6),  
+  panel.background = element_blank(),
+  axis.line = element_line(colour = "grey"))+
+  scale_y_sqrt()+
+  ggtitle(label = "Hospitalisation numbers in Croatia")+
+  scale_x_date(date_labels = "%B-%d", date_breaks = "5 week")+
+  ylab("Mean")+
+  labs(caption="Data source: ")
+
+ggplotly(p)
+```
+
+### Slovenia 
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE,error=FALSE}
+#Slovenia
+pivot_hospitalization.mean.slo <- filter(pivot_hospitalization.mean.EU,Country == "Slovenia")
+
+p <- ggplot(pivot_hospitalization.mean.slo,aes(x=Date,y=Value)) +
+  geom_line(aes(color=Variable), size=1) +
+  scale_color_brewer(palette = "Set1") +
+  theme(legend.title = element_text(size = 6),legend.text = element_text(size = 6),  
+  panel.background = element_blank(),
+  axis.line = element_line(colour = "grey"))+
+  scale_y_sqrt()+
+  ggtitle(label = "Hospitalisation numbers in Slovenia")+
+  scale_x_date(date_labels = "%B-%d", date_breaks = "5 week")+
+  ylab("Mean")+
+  labs(caption="Data source: ")
+
+ggplotly(p)
+```
+
+### Austria
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE,error=FALSE}
+#Austria
+pivot_hospitalization.mean.at <- filter(pivot_hospitalization.mean.EU,Country == "Austria")
+
+p <- ggplot(pivot_hospitalization.mean.at,aes(x=Date,y=Value)) +
+  geom_line(aes(color=Variable), size=1) +
+  scale_color_brewer(palette = "Set1") +
+  theme(legend.title = element_text(size = 6),legend.text = element_text(size = 6),  
+  panel.background = element_blank(),
+  axis.line = element_line(colour = "grey"))+
+  scale_y_sqrt()+
+  ggtitle(label = "Hospitalisation numbers in Austria")+
+  scale_x_date(date_labels = "%B-%d", date_breaks = "5 week")+
+  ylab("Mean")+
+  labs(caption="Data source: ")
+
+ggplotly(p)
+```
+
