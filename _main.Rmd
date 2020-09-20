@@ -1,3 +1,77 @@
+--- 
+knit: "bookdown::render_book"
+title: "Mirza Mujanovic - Portfolio"
+site: bookdown::bookdown_site
+output_dir: "docs"
+documentclass: book
+bibliography: [book.bib, packages.bib]
+biblio-style: apalike
+link-citations: yes
+---
+
+# About me {-}
+
+Placeholder
+
+
+
+<!--chapter:end:index.Rmd-->
+
+
+# Emotions In Online Customer Reviews 
+
+Placeholder
+
+
+## What to expect in this article? {-}
+## Dictionaries for NLP
+## Data set
+## Corpus cleaning
+## Visualisations of terms frequency
+### Bar charts with the most frequent terms
+### Wordcloud with the most frequent terms
+### The most frequent terms indicating emotions
+## Sentiment analysis
+### Polarity timeline
+### Analysis on sentence-level
+### What are the most emotional reviews?
+
+<!--chapter:end:01-Emotions_In_Online_Customer_Reviews.Rmd-->
+
+
+# Twitter Analysis for CO2mustGo initiative
+
+Placeholder
+
+
+## Tweets distribution 
+## Word Frequency in tweets with  #carbonfootprint or #co2 
+##  Word Network in tweets with #carbonfootprint or #co2
+## Wordcloud of words with #carbonfootprint #co2
+## Sentiment analysis:
+## Top retweeted Tweets
+### Top retweets (with equal or more than 60 mentions)
+### Interactive graph with retweets' text 
+## Network of retweets
+### Follower count of network users
+### Putting twitter data on the map (use plotly zoom in locations!)
+### Users who retweet the most
+### Users who are the most retweeted
+### Users with important role in allowing information to pass through network
+### Clustering
+### Community detection 
+
+<!--chapter:end:02-C02_must_go_iniciative.Rmd-->
+
+
+# Text Analysis of Novels
+
+Placeholder
+
+
+
+<!--chapter:end:03-Text_Analysis_and_Fairy_Tales.Rmd-->
+
 ---
 title: "04-Covid19_Dashboard"
 ---
@@ -84,13 +158,9 @@ filter <- filter(final, Country == "Bosnia and Herzegovina" | Country == "Italy"
 p <-ggplot(filter, aes(x = Year, y = Confirmed)) + 
   geom_line(aes(color = Country), size = 1) +
   scale_color_brewer(palette="Set1")+
-  theme(legend.title = element_text(size = 6),legend.text = element_text(size = 6),  
-  # Remove panel background
-  panel.background = element_blank(),
-  # Add axis line
-  axis.line = element_line(colour = "grey"))+
+  theme(legend.title = element_text(size = 6),legend.text = element_text(size = 6))+
   scale_y_log10(labels = comma)+
-  scale_x_date(date_labels = "%b-%d", date_breaks = "4 week")+
+  scale_x_date(date_labels = "%B-%d", date_breaks = "4 week")+
   ylab("Confirmed cases")+
   labs(caption="Data source: https://github.com/CSSEGISandData/COVID-19")
 ggplotly(p)
@@ -107,10 +177,7 @@ p <- ggplot(balkan) +
   scale_y_log10()+
   theme_minimal() +
   theme(
-  legend.position = "none",
-  panel.background = element_blank(),
-  panel.grid = element_blank(),
-  axis.line = element_line(colour = "grey")) +
+    legend.position = "none",) +
     xlab("") +
     ylab("Number of cases")+
     ggtitle(label = "Death vs Recovered")
@@ -129,10 +196,13 @@ p <- ggplot(total_and_new, aes(x=Country.Other, y=value, fill=variable)) +
   ylab("Number of cases")+
   xlab("")+
   ggtitle(label = "Total cases vs New cases") +
-  theme(panel.grid = element_blank(), panel.background = element_blank())+
+  theme_minimal()+
   labs(title = "",fill="" )+
   coord_flip()
   
 ggplotly(p, tooltip = "text")
 ```
+
+
+<!--chapter:end:04-Covid19_Dashboard.Rmd-->
 
