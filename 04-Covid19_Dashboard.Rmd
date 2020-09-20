@@ -161,7 +161,6 @@ pivot_hospitalization.mean.EU$Date <- as.Date(as.POSIXct(pivot_hospitalization.m
 
 ```{r,echo=FALSE,message=FALSE,warning=FALSE,error=FALSE}
 #Croatia
-table(pivot_hospitalization.mean.EU$Country)
 pivot_hospitalization.mean.cro <- filter(pivot_hospitalization.mean.EU,Country == "Croatia")
 
 p <- ggplot(pivot_hospitalization.mean.cro,aes(x=Date,y=Value)) +
