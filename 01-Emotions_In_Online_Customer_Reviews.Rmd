@@ -12,8 +12,13 @@ output:
 # Emotions In Online Customer Reviews 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, error= FALSE, message = FALSE, warning = FALSE, fig.align = "center")
+knitr::opts_chunk$set(error= FALSE, message = FALSE, warning = FALSE, fig.align = "center")
 ```
+
+```{r,echo=FALSE, fig.align='center', out.width="60%"}
+knitr::include_graphics("Graphics/emotions.jpg")
+```
+
 
 <div style="text-align: justify"> 
 

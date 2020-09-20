@@ -1,0 +1,92 @@
+---
+title: "04-Covid19_Dashboard"
+---
+
+# COVID 19 Dashboard for Balkan countries*
+
+## Data
+
+```{r; error=FALSE,message=FALSE,warning=FALSE}
+# Github 
+covid19_confirmed_git <-"https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv"
+covid19_confirmed_git <- read_csv(url(covid19_confirmed_git))
+
+# Worldometer
+codivid19_all <- "https://www.worldometers.info/coronavirus/"
+main_table <- codivid19_all%>%
+  xml2::read_html()%>%
+  html_nodes(xpath='//*[@id="main_table_countries_today"]') %>%
+  html_table()
+main_table <- as.data.frame(main_table)
+
+## Filtering data for Balkan countries (plus Italy and Austria)
+balkan <- filter(main_table,Country.Other == "Bosnia and Herzegovina" | Country.Other == "Italy" | Country.Other == "Croatia" | Country.Other == "Serbia"  | Country.Other == "Montenegro"  | Country.Other == "Slovenia"  | Country.Other == "Austria"  | Country.Other == "North Macedonia" | Country.Other == "Greece")
+balkan$TotalCases<-gsub(",", "", balkan$TotalCases)
+balkan$NewCases<-gsub(",", "", balkan$NewCases)
+balkan$TotalRecovered<-gsub(",", "", balkan$TotalRecovered)
+balkan$TotalDeaths<-gsub(",", "", balkan$TotalDeaths)
+balkan$TotalRecovered <- as.numeric(balkan$TotalRecovered)
+balkan$TotalDeaths <- as.numeric(balkan$TotalDeaths)
+balkan$TotalCases<-as.numeric(balkan$TotalCases)
+balkan$NewCases <- as.numeric(balkan$NewCases)
+
+
+```
+
+## Curve of confirmed cases 
+
+```{r,warning=FALSE,error=FALSE,message=FALSE}
+# Curve of confirmed cases----
+columns <- colnames(covid19_confirmed_git)[5:ncol(covid19_confirmed_git)]
+final <-as.data.frame(pivot_longer(covid19_confirmed_git, cols = columns, names_to = "Year", values_to = "Confirmed"))
+final$Year <- as.Date.character(final$Year,"%m/%d/%y")
+colnames(final) <- c("Province","Country","Lat","Long","Year","Confirmed") 
+filter <- filter(final, Country == "Bosnia and Herzegovina" | Country == "Italy" | Country == "Croatia" | Country == "Serbia"  | Country == "Slovenia"  | Country == "Montenegro"  | Country == "Austria" | Country == "North Macedonia" | Country == "Greece")
+p <-ggplot(filter, aes(x = Year, y = Confirmed)) + 
+  geom_line(aes(color = Country), size = 1) +
+  scale_color_brewer(palette="Set1")+
+  theme_minimal()+
+  scale_y_log10(labels = comma)+
+  scale_x_date(date_labels = "%B-%d", date_breaks = "4 week")+
+  ylab("Confirmed cases")+
+  labs(caption="Data source: https://github.com/CSSEGISandData/COVID-19")
+ggplotly(p,tooltip = "")
+```
+
+## Deaths vs Recovered 
+
+```{r}
+options(scipen = 9999)
+p <- ggplot(balkan) +
+  geom_segment( aes(x=Country.Other, xend=Country.Other, y=TotalRecovered, yend=TotalDeaths), color="grey") +
+  geom_point( aes(x=Country.Other, y=TotalRecovered), color=rgb(0.2,0.7,0.1,0.5), size=3 ) +
+  geom_point( aes(x=Country.Other, y=TotalDeaths), color=rgb(0.7,0.2,0.1,0.5), size=3 ) + coord_flip()+
+  scale_y_log10()+
+  theme_minimal() +
+  theme(
+    legend.position = "none",) +
+    xlab("") +
+    ylab("Number of cases")+
+    ggtitle(label = "Death vs Recovered")
+ggplotly(p)
+```
+
+## Total cases vs new cases
+
+```{r,error=FALSE, warning=FALSE, message=FALSE}
+# Total cases vs new cases
+total_and_new <- melt(balkan[,c("TotalCases","NewCases","Country.Other")])
+p <- ggplot(total_and_new, aes(x=Country.Other, y=value, fill=variable)) +
+  geom_bar(stat='identity', position='dodge', color="black" ,aes(text=paste("Country: ",Country.Other, "\n", variable,":",value, sep=""))) +
+  scale_fill_brewer(palette = "Paired")+
+  scale_y_continuous(labels=comma, trans = "log10") +
+  ylab("Number of cases")+
+  xlab("")+
+  ggtitle(label = "Total cases vs New cases") +
+  theme_minimal()+
+  labs(title = "",fill="" )+
+  coord_flip()
+  
+ggplotly(p, tooltip = "text")
+```
+
