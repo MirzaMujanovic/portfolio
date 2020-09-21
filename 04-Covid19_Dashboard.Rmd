@@ -4,6 +4,7 @@ title: "04-Covid19_Dashboard"
 
 # COVID 19 Dashboard for Balkan countries*
 
+
 ## Data
 
 ```{r,echo=FALSE,error=FALSE,message=FALSE,warning=FALSE}
@@ -57,7 +58,10 @@ main_table <- codivid19_all%>%
   html_nodes(xpath='//*[@id="main_table_countries_today"]') %>%
   html_table()
 main_table <- as.data.frame(main_table)
+```
 
+
+```{r, error=FALSE,message=FALSE,warning=FALSE,echo=FALSE}
 ## Filtering data for Balkan countries (plus Italy and Austria)
 balkan <- filter(main_table,Country.Other == "Bosnia and Herzegovina" | Country.Other == "Italy" | Country.Other == "Croatia" | Country.Other == "Serbia"  | Country.Other == "Montenegro"  | Country.Other == "Slovenia"  | Country.Other == "Austria"  | Country.Other == "North Macedonia" | Country.Other == "Greece")
 balkan$TotalCases<-gsub(",", "", balkan$TotalCases)
@@ -74,7 +78,7 @@ balkan$NewCases <- as.numeric(balkan$NewCases)
 
 ## Curve of confirmed cases 
 
-```{r,warning=FALSE,error=FALSE,message=FALSE,fig.width=8}
+```{r,warning=FALSE,error=FALSE,message=FALSE,fig.width=8,echo=FALSE}
 # Curve of confirmed cases----
 columns <- colnames(covid19_confirmed_git)[5:ncol(covid19_confirmed_git)]
 final <-as.data.frame(pivot_longer(covid19_confirmed_git, cols = columns, names_to = "Year", values_to = "Confirmed"))
@@ -98,7 +102,7 @@ ggplotly(p)
 
 ## Deaths vs Recovered 
 
-```{r}
+```{r, error=FALSE,message=FALSE,warning=FALSE,echo=FALSE}
 options(scipen = 9999)
 p <- ggplot(balkan) +
   geom_segment( aes(x=Country.Other, xend=Country.Other, y=TotalRecovered, yend=TotalDeaths), color="grey") +
@@ -119,7 +123,7 @@ ggplotly(p)
 
 ## Total cases vs new cases
 
-```{r,error=FALSE, warning=FALSE, message=FALSE}
+```{r, error=FALSE,message=FALSE,warning=FALSE,echo=FALSE}
 # Total cases vs new cases
 total_and_new <- melt(balkan[,c("TotalCases","NewCases","Country.Other")])
 p <- ggplot(total_and_new, aes(x=Country.Other, y=value, fill=variable)) +
@@ -129,7 +133,7 @@ p <- ggplot(total_and_new, aes(x=Country.Other, y=value, fill=variable)) +
   ylab("Number of cases")+
   xlab("")+
   ggtitle(label = "Total cases vs New cases") +
-  theme(panel.grid = element_blank(), panel.background = element_blank())+
+  theme_minimal()+
   labs(title = "",fill="" )+
   coord_flip()
   
@@ -138,7 +142,7 @@ ggplotly(p, tooltip = "text")
 
 ## Hospitalization
 
-```{r,echo=FALSE,message=FALSE,warning=FALSE,error=FALSE}
+```{r,echo=FALSE,message=FALSE,warning=FALSE,error=FALSE,fig.show='asis'}
 hospitalization <- read.csv("data/Hospitalization_all_locs.csv")
 hospitalization$X <- NULL
 
@@ -159,7 +163,7 @@ pivot_hospitalization.mean.EU$Date <- as.Date(as.POSIXct(pivot_hospitalization.m
 
 ### Croatia
 
-```{r,echo=FALSE,message=FALSE,warning=FALSE,error=FALSE}
+```{r,echo=FALSE,message=FALSE,warning=FALSE,error=FALSE,fig.show='asis'}
 #Croatia
 pivot_hospitalization.mean.cro <- filter(pivot_hospitalization.mean.EU,Country == "Croatia")
 
@@ -180,7 +184,7 @@ ggplotly(p)
 
 ### Slovenia 
 
-```{r,echo=FALSE,message=FALSE,warning=FALSE,error=FALSE}
+```{r,echo=FALSE,message=FALSE,warning=FALSE,error=FALSE,fig.show='asis'}
 #Slovenia
 pivot_hospitalization.mean.slo <- filter(pivot_hospitalization.mean.EU,Country == "Slovenia")
 
@@ -201,7 +205,7 @@ ggplotly(p)
 
 ### Austria
 
-```{r,echo=FALSE,message=FALSE,warning=FALSE,error=FALSE}
+```{r,echo=FALSE,message=FALSE,warning=FALSE,error=FALSE,fig.show='asis'}
 #Austria
 pivot_hospitalization.mean.at <- filter(pivot_hospitalization.mean.EU,Country == "Austria")
 
