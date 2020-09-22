@@ -9,7 +9,9 @@ biblio-style: apalike
 link-citations: yes
 ---
 
-# About me {-}
+# (PART) About me {-}
+
+# Who I am? {-}
 
 ```{r, out.width = "40%", echo = FALSE, fig.align = "center"}
 knitr::include_graphics("Graphics/my_picture.jpg")

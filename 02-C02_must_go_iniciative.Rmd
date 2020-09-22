@@ -53,8 +53,15 @@ library(widyr)
 library(syuzhet)
 ```
 
+## What is CO2mustGO?
 
-```{r, echo=FALSE,fig.align='center',out.width="100%",warning=FALSE,error=FALSE, message=FALSE}
+```{r,echo=FALSE, fig.align='center', out.width="50%",fig.cap="Foto von Andrea Piacquadio von Pexels"}
+knitr::include_graphics("Graphics/CO2.jpg")
+```
+
+In beginning of 2020 I heared that my working collegues from another institute at the WU have launched an iniciative called CO2mustGO initiative. The initiative aims to geather multinational group of students, researchers and teachers from the Vienna University of Economics and Business and other universities around Europe, to unite around the single issue of carbon price. This project started as a university course, with the vision of uniting students and scientists in an international movement supporting every serious carbon price initiative globally. Since my hometown, Tuzla, heavily suffers from the air pollution, I felt that I should give my contribution to this initiative and joined them in April 2020. I decided to support it with my R programming skills. Consequently, I ended up analysing Twitter data, as it is one of the hot-spots for this topic.
+
+```{r, echo=FALSE,fig.align='center',out.width="100%",warning=FALSE,error=FALSE, message=FALSE,fig.cap="Energy production capacities in the EU",eval=FALSE}
 
 # Packages
 library(networkD3)
@@ -193,9 +200,15 @@ fig <- plot_ly(
     target = final_target,
     value = final_value))
 
-total.capacity <- fig %>% layout(title = "Energy Production Capacity")
+total.capacity <- fig %>% layout(title = "Energy Production Capacity in the EU")
 total.capacity
 
+```
+
+```{r, echo=FALSE,fig.align='center',out.width="100%",warning=FALSE,error=FALSE, message=FALSE,fig.cap="Energy production capacities in the EU"}
+library(widgetframe)
+new <- readRDS("data/total.capacity.rds")
+new
 ```
 
 Tweets downloaded on 10.06.2020

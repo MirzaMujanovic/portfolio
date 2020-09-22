@@ -9,13 +9,15 @@ output:
     toc: yes
 ---
 
+# (PART) My work {-}
+
 # Emotions In Online Customer Reviews 
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(error= FALSE, message = FALSE, warning = FALSE, fig.align = "center")
 ```
 
-```{r,echo=FALSE, fig.align='center', out.width="60%"}
+```{r,echo=FALSE, fig.align='center', out.width="50%",fig.cap="Foto von Andrea Piacquadio von Pexels"}
 knitr::include_graphics("Graphics/emotions.jpg")
 ```
 
