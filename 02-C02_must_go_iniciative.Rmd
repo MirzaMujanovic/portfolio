@@ -53,31 +53,39 @@ library(widyr)
 library(syuzhet)
 ```
 
-## What is CO2mustGO?
+## What is CO2mustGO? {-}
 
 ```{r,echo=FALSE, fig.align='center', out.width="50%",fig.cap="Foto von Andrea Piacquadio von Pexels"}
 knitr::include_graphics("Graphics/CO2.jpg")
 ```
+<div style="text-align: justify"> 
 
-In beginning of 2020 I heared that my working collegues from another institute at the WU have launched an iniciative called CO2mustGO initiative. The initiative aims to geather multinational group of students, researchers and teachers from the Vienna University of Economics and Business and other universities around Europe, to unite around the single issue of carbon price. This project started as a university course, with the vision of uniting students and scientists in an international movement supporting every serious carbon price initiative globally. Since my hometown, Tuzla, heavily suffers from the air pollution, I felt that I should give my contribution to this initiative and joined them in April 2020. I decided to support it with my R programming skills. Consequently, I ended up analysing Twitter data, as it is one of the hot-spots for this topic.
+At the beginning of 2020 I heared that my working colleagues from another institute at the WU have launched an initiative called CO2mustGO initiative. The initiative aims to gather multinational group of students, researchers and teachers from the Vienna University of Economics and Business and other universities around Europe, to unite around the single issue of carbon price. This project started as a university course, with the vision of uniting students and scientists in an international movement supporting every serious carbon price initiative globally. Since my hometown, Tuzla, [heavily suffers from the air pollution](http://unmaskmycity.org/project/tuzla/#:~:text=The%20Tuzla%20Thermal%20Power%20Plant%20is%20one%20of%20the%20ten,the%20largest%20source%20of%20PM2.), I felt that I should give my contribution to this initiative and joined them in April 2020. I decided to support it with my R programming skills. Consequently, I ended up analyzing Twitter data, as it is one of the hot-spots for this topic.
+
+My role was to spark interest of stakeholders regarding this issue by using data available. Therefore, my tasks were related to using R to create understandable visualizations and to make use of Twitter data available.  
+
+</div> 
+
 
 ```{r, echo=FALSE,fig.align='center',out.width="100%",warning=FALSE,error=FALSE, message=FALSE,fig.cap="Energy production capacities in the EU",eval=FALSE}
-
 # Packages
+
 library(networkD3)
 library(tidyr)
 library(tidyverse)
 library(plotly)
 
-
 # Major
 table <- read.csv("data/capacity_data.csv", stringsAsFactors = T)
+```
 
+## Sankey diagram: Energy production capacity
+
+```{r, echo=TRUE,fig.align='center',out.width="100%",warning=FALSE,error=FALSE, message=FALSE,eval=FALSE}
 # Creation of source
 table$typ_11 <- factor(table$typ_11,levels = c("c1","c2","g1","g2","g3","g4","n","o1","o2","o3","o4","r1","res"),labels = c("0","1","2","3","4","5","6","7","8","9","10","11","12"))
 source1 <- as.vector.factor(table$typ_11)
 source1 <- as.numeric(source1)
-
 
 #Country as mediator
 table2 <- table
@@ -210,24 +218,56 @@ library(widgetframe)
 new <- readRDS("data/total.capacity.rds")
 new
 ```
+<div style="text-align: justify"> 
 
-Tweets downloaded on 10.06.2020
+In order to depict the nature of energy production facilities across EU countries, I created this sankey diagram. On the left side, you can see types of energy sources across the EU countries (data is not updated). In the middle, you can see respective countries. Finally, on the right you see the total of energy production. Especially nice feature of the visualization is the interactive component, so that, for instance, using "Box select" option, you can merge certain number of components of the same type (e.g., select 3 sources of energy) and the visualization changes accordingly.
+
+</div> 
+
+
+## Twitter data analysis {-}
+
+<div style="text-align: justify"> 
+
+Twitter is nowadays among platforms that host strong communities. Carbon footprint and its repercussions belongs to prominent climate issue. Consequently, I decided to analyze Tweets downloaded via Twitter API on on 10.06.2020. The aim was simply to explore data about tweets with hashtags #carbonfootprint or #co2 and try to draw conclusions on how to approach social media presence on Twitter.
+
+</div> 
+
+
+### Data
+
+Our data was stored in CSV format.`rtweet` package provides nice function to read in data conveniently.
 
 ```{r,error=FALSE, message=FALSE, warning=FALSE}
+#library(rtweet)
+
+# Read in Tweets data
 carbon_tweets <- read_twitter_csv("data/#carbonfootprintOR#greenhouse-tweets.csv", unflatten = T)
-carbon_tweets <- carbon_tweets[, colSums(is.na(carbon_tweets)) != nrow(carbon_tweets)]
-```
 
+# Observe the data
+head(carbon_tweets)
+
+# Delete empty columns
+carbon_tweets <- carbon_tweets[, colSums(is.na(carbon_tweets)) != nrow(carbon_tweets)]
+
+# Head of the data set
+dim(carbon_tweets)
+```
+Our data set contains 1858 Tweets and 86 features.
+
+## Text cleaning and preprocessing
+
+Tweets text in our data set requires some preprocessing and cleaning as it contains elements that are not helpful for our analysis.
 
 ```{r,error=FALSE, message=FALSE, warning=FALSE}
-# Removing any character that you don’t want to show in our text such as hyperlinks, @ mentions or punctuations
+# Text cleaning 
 carbon_tweets$stripped_text <- gsub("https\\S*","",  carbon_tweets$text)
 carbon_tweets$stripped_text <- gsub("@\\S*","", carbon_tweets$stripped_text)
 carbon_tweets$stripped_text <- gsub("amp","",carbon_tweets$stripped_text)
 carbon_tweets$stripped_text <- gsub("[\r\n]","",carbon_tweets$stripped_text)
 carbon_tweets$stripped_text <- gsub("[[:punct:]]", "",carbon_tweets$stripped_text)
 
-# Convert text to lowercase, punctuation is removed, occurrence/frequency of the each word will be added
+# Text to lowercase, punctuation removed, frequency of the each word added
 carbon_tweets_clean <- carbon_tweets %>%
   dplyr::select(stripped_text) %>%
   unnest_tokens(word, stripped_text)
@@ -236,22 +276,29 @@ carbon_tweets_clean <- carbon_tweets %>%
 data("stop_words")
 carbon_tweets_words <- carbon_tweets_clean %>%
   anti_join(stop_words)
+
 ```
 
-## Tweets distribution 
+## Tweets distribution
+
+Since our data set contains information about the time Tweets are posted, I was interested to see the distribution of Tweets in the given period. 
 
 ```{r,error=FALSE, message=FALSE, warning=FALSE}
 # Distribution of tweets considered in the data.
+
 search_term <- '#carbonfootprint OR #co2'
 by <- 'hour'
-p <- ts_plot(carbon_tweets, by = by, trim = 2) + geom_point(col = "#00acee") + theme_minimal() + labs(title = paste0("Tweets with ",search_term," by ",by),x = 'Date', y = 'Count', caption = 'Source: Twitter API')
+p <- ts_plot(carbon_tweets, by = by, trim = 2) + geom_point(col = "#00acee") + theme_minimal() + labs(title = paste0("Tweets with ",search_term," by ",by),x = 'Date', y = 'Count')
 ggplotly(p)
 ```
 
-The peak of tweets has been registered on 6th of June. This happening has to be more closely analysed.
+The period captured in our data set is from 15:00 on 2nd of June to 11:00 A.M. on 10th of June. Interestingly enough, there was certain occasion on 6th of June important for our topic. We see from the number of Tweets with hashtags #carbonfootprint or #co2, which stood at 43! This happening has to be more closely analyzed.
 
 
-## Word Frequency in tweets with  #carbonfootprint or #co2 
+## Word Frequency in Tweets  
+
+Next, I wanted to inspect the word frequency in the Tweets from the data set. 
+
 ```{r,error=FALSE, message=FALSE, warning=FALSE}
 p <- carbon_tweets_words %>%
   dplyr::count(word, sort=T) %>%
@@ -268,7 +315,7 @@ p <- carbon_tweets_words %>%
 ggplotly(p)
 ```
 
-No major surprises regarding the most frequent words. 
+Generally, no major surprises regarding the most frequent words. It can be noted that term "worldenvironmentday" appears frequently as the World Environment Day is on 5th of June.
 
 ##  Word Network in tweets with #carbonfootprint or #co2
 ```{r, error=FALSE, message=FALSE, warning=FALSE}
@@ -276,9 +323,6 @@ No major surprises regarding the most frequent words.
 carbon_tweets_paired_words <- carbon_tweets %>%
   dplyr::select(stripped_text) %>%
   unnest_tokens(paired_words, stripped_text, token = "ngrams", n = 2)
-
-#carbon_tweets_paired_words %>%
- # dplyr::count(paired_words, sort = TRUE)
 
 #library(tidyr)
 carbon_tweets_separated_words <- carbon_tweets_paired_words %>%
@@ -305,11 +349,17 @@ p<- carbon_words_counts %>%
   labs(title = "Word Network: Tweets using the hashtag #carbonfootprint or #co2",
        subtitle = "Text mining twitter data ",
        x = "", y = "")
-p
-
 ```
 
-The word network is made based on bi-grams. Basically, based on the number of times two words shows up together. Interesting observation is that the word network shows the word "justiceforvinayaki" appering together with "climatecrisis". More specifically, "justiceforvinayaki" is actually a hashtag related to the story behind the pregnant elephant's killing in Kerala's Palakkad. More you can read [here](https://zeenews.india.com/india/justiceforvinayaki-story-behind-the-pregnant-elephants-killing-in-keralas-palakkad-2288223.html).
+```{r, error=FALSE, message=FALSE, warning=FALSE,echo=FALSE}
+readRDS("./data/wordnetwork.rds")
+```
+<div style="text-align: justify"> 
+
+The word network is made based on bi-grams. Basically, based on the number of times two words shows up together. Interesting observation is that the word network shows the word **"justiceforvinayaki"** appering together with **"climatecrisis"**. More specifically, "justiceforvinayaki" is actually a hashtag related to the story behind the pregnant elephant's killing in Kerala's Palakkad. More you can read [here](https://zeenews.india.com/india/justiceforvinayaki-story-behind-the-pregnant-elephants-killing-in-keralas-palakkad-2288223.html).
+
+</div> 
+
 
 ## Wordcloud of words with #carbonfootprint #co2
 ```{r, error=FALSE, message=FALSE, warning=FALSE}
