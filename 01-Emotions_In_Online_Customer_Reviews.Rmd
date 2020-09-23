@@ -404,5 +404,13 @@ plot(reviews.emotion,
      drop.unused.emotions = TRUE, facet = TRUE)
 ```
 
-INTERPRETATION
+<div style="text-align: justify"> 
+
+This plot depicts emotional inclination of the reviews. Curves indicating emotional propensity of trust, joy and anticipation suggest strong inclination towards mentioned emotions. In line with the academic paper The Role of Emotions for the Perceived Usefulness in Online Customer Reviews](https://www.jstor.org/stable/pdf/20619095.pdf
+), we have found an evidence that online reviews analyzed encode emotions contributing to the higher helpfulness rating, i.e. quality of reviews.
+
+In the end, it is important to mention that the role and influence of emotions defined by Plutchik on the quality of reviews differ across different product categories. 
+
+</div> 
+
 
