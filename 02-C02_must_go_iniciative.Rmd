@@ -357,6 +357,12 @@ p<- carbon_words_counts %>%
 ```{r, error=FALSE, message=FALSE, warning=FALSE,echo=FALSE}
 readRDS("./data/wordnetwork.rds")
 ```
+
+::: {.infobox data-latex="{download}"}
+[In the case that the plot is not visible, check it out](https://raw.githubusercontent.com/MirzaMujanovic/Mirza_Mujanovic_Portfolio/master/Graphics/wordnetwork.jpg).
+:::
+
+
 <div style="text-align: justify"> 
 
 An interesting observation is that the word network shows the word **"justiceforvinayaki"** appering together with **"climatecrisis"**. More specifically, "justiceforvinayaki" is actually a hashtag related to the story behind the pregnant elephant's killing in Kerala's Palakkad. More you can read [here](https://zeenews.india.com/india/justiceforvinayaki-story-behind-the-pregnant-elephants-killing-in-keralas-palakkad-2288223.html).
@@ -365,6 +371,7 @@ An interesting observation is that the word network shows the word **"justicefor
 
 ## Wordcloud {-}
 
+In order to get a bigger picture of frequent terms in Tweets, I created a wordcloud.
 
 ```{r, error=FALSE, message=FALSE, warning=FALSE}
 # Text preparation
@@ -380,8 +387,6 @@ review.docs <- tm_map(review.docs, removeWords, stopwords("english"))
 review.docs <- tm_map(review.docs, content_transformer(tolower))
 review.docs <- tm_map(review.docs, removePunctuation)
 review.docs <- tm_map(review.docs, stripWhitespace)
-# Text stemming
-#review.docs <- tm_map(review.docs, stemDocument)
 review.tdm <- TermDocumentMatrix(review.docs)
 review.m <- as.matrix(review.tdm)
 review.v <- sort(rowSums(review.m),decreasing=TRUE)
