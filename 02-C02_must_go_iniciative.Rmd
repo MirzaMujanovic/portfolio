@@ -317,7 +317,10 @@ ggplotly(p)
 
 Generally, no major surprises regarding the most frequent words. It can be noted that term "worldenvironmentday" appears frequently as the World Environment Day is on 5th of June.
 
-##  Word Network in tweets with #carbonfootprint or #co2
+##  Word Network in Tweets 
+
+Knowing that Tweets are short messages, I decided to inspect word network in order to possibly observe some unusual word combinations. The word network is made based on bi-grams. Basically, based on the number of times two words shows up together.
+
 ```{r, error=FALSE, message=FALSE, warning=FALSE}
 # Remove punctuation, convert to lowercase, add id for each tweet!
 carbon_tweets_paired_words <- carbon_tweets %>%
@@ -356,12 +359,13 @@ readRDS("./data/wordnetwork.rds")
 ```
 <div style="text-align: justify"> 
 
-The word network is made based on bi-grams. Basically, based on the number of times two words shows up together. Interesting observation is that the word network shows the word **"justiceforvinayaki"** appering together with **"climatecrisis"**. More specifically, "justiceforvinayaki" is actually a hashtag related to the story behind the pregnant elephant's killing in Kerala's Palakkad. More you can read [here](https://zeenews.india.com/india/justiceforvinayaki-story-behind-the-pregnant-elephants-killing-in-keralas-palakkad-2288223.html).
+An interesting observation is that the word network shows the word **"justiceforvinayaki"** appering together with **"climatecrisis"**. More specifically, "justiceforvinayaki" is actually a hashtag related to the story behind the pregnant elephant's killing in Kerala's Palakkad. More you can read [here](https://zeenews.india.com/india/justiceforvinayaki-story-behind-the-pregnant-elephants-killing-in-keralas-palakkad-2288223.html).
 
 </div> 
 
+## Wordcloud {-}
 
-## Wordcloud of words with #carbonfootprint #co2
+
 ```{r, error=FALSE, message=FALSE, warning=FALSE}
 # Text preparation
 carbon_tweets$stripped_text <- iconv(carbon_tweets$stripped_text, 'utf-8', 'ascii', sub='')
