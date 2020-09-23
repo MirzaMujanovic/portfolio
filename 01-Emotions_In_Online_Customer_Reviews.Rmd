@@ -397,11 +397,12 @@ We can see that identified sentences very clearly reflect emotions that customer
 
 Finally, we can plot detected emotions in order to get a bit more clear insight in emotional structure detected in the reviews:
 
-```{r}
+```{r, out.width="100%",message=FALSE,error=FALSE,warning=FALSE}
 # Plot of emotion
-plot(reviews.emotion,
+p<-plot(reviews.emotion,
      transformation.function = syuzhet::get_dct_transform,
      drop.unused.emotions = TRUE, facet = TRUE)
+ggplotly(p)
 ```
 
 <div style="text-align: justify"> 
