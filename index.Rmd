@@ -34,4 +34,12 @@ Random facts about me:
 * Used to collect old money together with my older sister. 
 * Favorite food: Bulgogi and pudding (but not together, of course!).
 
+
+
+::: {.infobox .download data-latex="{download}"}
+[You can download my CV here](CV/my_cv.pdf)
+:::
+
+
+
 </div>
