@@ -231,7 +231,7 @@ ggplotly(p)
 
 Similarly to the bar chart with the most frequent words, we could use **wordcloud** as well. It displays words from the corpus and signalizes their frequency by displaying more frequent words bigger relative to those that appear less frequently in the corpus. In the wordcloud below you can see 200 most frequent words, where the minimum frequency was set to 1.
 
-```{r}
+```{r,message=FALSE,warning=FALSE,error=FALSE}
 # Wordcloud
 review.tdm <- TermDocumentMatrix(review.corpus)
 review.m <- as.matrix(review.tdm)
@@ -241,7 +241,6 @@ set.seed(1234)
 wordcloud(words = review.d$word, freq = review.d$freq, min.freq = 1,
           max.words=200, random.order=FALSE, rot.per=0.35,
           colors=brewer.pal(8, "Dark2"))
-
 ```
 
 ### The most frequent terms indicating emotions
