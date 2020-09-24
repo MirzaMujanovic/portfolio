@@ -319,7 +319,7 @@ Generally, no major surprises regarding the most frequent words. It can be noted
 
 Knowing that Tweets are short messages, I decided to inspect word network in order to possibly observe some unusual word combinations. The word network is made based on bi-grams. Basically, based on the number of times two words shows up together.
 
-```{r, error=FALSE, message=FALSE, warning=FALSE}
+```{r, error=FALSE, message=FALSE, warning=FALSE, fig.show='hide'}
 # Remove punctuation, convert to lowercase, add id for each tweet!
 carbon_tweets_paired_words <- carbon_tweets %>%
   dplyr::select(stripped_text) %>%
@@ -350,10 +350,11 @@ p<- carbon_words_counts %>%
   labs(title = "Word Network: Tweets using the hashtag #carbonfootprint or #co2",
        subtitle = "Text mining twitter data ",
        x = "", y = "")
+p
 ```
 
 ```{r, error=FALSE, message=FALSE, warning=FALSE,echo=FALSE}
-readRDS("./data/wordnetwork.rds")
+knitr::include_graphics("Graphics/wordnetwork.PNG")
 ```
 
 ::: {.infobox data-latex="{download}"}
@@ -371,7 +372,7 @@ An interesting observation is that the word network shows the word **"justicefor
 
 In order to get a bigger picture of frequent terms in Tweets, I created a wordcloud.
 
-```{r, error=FALSE, message=FALSE, warning=FALSE}
+```{r, error=FALSE, message=FALSE, warning=FALSE, fig.show="hide"}
 # Text preparation
 carbon_tweets$stripped_text <- iconv(carbon_tweets$stripped_text, 'utf-8', 'ascii', sub='')
 review.docs <- Corpus(VectorSource(carbon_tweets$stripped_text))
@@ -396,8 +397,12 @@ wordcloud(words = review.d$word, freq = review.d$freq,
                random.order=FALSE, rot.per=0.15,
                colors=brewer.pal(8, "Dark2"), scale=c(8,.3), vfont=c("sans serif","plain"))
 ```
+```{r,echo=FALSE}
+knitr::include_graphics("Graphics/wordcloud_twitter.PNG")
+```
 
-::: {.infobox data-latex="{download}"}
+
+::: {.infobox .graph data-latex="{graph}"}
 [The plot doesn't load? Check it out here](https://raw.githubusercontent.com/MirzaMujanovic/Mirza_Mujanovic_Portfolio/master/Graphics/wordcloud_twitter.png).
 :::
 
@@ -420,13 +425,13 @@ carbon_tweets_words%>%
                    scale = c(4.0,0.25))
 ```
 
-```{r,echo=FALSE, out.width="100%"}
+```{r,echo=FALSE, out.width="80%"}
 library(knitr)
 knitr::include_graphics("Graphics/wordcloud_neg_pos_twitter.PNG")
 ```
 
 
-::: {.infobox data-latex="{download}"}
+::: {.infobox .graph data-latex="{graph}"}
 [The plot doesn't load? Check it out here](https://raw.githubusercontent.com/MirzaMujanovic/Mirza_Mujanovic_Portfolio/master/Graphics/wordcloud_neg_pos_twitter.PNG).
 :::
 
@@ -527,7 +532,7 @@ comparison.cloud(tdm1, random.order=FALSE,
 
 
 ::: {.infobox data-latex="{download}"}
-[The plot doesn't load? Check it out here](https://raw.githubusercontent.com/MirzaMujanovic/Mirza_Mujanovic_Portfolio/master/Graphics/wordcloud_neg_pos_twitter.png).
+[The plot doesn't load? Check it out here](https://raw.githubusercontent.com/MirzaMujanovic/Mirza_Mujanovic_Portfolio/master/Graphics/wordcloud_neg_pos_twitter.PNG).
 :::
 
 
@@ -537,7 +542,7 @@ comparison.cloud(tdm1, random.order=FALSE,
 
 Next task was to identify Tweets that stand out. The graph below helped me to identify days on which certain Tweets were re-tweeted substaintially more than usually. 
 
-```{r, error=FALSE, message=FALSE, warning=FALSE}
+```{r, error=FALSE, message=FALSE, warning=FALSE, fig.show='hide'}
 # Select top retweeted tweets
 selected <- which(carbon_tweets$retweet_count >= 60)
 
@@ -551,7 +556,7 @@ points(dates[selected], carbon_tweets$retweet_count[selected],
 ```
 
 ::: {.infobox data-latex="{download}"}
-[The plot doesn't load? Check it out here](https://raw.githubusercontent.com/MirzaMujanovic/Mirza_Mujanovic_Portfolio/master/Graphics/retweeted_1_twitter.png).
+[The plot doesn't load? Check it out here](https://raw.githubusercontent.com/MirzaMujanovic/Mirza_Mujanovic_Portfolio/master/Graphics/retweeted_1_twitter.PNG).
 :::
 
 ### Interactive graph with retweets' text {-}
