@@ -3,6 +3,7 @@ title: "Text Analysis and Novels"
 ---
 # Text Analysis of Novels
 
+
 ```{r, echo=FALSE,error=FALSE,warning=FALSE,message=FALSE}
 options(warn = -1)
 library(NLP)
@@ -31,7 +32,11 @@ library(SnowballC)
 library(textstem)
 ```
 
-Downloading Novels 'The Awakening' and 'The Aspern Papers'
+
+## Data
+
+Downloading Novels 'The Awakening' and 'The Aspern Papers' 
+
 ```{r}
 awakening <- scan("http://www.gutenberg.org/files/160/160-0.txt", what="character", blank.lines.skip = TRUE, sep="\n")
 aspern <- scan("http://www.gutenberg.org/files/211/211-0.txt", what="character", blank.lines.skip = TRUE, sep="\n")
@@ -41,25 +46,21 @@ aspern<- iconv(aspern, 'utf-8', 'ascii', sub='')
 ```
 
 
-Cleaning the novels
+# Text cleaning
 ```{r}
 awakening.begin <- which(awakening=="THE AWAKENING")[2]
 awakening.end   <- which(awakening=="*****") - 1
 awakening.v<- awakening[awakening.begin:awakening.end]
-head(awakening.v)
-tail(awakening.v)
-
 
 aspern.begin <- which(aspern=="Macmillan and Co., 1888.")+1
 aspern.end   <- which(aspern=="End of the Project Gutenberg EBook of The Aspern Papers, by Henry James") - 1
 aspern.v <- aspern[aspern.begin:aspern.end]
-head(aspern.v)
-tail(aspern.v)
 ```
 
-Awakening:
+## Awakening:
 
 1. Cutting in chapters and corpus creation
+
 ```{r}
 awakening.v <- gsub("^I*(X|V)*I*$", "@@@", awakening.v)
 awakening.string <- paste(awakening.v, collapse = " ")
@@ -72,7 +73,8 @@ awakening.docs <- Corpus(VectorSource(awakening.df$chapters))
 ```
 
 2. Text preprocessing
-```{r}
+
+```{r,error=FALSE, warning=FALSE, message=FALSE}
 toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
 awakening.docs <- tm_map(awakening.docs, toSpace, "/")
 awakening.docs <- tm_map(awakening.docs, toSpace, "@")
@@ -85,7 +87,8 @@ awakening.docs <- tm_map(awakening.docs, stripWhitespace)
 ```
 
 3. WordCloud preparation and wordcloud graph
-```{r}
+
+```{r,error=FALSE, warning=FALSE, message=FALSE}
 awakening.dtm <- DocumentTermMatrix(awakening.docs, control=list(weighting=weightTf))
 awakening.m <- as.matrix(t(awakening.dtm))
 awakening_v <- sort(rowSums(awakening.m),decreasing=TRUE)
@@ -98,9 +101,10 @@ wordcloud(words = awakening.d$word, freq = awakening.d$freq, min.freq = 1,
 ```
 
 
-Aspern
+## Aspern
 
 1. Cutting in chapters and corpus creation
+
 ```{r}
 aspern.v <- gsub("^I*(X|V)*I*$", "@@@", aspern.v)
 aspern.string <- paste(aspern.v, collapse = " ")
@@ -116,7 +120,7 @@ aspern.docs <- Corpus(VectorSource(aspern.df$chapters))
 
 2. Text preprocessing
 
-```{r}
+```{r,error=FALSE, warning=FALSE, message=FALSE}
 toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
 aspern.docs <- tm_map(aspern.docs, toSpace, "/")
 aspern.docs <- tm_map(aspern.docs, toSpace, "@")
@@ -131,7 +135,7 @@ aspern.docs <- tm_map(aspern.docs, stripWhitespace)
 
 3. WordCloud preparation and wordcloud graph
 
-```{r}
+```{r,error=FALSE, warning=FALSE, message=FALSE}
 aspern.dtm <- DocumentTermMatrix(aspern.docs, control=list(weighting=weightTf))
 aspern.m <- as.matrix(t(aspern.dtm))
 aspern_v <- sort(rowSums(aspern.m),decreasing=TRUE)
@@ -144,7 +148,7 @@ wordcloud(words = aspern.d$word, freq = aspern.d$freq, min.freq = 1,
 
 ```
 
-Commonality cloud and Comparison cloud
+## Commonality cloud and Comparison cloud
 
 1. Creation of a corpus out of the both texts
 ```{r}
@@ -168,7 +172,7 @@ cc.docs <- tm_map(cc.docs, stripWhitespace)
 
 3.Comparison and Commonality cloud
 
-```{r}
+```{r,error=FALSE, warning=FALSE, message=FALSE}
 cc.dtm <- DocumentTermMatrix(cc.docs)
 cc.m <- as.matrix(t(cc.dtm))
 colnames(cc.m)<- c("Awakening","Aspern")
@@ -177,7 +181,8 @@ commonality.cloud(cc.m,max.words = 100,colors = "steelblue1",min.frrandom.order=
 ```
 
 
-Sentiment timeline
+## Sentiment timeline
+
 ```{r, echo=FALSE, error=FALSE, message=FALSE, warning=FALSE}
 library(tidytext)
 library(dplyr)
@@ -195,7 +200,8 @@ nrc <- get_sentiment_dictionary('nrc', language = "english")
 
 
 1.Awakening
-```{r}
+
+```{r,error=FALSE, warning=FALSE, message=FALSE}
 sent.awakening <- readLines("http://www.gutenberg.org/files/160/160-0.txt")
 sent.awakening <-iconv(sent.awakening, 'utf-8', 'ascii', sub='')
 awakening.corpus <- VCorpus(VectorSource(sent.awakening))
@@ -228,7 +234,8 @@ awakening.smooth <- ggplot(awakening.sentiment, aes(index, polarity))
 ```
 
 2.Aspern
-```{r}
+
+```{r,error=FALSE, warning=FALSE, message=FALSE}
 sent.aspern <- readLines("http://www.gutenberg.org/files/211/211-0.txt")
 aspern.corpus <- VCorpus(VectorSource(sent.aspern))
 aspern.corpus <- tm_map(aspern.corpus, content_transformer(tolower))
@@ -271,11 +278,13 @@ grid.draw(g)
 ```
 
 
-Topic Modelling - Pick up 5 topics and try to make sense of the topics giving a label to them
+## Topic Modelling 
+
+Pick up 5 topics and try to make sense of the topics giving a label to them.
 
 1.Awakening
 
-```{r}
+```{r,error=FALSE, warning=FALSE, message=FALSE}
 top.mod.awakening.dtm <- DocumentTermMatrix(awakening.corpus, control = list(weighting=weightTf))
 burnin = 1000
 iter = 1000
@@ -291,7 +300,6 @@ top.mod.awakening.lda.terms <- as.matrix(terms(top.mod.awakening.lda_basic.model
 top.mod.awakening.lda.terms<- iconv(top.mod.awakening.lda.terms, 'utf-8', 'ascii', sub='')
 #top.mod.awakening.lda.terms
 
-
 awakening.top10termsPerTopic <- terms(top.mod.awakening.lda_basic.model, 10)
 awakening.top10termsPerTopic <- iconv(top.mod.awakening.lda.terms, 'utf-8', 'ascii', sub='')
 #awakening.top10termsPerTopic
@@ -302,7 +310,8 @@ awakening.topicNames <- apply(awakening.top10termsPerTopic, 2, paste, collapse="
 ```
 
 2. Aspern
-```{r}
+
+```{r,error=FALSE, warning=FALSE, message=FALSE}
 top.mod.aspern.dtm <- DocumentTermMatrix(aspern.corpus, control = list(weighting=weightTf))
 burnin = 1000
 iter = 1000
@@ -329,11 +338,14 @@ aspern.top10termsPerTopic
 ```
 
 
+# Main points of interpretation:
 
-Main points of interpretation:
+1. The most common words are names of characters such as Edna, Tita and Mrs.Pontellier.
 
-1. The most common words are names of characters (Edna, Tita...)
 2. According to the sentiment analysis, Awakening novel is slightly from the beginning to the end. On the other hand, Aspern has a slight drop in the negative  sentiment, but the end is positive.
-3.Awakening is a longer text than Aspern
+
+3.Awakening is as twice as longer text than Aspern.
+
 4.Due to lemmatization could not address the time of speaking (wheater it is told in past or future)
+
 5. Words "said",little","think","house","good","like","one","come","back","thought" are the most common.
