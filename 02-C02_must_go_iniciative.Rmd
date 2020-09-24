@@ -367,7 +367,7 @@ An interesting observation is that the word network shows the word **"justicefor
 
 </div> 
 
-## Wordcloud
+## Wordcloud 
 
 In order to get a bigger picture of frequent terms in Tweets, I created a wordcloud.
 
@@ -405,7 +405,7 @@ Minimum word frequency is set to 10, and the wordcloud depicts 200 most frequent
 
 As you probably already know, Twitter is a place where discussions are going on frequently. Therefore, it made sense to try to reorganize the wordcloud to indicate positive vs negative terms.
 
-```{r, error=FALSE, message=FALSE, warning=FALSE}
+```{r, error=FALSE, message=FALSE, warning=FALSE, fig.show='hide'}
 library(wordcloud) 
 library(reshape2)
 par(mar = rep(0, 4))
@@ -420,12 +420,15 @@ carbon_tweets_words%>%
                    scale = c(4.0,0.25))
 ```
 
+```{r,echo=FALSE, out.width="100%"}
+library(knitr)
+knitr::include_graphics("Graphics/wordcloud_neg_pos_twitter.PNG")
+```
+
+
 ::: {.infobox data-latex="{download}"}
 [The plot doesn't load? Check it out here](https://raw.githubusercontent.com/MirzaMujanovic/Mirza_Mujanovic_Portfolio/master/Graphics/wordcloud_neg_pos_twitter.PNG).
 :::
-
-
-
 
 
 
