@@ -4,6 +4,9 @@ title: "04-Covid19_Dashboard"
 
 # COVID 19 Dashboard for Balkan countries*
 
+::: {.infobox data-latex="{download}"}
+[Here you go directly to the dashboard](https://mirza-mujanovic.shinyapps.io/covid-19/)
+:::
 
 ## Data
 
@@ -78,6 +81,8 @@ balkan$NewCases <- as.numeric(balkan$NewCases)
 
 ## Curve of confirmed cases 
 
+The graph shows the number of confirmed cases by the last date shown.Updates daily at around 23:59 UTC.
+
 ```{r,warning=FALSE,error=FALSE,message=FALSE,fig.width=8,echo=FALSE}
 # Curve of confirmed cases----
 columns <- colnames(covid19_confirmed_git)[5:ncol(covid19_confirmed_git)]
@@ -102,6 +107,8 @@ ggplotly(p)
 
 ## Deaths vs Recovered 
 
+The bar chart shows the total number of recovered people in comparison to the total number of death cases. Updates daily at around 23:59 UTC.
+
 ```{r, error=FALSE,message=FALSE,warning=FALSE,echo=FALSE}
 options(scipen = 9999)
 p <- ggplot(balkan) +
@@ -122,6 +129,8 @@ ggplotly(p)
 ```
 
 ## Total cases vs new cases
+
+The bar chart shows the total number of cases in comparison to the number of new cases being constantly reported.
 
 ```{r, error=FALSE,message=FALSE,warning=FALSE,echo=FALSE}
 # Total cases vs new cases
