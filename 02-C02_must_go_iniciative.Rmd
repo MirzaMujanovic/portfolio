@@ -421,7 +421,7 @@ carbon_tweets_words%>%
 ```
 
 ::: {.infobox data-latex="{download}"}
-[The plot doesn't load? Check it out here](https://raw.githubusercontent.com/MirzaMujanovic/Mirza_Mujanovic_Portfolio/master/Graphics/wordcloud_neg_pos_twitter.png).
+[The plot doesn't load? Check it out here](https://raw.githubusercontent.com/MirzaMujanovic/Mirza_Mujanovic_Portfolio/master/Graphics/wordcloud_neg_pos_twitter.PNG).
 :::
 
 
