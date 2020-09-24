@@ -367,7 +367,7 @@ An interesting observation is that the word network shows the word **"justicefor
 
 </div> 
 
-## Wordcloud {-}
+## Wordcloud
 
 In order to get a bigger picture of frequent terms in Tweets, I created a wordcloud.
 
@@ -423,6 +423,10 @@ carbon_tweets_words%>%
 ::: {.infobox data-latex="{download}"}
 [The plot doesn't load? Check it out here](https://raw.githubusercontent.com/MirzaMujanovic/Mirza_Mujanovic_Portfolio/master/Graphics/wordcloud_neg_pos_twitter.png).
 :::
+
+
+
+
 
 
 ## Sentiment analysis
@@ -517,9 +521,12 @@ colnames(tdm1) <- colnames(tdm)
 comparison.cloud(tdm1, random.order=FALSE,
                  colors = c("#00B2FF", "red", "#FF0099", "#6600CC", "green", "orange", "blue", "brown"), title.size=1, max.words=250, scale=c(2.5, 0.4),rot.per=0.4)
 ```
-::: {.infobox .graph data-latex="{download}"}
+
+
+::: {.infobox data-latex="{download}"}
 [The plot doesn't load? Check it out here](https://raw.githubusercontent.com/MirzaMujanovic/Mirza_Mujanovic_Portfolio/master/Graphics/wordcloud_neg_pos_twitter.png).
 :::
+
 
 ## Top retweeted Tweets
 
@@ -539,7 +546,8 @@ colors <- rainbow(10)[1:length(selected)]
 points(dates[selected], carbon_tweets$retweet_count[selected],
        pch=19, col=colors)
 ```
-::: {.infobox .graph data-latex="{download}"}
+
+::: {.infobox data-latex="{download}"}
 [The plot doesn't load? Check it out here](https://raw.githubusercontent.com/MirzaMujanovic/Mirza_Mujanovic_Portfolio/master/Graphics/retweeted_1_twitter.png).
 :::
 
@@ -554,8 +562,12 @@ p<-ggplot(carbon_tweets, aes(x=created_at, y=retweet_count, col=retweet_count, s
 
 ggplotly(p,tooltip = c("retweet_text","retweet_name"))
 ```
+The most re-tweeted Tweet comes from [Forest Products Resolute](https://www.resolutefp.com/en/?langtype=4105), which is a global leader in the forest products industry with a diverse range of products, including market pulp, tissue, wood products and papers, which are marketed in close to 70 countries. They tweeted that they are going to take decisive actions towards lowering carbon footprint.
 
 ## Network of retweets
+
+Finally, I decided to explore the network of the Tweets in order to identify some communities on Twitter that the initiative could potentially join.
+
 ```{r,error=FALSE, message=FALSE, warning=FALSE}
 # Create data frame for the network
 rt_df <- carbon_tweets[, c("screen_name" , "retweet_screen_name" )]
@@ -573,9 +585,10 @@ nw_rtweet <- graph_from_edgelist(el = matrx, directed = TRUE)
 print.igraph(nw_rtweet)
 ```
 
-### Follower count of network users
-```{r, error=FALSE, message=FALSE, warning=FALSE}
+
+```{r, error=FALSE, message=FALSE, warning=FALSE, echo=FALSE}
 followers <-carbon_tweets[, c("screen_name" , "followers_count" )]
+
 # Remove rows with missing values
 followers <- followers[complete.cases(rt_df), ]
 followers <-unique(followers)
@@ -587,8 +600,10 @@ V(nw_rtweet)$followers <- followers$follow
 
 ```
 
+### Where do people tweet the most? 
 
-### Putting twitter data on the map (use plotly zoom in locations!)
+The interactive world-map plot below allows you to zoom-in certain regions to have a better look what countries are hot-spots when it comes to carbon footprint and co2-related topics.
+
 ```{r,error=FALSE, message=FALSE, warning=FALSE}
 # Extract geolocation data and append new columns
 library(rtweet)
@@ -611,7 +626,8 @@ ggplotly(p,tooltip = c("location","retweet_count"))
 ```
 
 
-### Users who retweet the most
+### Who are the users who retweet the most?
+
 ```{r,error=FALSE, message=FALSE, warning=FALSE}
 # Calculate the out-degree scores
 out_degree <- degree(nw_rtweet, mode = c("out"))
@@ -624,28 +640,33 @@ head(out_degree_sort,10)
 #Hubs: Tweeter accounts with a lot of outgoing edges.
 hs <- hub_score(nw_rtweet, weights=NA)$vector
 sort(hs, decreasing = TRUE)[1:20]
-# #Ex-kurs: An edge (a set of two elements) is drawn as a line connecting two vertices, called endpoints or end vertices or end vertices.
-# They are likely to retweet.
 ```
 
-### Users who are the most retweeted
+Ex-kurs: An edge (a set of two elements) is drawn as a line connecting two vertices, called endpoints or end vertices or end vertices.They are likely to retweet.
+
+### Who are the most retweeted users? 
+
 ```{r,error=FALSE, message=FALSE, warning=FALSE}
 # Calculate the in-degree scores
 in_degree <- degree(nw_rtweet, mode = c("in"))
 # Sort the users in descending order of in-degree scores
 in_degree_sort <- sort(in_degree, decreasing = TRUE)
 head(in_degree_sort,10)
-# INTERPRETATION: Users whose posts were retweeted most.
-
-#Authorities: Tweeter accounts with a lot of incoming edges.
-as <- authority_score(nw_rtweet, weights=NA)$vector
-sort(as, decreasing = TRUE)[1:20]
-#Ex-kurs: An edge (a set of two elements) is drawn as a line connecting two vertices, called endpoints or end vertices or end vertices.
-# They are likely to be retweeted.
 ```
 
-### Users with important role in allowing information to pass through network
-Users with higher betweenness has more control over the network.
+Let's identify who are authorities, i.e., Twitter accounts with a lot of incoming edges.
+
+```{r,error=FALSE, message=FALSE, warning=FALSE}
+as <- authority_score(nw_rtweet, weights=NA)$vector
+sort(as, decreasing = TRUE)[1:20]
+```
+
+An edge (a set of two elements) is drawn as a line connecting two vertices, called endpoints or end vertices or end vertices.They are likely to be retweeted.
+
+### Who are users important for connecting with others in network?
+
+Here I aimed to identify users with important role in allowing information to pass through network. Usually, users with higher betweenness has more control over the network.
+
 ```{r,error=FALSE, message=FALSE, warning=FALSE}
 # Calculate the betweenness scores of the network
 betwn_nw <- betweenness(nw_rtweet, directed = TRUE)
@@ -663,9 +684,10 @@ largest_cliques(nw_rtweet) #list only 20 vertices in that cluster
 ```
 
 ### Community detection 
-```{r,error=FALSE, message=FALSE, warning=FALSE}
-#https://rpubs.com/cosmopolitanvan/twitternetworks
 
+Finally, I tried to identify communities, i.e., groups of account that might be interested in engaging in conversation about carbon footprint and co2 emissions.
+
+```{r,error=FALSE, message=FALSE, warning=FALSE}
 #Community detection based on edge betweenness (Newman-Girvan)
 comm <- cluster_edge_betweenness(nw_rtweet)
 sort(sizes(comm), decreasing = T)[1:20]
