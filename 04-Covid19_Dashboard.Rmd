@@ -1,10 +1,11 @@
 ---
 title: "04-Covid19_Dashboard"
+css: style.css
 ---
 
 # COVID 19 Dashboard for Balkan countries*
 
-::: {.infobox data-latex="{download}"}
+::: {.infobox .graph data-latex="{graph}"}
 [Here you go directly to the dashboard](https://mirza-mujanovic.shinyapps.io/covid-19/)
 :::
 
