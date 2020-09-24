@@ -244,8 +244,6 @@ Our data was stored in CSV format.`rtweet` package provides nice function to rea
 # Read in Tweets data
 carbon_tweets <- read_twitter_csv("data/#carbonfootprintOR#greenhouse-tweets.csv", unflatten = T)
 
-# Observe the data
-head(carbon_tweets)
 
 # Delete empty columns
 carbon_tweets <- carbon_tweets[, colSums(is.na(carbon_tweets)) != nrow(carbon_tweets)]
@@ -359,7 +357,7 @@ readRDS("./data/wordnetwork.rds")
 ```
 
 ::: {.infobox data-latex="{download}"}
-[In the case that the plot is not visible, check it out](https://raw.githubusercontent.com/MirzaMujanovic/Mirza_Mujanovic_Portfolio/master/Graphics/wordnetwork.jpg).
+[The plot doesn't load? Check it out here](https://raw.githubusercontent.com/MirzaMujanovic/Mirza_Mujanovic_Portfolio/master/Graphics/wordnetwork.png).
 :::
 
 
@@ -399,9 +397,13 @@ wordcloud(words = review.d$word, freq = review.d$freq,
                colors=brewer.pal(8, "Dark2"), scale=c(8,.3), vfont=c("sans serif","plain"))
 ```
 
-Minimum word frequency: 10
-Number of words in the wordcloud: 200
+::: {.infobox data-latex="{download}"}
+[The plot doesn't load? Check it out here](https://raw.githubusercontent.com/MirzaMujanovic/Mirza_Mujanovic_Portfolio/master/Graphics/wordcloud_twitter.png).
+:::
 
+Minimum word frequency is set to 10, and the wordcloud depicts 200 most frequent terms. 
+
+As you probably already know, Twitter is a place where discussions are going on frequently. Therefore, it made sense to try to reorganize the wordcloud to indicate positive vs negative terms.
 
 ```{r, error=FALSE, message=FALSE, warning=FALSE}
 library(wordcloud) 
@@ -418,11 +420,19 @@ carbon_tweets_words%>%
                    scale = c(4.0,0.25))
 ```
 
+::: {.infobox data-latex="{download}"}
+[The plot doesn't load? Check it out here](https://raw.githubusercontent.com/MirzaMujanovic/Mirza_Mujanovic_Portfolio/master/Graphics/wordcloud_neg_pos_twitter.png).
+:::
 
-## Sentiment analysis:
+
+## Sentiment analysis
+
+Knowing the nature of the carbon footprint related topics and based on the previous assumption about vivid discussions on Twitter, an analysis of emotions in Tweets would help us in opinion mining.
+
 ```{r, error=FALSE, message=FALSE, warning=FALSE}
 # Sentiment analysis 
 sentiment <- carbon_tweets[,3:5] %>% unnest_tokens(output = 'word', input = 'text')
+
 #Add sentiment dataset
 sentiment_dataset <- get_sentiments("afinn")
 sentiment_dataset <- arrange(sentiment_dataset, -value)
@@ -442,18 +452,18 @@ pivot <- sentiment %>%
   group_by(hour) %>%
   summarise(sentiment = mean(value))
 
-#head(pivot)
 
-#plot
+#Plot
 p <- ggplot(pivot[-1,], aes(x = hour, y = sentiment)) + geom_line(group = 1, color="deepskyblue") + geom_point() + theme_minimal() + labs(title = paste0('Average sentiment of tweetings mentioning "',search_term,'"'),x = 'Date', y = 'Sentiment', caption = 'Source: Twitter API')
-
-#p <- ggplot(pivot[-1,], aes(x = hour, y = sentiment)) + geom_line(group = 1) + geom_point() + theme_minimal() + labs(title = paste0('Average sentiment of tweetings mentioning "',search_term,'"'),subtitle = paste0(pivot$hour[2],' - ',pivot$hour[nrow(pivot)],' on ',format(sentiment$created_at[1],'%d %B %Y')),x = 'Date', y = 'Sentiment', caption = 'Source: Twitter API')
-
 
 ggplotly(p)
 ```
+The visualisation above depicts the average sentiment score of Tweets during a day. It seems that at 10:00 and 15:00 Tweets tend to be less positive than at 17:00 for instance. This information helps for scheduling Tweets so that they don't get caught in the "bad moment".
 
-##Visualize the emotions
+## Visualize the emotions
+
+In order to decide what sort of discussion was going on the period of observation, we can visualise the count of words indicating emotions.
+
 ```{r, error=FALSE, message=FALSE, warning=FALSE}
 # Get sentiments using the four different lexicons
 syuzhet <- get_sentiment(carbon_tweets$stripped_text, method="syuzhet")
@@ -473,6 +483,10 @@ plot_ly(emo_sum, x=~emotion, y=~count, type="bar", color=~emotion) %>%
   layout(xaxis=list(title=""), showlegend=FALSE,
          title="Distribution of emotion categories")
 ```
+
+It seems that positivity, trust, anticipation and joy are far more present in Tweets than emotions usually associated with something negative.
+
+Again, we can organize wordcloud so that it does not show just positive or negative words, but rather words associated with corresponding emotion.
 
 ```{r, error=FALSE, message=FALSE, warning=FALSE}
 # Comparison word cloud
@@ -503,11 +517,16 @@ colnames(tdm1) <- colnames(tdm)
 comparison.cloud(tdm1, random.order=FALSE,
                  colors = c("#00B2FF", "red", "#FF0099", "#6600CC", "green", "orange", "blue", "brown"), title.size=1, max.words=250, scale=c(2.5, 0.4),rot.per=0.4)
 ```
-
+::: {.infobox .graph data-latex="{download}"}
+[The plot doesn't load? Check it out here](https://raw.githubusercontent.com/MirzaMujanovic/Mirza_Mujanovic_Portfolio/master/Graphics/wordcloud_neg_pos_twitter.png).
+:::
 
 ## Top retweeted Tweets
 
-### Top retweets (with equal or more than 60 mentions)
+### Top retweets (with equal or more than 60 mentions) {-}
+
+Next task was to identify Tweets that stand out. The graph below helped me to identify days on which certain Tweets were re-tweeted substaintially more than usually. 
+
 ```{r, error=FALSE, message=FALSE, warning=FALSE}
 # Select top retweeted tweets
 selected <- which(carbon_tweets$retweet_count >= 60)
@@ -520,13 +539,18 @@ colors <- rainbow(10)[1:length(selected)]
 points(dates[selected], carbon_tweets$retweet_count[selected],
        pch=19, col=colors)
 ```
+::: {.infobox .graph data-latex="{download}"}
+[The plot doesn't load? Check it out here](https://raw.githubusercontent.com/MirzaMujanovic/Mirza_Mujanovic_Portfolio/master/Graphics/retweeted_1_twitter.png).
+:::
 
+### Interactive graph with retweets' text {-}
 
-### Interactive graph with retweets' text 
+In this interactive graph I manage to identify Tweets with their text that were re-tweeted frequently. If you hover over big sky-blue points you will see the actual text of each Tweet.
+
 ```{r,error=FALSE, message=FALSE, warning=FALSE}
 # Plotly
 carbon_tweets$created_at <-as.POSIXct(strptime(carbon_tweets$created_at, format="%Y-%m-%d"))
-p<-ggplot(carbon_tweets, aes(x=created_at, y=retweet_count, col=retweet_count, size=retweet_count, retweet_text=retweet_text, created_at=created_at, retweet_name=retweet_name))+geom_point() +xlab(label="Date")+ylab(label="Retweet count")+ggtitle(label="Top retweeted tweets(hover over points to see text)")
+p<-ggplot(carbon_tweets, aes(x=created_at, y=retweet_count, col=retweet_count, size=retweet_count, retweet_text=retweet_text, created_at=created_at, retweet_name=retweet_name))+geom_point() +xlab(label="Date")+ylab(label="Retweet count")+ggtitle(label="Top retweeted tweets")
 
 ggplotly(p,tooltip = c("retweet_text","retweet_name"))
 ```
