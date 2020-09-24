@@ -353,11 +353,11 @@ p<- carbon_words_counts %>%
 p
 ```
 
-```{r, error=FALSE, message=FALSE, warning=FALSE,echo=FALSE}
+```{r, error=FALSE, message=FALSE, warning=FALSE,echo=FALSE,out.width="80%",fig.align='center'}
 knitr::include_graphics("Graphics/wordnetwork.PNG")
 ```
 
-::: {.infobox data-latex="{download}"}
+::: {.infobox .graph data-latex="{graph}"}
 [The plot doesn't load? Check it out here](https://raw.githubusercontent.com/MirzaMujanovic/Mirza_Mujanovic_Portfolio/master/Graphics/wordnetwork.png).
 :::
 
@@ -397,7 +397,8 @@ wordcloud(words = review.d$word, freq = review.d$freq,
                random.order=FALSE, rot.per=0.15,
                colors=brewer.pal(8, "Dark2"), scale=c(8,.3), vfont=c("sans serif","plain"))
 ```
-```{r,echo=FALSE}
+
+```{r,echo=FALSE, out.width="80%",fig.align='center'}
 knitr::include_graphics("Graphics/wordcloud_twitter.PNG")
 ```
 
@@ -415,7 +416,7 @@ library(wordcloud)
 library(reshape2)
 par(mar = rep(0, 4))
 set.seed(1234)
-carbon_tweets_words%>%
+p<-carbon_tweets_words%>%
   inner_join(get_sentiments("bing")) %>%
   count(word, sentiment,sort = TRUE) %>%
   acast(word ~ sentiment, value.var = "n", fill = 0) %>%
@@ -423,9 +424,10 @@ carbon_tweets_words%>%
                    max.words = 400,
                    min.freq= 10,
                    scale = c(4.0,0.25))
+p
 ```
 
-```{r,echo=FALSE, out.width="80%"}
+```{r,echo=FALSE, out.width="80%",fig.align='center'}
 library(knitr)
 knitr::include_graphics("Graphics/wordcloud_neg_pos_twitter.PNG")
 ```
@@ -500,7 +502,7 @@ It seems that positivity, trust, anticipation and joy are far more present in Tw
 
 Again, we can organize wordcloud so that it does not show just positive or negative words, but rather words associated with corresponding emotion.
 
-```{r, error=FALSE, message=FALSE, warning=FALSE}
+```{r, error=FALSE, message=FALSE, warning=FALSE, fig.show='hide'}
 # Comparison word cloud
 all = c(
   paste(carbon_tweets$stripped_text[nrc.sentiment$anger > 0], collapse=" "),
@@ -528,11 +530,16 @@ colnames(tdm) = c('anger', 'anticipation', 'disgust', 'fear', 'joy', 'sadness', 
 colnames(tdm1) <- colnames(tdm)
 comparison.cloud(tdm1, random.order=FALSE,
                  colors = c("#00B2FF", "red", "#FF0099", "#6600CC", "green", "orange", "blue", "brown"), title.size=1, max.words=250, scale=c(2.5, 0.4),rot.per=0.4)
+
+```
+
+```{r,echo=FALSE}
+knitr::include_graphics("Graphics/comparison_cloud.PNG")
 ```
 
 
-::: {.infobox data-latex="{download}"}
-[The plot doesn't load? Check it out here](https://raw.githubusercontent.com/MirzaMujanovic/Mirza_Mujanovic_Portfolio/master/Graphics/wordcloud_neg_pos_twitter.PNG).
+::: {.infobox .graph data-latex="{graph}"}
+[The plot doesn't load? Check it out here](https://raw.githubusercontent.com/MirzaMujanovic/Mirza_Mujanovic_Portfolio/master/Graphics/comparison_cloud.PNG).
 :::
 
 
@@ -555,7 +562,7 @@ points(dates[selected], carbon_tweets$retweet_count[selected],
        pch=19, col=colors)
 ```
 
-::: {.infobox data-latex="{download}"}
+::: {.infobox .graph data-latex="{graph}"}
 [The plot doesn't load? Check it out here](https://raw.githubusercontent.com/MirzaMujanovic/Mirza_Mujanovic_Portfolio/master/Graphics/retweeted_1_twitter.PNG).
 :::
 
