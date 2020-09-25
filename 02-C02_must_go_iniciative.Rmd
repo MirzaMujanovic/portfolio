@@ -411,7 +411,7 @@ Minimum word frequency is set to 10, and the wordcloud depicts 200 most frequent
 
 As you probably already know, Twitter is a place where discussions are going on frequently. Therefore, it made sense to try to reorganize the wordcloud to indicate positive vs negative terms.
 
-```{r, error=FALSE, message=FALSE, warning=FALSE, fig.show='hide'}
+```{r, error=FALSE, message=FALSE, warning=FALSE, fig.show='hide',results='hide'}
 library(wordcloud) 
 library(reshape2)
 par(mar = rep(0, 4))
@@ -502,7 +502,7 @@ It seems that positivity, trust, anticipation and joy are far more present in Tw
 
 Again, we can organize wordcloud so that it does not show just positive or negative words, but rather words associated with corresponding emotion.
 
-```{r, error=FALSE, message=FALSE, warning=FALSE, fig.show='hide'}
+```{r, error=FALSE, message=FALSE, warning=FALSE, fig.show='hide', results='hide'}
 # Comparison word cloud
 all = c(
   paste(carbon_tweets$stripped_text[nrc.sentiment$anger > 0], collapse=" "),
