@@ -533,7 +533,7 @@ comparison.cloud(tdm1, random.order=FALSE,
 
 ```
 
-```{r,echo=FALSE}
+```{r,echo=FALSE, out.width="80%", fig.align='center'}
 knitr::include_graphics("Graphics/comparison_cloud.PNG")
 ```
 
@@ -561,6 +561,12 @@ colors <- rainbow(10)[1:length(selected)]
 points(dates[selected], carbon_tweets$retweet_count[selected],
        pch=19, col=colors)
 ```
+
+```{r,echo=FALSE, out.width="80%", fig.align="center"}
+library(knitr)
+knitr::include_graphics("Graphics/retweeted_1_twitter.PNG")
+```
+
 
 ::: {.infobox .graph data-latex="{graph}"}
 [The plot doesn't load? Check it out here](https://raw.githubusercontent.com/MirzaMujanovic/Mirza_Mujanovic_Portfolio/master/Graphics/retweeted_1_twitter.PNG).
