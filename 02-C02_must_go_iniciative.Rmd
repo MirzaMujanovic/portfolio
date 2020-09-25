@@ -353,7 +353,7 @@ p<- carbon_words_counts %>%
 p
 ```
 
-```{r, error=FALSE, message=FALSE, warning=FALSE,echo=FALSE,out.width="80%",fig.align='center'}
+```{r, error=FALSE, message=FALSE, warning=FALSE,echo=FALSE,out.width="90%",fig.align='center'}
 knitr::include_graphics("Graphics/wordnetwork.PNG")
 ```
 
@@ -398,7 +398,7 @@ wordcloud(words = review.d$word, freq = review.d$freq,
                colors=brewer.pal(8, "Dark2"), scale=c(8,.3), vfont=c("sans serif","plain"))
 ```
 
-```{r,echo=FALSE, out.width="80%",fig.align='center'}
+```{r,echo=FALSE, out.width="90%",fig.align='center'}
 knitr::include_graphics("Graphics/wordcloud_twitter.PNG")
 ```
 
