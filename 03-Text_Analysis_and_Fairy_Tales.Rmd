@@ -1,5 +1,8 @@
 ---
 title: "Text Analysis and Novels"
+output:
+  md_document:
+    variant: markdown_github
 ---
 # Text Analysis of Novels
 
@@ -46,7 +49,7 @@ aspern<- iconv(aspern, 'utf-8', 'ascii', sub='')
 ```
 
 
-# Text cleaning
+## Text cleaning
 ```{r}
 awakening.begin <- which(awakening=="THE AWAKENING")[2]
 awakening.end   <- which(awakening=="*****") - 1
@@ -338,14 +341,14 @@ aspern.top10termsPerTopic
 ```
 
 
-# Main points of interpretation:
+## Main points of interpretation:
 
-1. The most common words are names of characters such as Edna, Tita and Mrs.Pontellier.
+* The most common words are names of characters such as Edna, Tita and Mrs.Pontellier.
 
-2. According to the sentiment analysis, Awakening novel is slightly from the beginning to the end. On the other hand, Aspern has a slight drop in the negative  sentiment, but the end is positive.
+* According to the sentiment analysis, Awakening novel is slightly from the beginning to the end. On the other hand, Aspern has a slight drop in the negative  sentiment, but the end is positive.
 
-3.Awakening is as twice as longer text than Aspern.
+* Awakening is as twice as longer text than Aspern.
 
-4.Due to lemmatization could not address the time of speaking (wheater it is told in past or future)
+* Due to lemmatization could not address the time of speaking (wheater it is told in past or future)
 
-5. Words "said",little","think","house","good","like","one","come","back","thought" are the most common.
+* Words "said",little","think","house","good","like","one","come","back","thought" are the most common.
