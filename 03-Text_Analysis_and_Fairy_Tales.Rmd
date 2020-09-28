@@ -1,8 +1,12 @@
 ---
 title: "Text Analysis and Novels"
 output:
-  md_document:
-    variant: markdown_github
+  html_document:
+    toc: yes
+    df_print: paged
+  html_notebook: default
+  pdf_document:
+    toc: yes
 ---
 # Text Analysis of Novels
 
