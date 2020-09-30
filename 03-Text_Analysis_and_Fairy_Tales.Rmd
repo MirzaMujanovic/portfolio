@@ -2,6 +2,7 @@
 title: "Text Analysis and Novels"
 output:
   html_document:
+    keep_md: true
     toc: yes
     df_print: paged
   html_notebook: default
