@@ -1,0 +1,94 @@
+---
+title: "05-Google keywords analysis"
+output:
+  html_document:
+    toc: yes
+    df_print: paged
+  html_notebook: default
+  pdf_document:
+    toc: yes
+---
+
+# Air France Internet Marketing
+
+<div style="text-align: justify"> 
+
+A director of a communications consulting firm "Media Contacts", is faced with the task of optimizing search engine marketing (SEM) for Air France. This was happening at the time when SEM had become an advertising phenomenon, with North American advertisers spending $9.4 billion in the SEM channel, up 62% from 2005. 
+
+The case centers upon Air France’s and Media Contacts’ efforts to find the ideal SEM campaign to provide an optimal amount of ticket sales in response to advertising dollars spent. This optimal search marketing campaign is based on choosing effective allocation of ad dollars across the various search engines, as well as selecting appropriate keywords and bid strategies for placement on the search result page for Internet users.
+
+In determining the optimal strategy, the case presents background information on the airline industry as well as the Internet search options available at the time, including Google, Microsoft MSN, Yahoo!, and Kayak. Additionally, background information is provided on SEM and its associated costs and means of measuring the successfulness of each marketing effort
+
+</div> 
+
+
+## Critical Key Performance Indicators
+
+```{r}
+data <- read.csv("C:/Users/Mirza/Desktop/Air France - Kayak Version.csv")
+data[,28:41]<-NULL
+head(data)
+
+# Search Engine Bid
+data$Search.Engine.Bid
+data$Search.Engine.Bid <- as.numeric(gsub("[\\$]", "", data$Search.Engine.Bid))
+#data$Search.Engine.Bid <- gsub("[.]", ",", data$Search.Engine.Bid)
+colnames(data)[13] <- c("Search_Engine_Bid_$")
+class(data$`Search_Engine_Bid_$`)
+data$`Search_Engine_Bid_$`
+
+# Clicks
+data$Clicks <- as.numeric(gsub("[,]", "", data$Clicks))
+head(data$Clicks)
+
+#Click Charges = ACQ Costs
+data$Click.Charges...ACQ.Costs.
+data$Click.Charges...ACQ.Costs.<-gsub("[\\$]", "", data$Click.Charges...ACQ.Costs.)
+data$Click.Charges...ACQ.Costs.<-gsub("[,]", "", data$Click.Charges...ACQ.Costs.)
+data$Click.Charges...ACQ.Costs.<- as.numeric(data$Click.Charges...ACQ.Costs.)          
+colnames(data)[15] <- c("Click_Charges_ACQ_Costs_$")
+                           
+
+# Avg.Cost.per.Click.=CPC
+data$Avg..Cost.per.Click...CPC.
+data$Avg..Cost.per.Click...CPC.<-as.numeric(gsub("[\\$]", "", data$Avg..Cost.per.Click...CPC.))
+colnames(data)[16]<-c("CPC_$")
+data$`CPC_$`
+class(data$`CPC_$`)
+
+#Impressions
+data$Impressions
+data$Impressions<-as.numeric(gsub("[,]", "", data$Impressions))
+data$Impressions
+
+#CTR
+data$CTR
+data$CTR<-as.numeric(sub("%","",data$CTR))/100
+data$CTR
+
+#CR
+data$CR
+data$CR<-as.numeric(sub("%","",data$CR))/100
+data$CR
+
+#Total.Cost.Trans=CPO
+data$Total.Cost..Trans....CPO.
+data$Total.Cost..Trans....CPO.<-gsub("[\\$,]", "", data$Total.Cost..Trans....CPO.)
+data$Total.Cost..Trans....CPO.<-as.numeric(data$Total.Cost..Trans....CPO.)
+colnames(data)[21]<-"CPO"
+class(data$CPO)
+
+data[,14:27] <- lapply(data[,14:27], as.factor)
+data$Avg..Cost.per.Click...CPC.<-as.factor(data$Avg..Cost.per.Click...CPC.)
+data$Avg..Cost.per.Click...CPC.<-as.numeric(data$Avg..Cost.per.Click...CPC.)
+
+```
+
+```{r}
+library(dplyr)
+library(tidyverse)
+data %>%
+  group_by(Publisher=Publisher.Name) %>%
+  summarise(Avg.CPC=round(mean(`CPC_$`),2))
+```
+
