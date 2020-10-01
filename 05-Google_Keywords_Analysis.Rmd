@@ -84,7 +84,7 @@ data$Avg..Cost.per.Click...CPC.<-as.numeric(data$Avg..Cost.per.Click...CPC.)
 
 ```
 
-```{r}
+```{r,error=FALSE,warning=FALSE,message=FALSE}
 library(dplyr)
 library(tidyverse)
 data %>%
