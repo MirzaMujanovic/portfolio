@@ -319,7 +319,7 @@ Generally, no major surprises regarding the most frequent words. It can be noted
 
 Knowing that Tweets are short messages, I decided to inspect word network in order to possibly observe some unusual word combinations. The word network is made based on bi-grams. Basically, based on the number of times two words shows up together.
 
-```{r, error=FALSE, message=FALSE, warning=FALSE, fig.show='hide'}
+```{r, error=FALSE, message=FALSE, warning=FALSE}
 # Remove punctuation, convert to lowercase, add id for each tweet!
 carbon_tweets_paired_words <- carbon_tweets %>%
   dplyr::select(stripped_text) %>%
@@ -353,7 +353,7 @@ p<- carbon_words_counts %>%
 p
 ```
 
-```{r, error=FALSE, message=FALSE, warning=FALSE,echo=FALSE,out.width="90%",fig.align='center'}
+```{r,error=FALSE, message=FALSE, warning=FALSE,echo=FALSE,out.width="90%",fig.align='center'}
 knitr::include_graphics("Graphics/wordnetwork.PNG")
 ```
 
