@@ -353,7 +353,7 @@ p<- carbon_words_counts %>%
 p
 ```
 
-```{r,error=FALSE, message=FALSE, warning=FALSE,echo=FALSE,out.width="90%",fig.align='center'}
+```{r,eval=FALSE, error=FALSE, message=FALSE, warning=FALSE,echo=FALSE,out.width="90%",fig.align='center'}
 knitr::include_graphics("Graphics/wordnetwork.PNG")
 ```
 
