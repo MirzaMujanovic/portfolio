@@ -9,8 +9,18 @@ output:
   pdf_document:
     toc: yes
 ---
+
 # Text Analysis of Novels
 
+```{r,fig.show='hold', out.width = "50%", fig.align = "center",error=FALSE,message=FALSE,warning=FALSE,echo=FALSE,fig.cap="Novels used in analysis"}
+library(cowplot)
+library(ggplot2)
+ggdraw() + draw_image("Graphics/aspern.jpg")
+ggdraw() + draw_image("Graphics/awakening.jpg")
+
+```
+
+Although I like reading books, unfortunately I don't find much time to read. However, I found that NLP is giving an opportunity to learn more about novels without reading it. My idea here is to try to learn as much as possible about two novels, *The Aspern Papers* and *Awakening*.
 
 ```{r, echo=FALSE,error=FALSE,warning=FALSE,message=FALSE}
 options(warn = -1)
@@ -55,34 +65,62 @@ aspern<- iconv(aspern, 'utf-8', 'ascii', sub='')
 
 
 ## Text cleaning
+
+Cleaning headers of the two novels.
+
 ```{r}
+# Awakening: cleaning headers
 awakening.begin <- which(awakening=="THE AWAKENING")[2]
 awakening.end   <- which(awakening=="*****") - 1
 awakening.v<- awakening[awakening.begin:awakening.end]
+```
 
+```{r}
+# Aspern: cleaning headers
 aspern.begin <- which(aspern=="Macmillan and Co., 1888.")+1
 aspern.end   <- which(aspern=="End of the Project Gutenberg EBook of The Aspern Papers, by Henry James") - 1
 aspern.v <- aspern[aspern.begin:aspern.end]
+head(aspern.v)
 ```
 
-## Awakening:
+## Awakening
 
-1. Cutting in chapters and corpus creation
+Cutting in chapters and corpus creation:
 
 ```{r}
+# Cutting the Awakening in chapters
 awakening.v <- gsub("^I*(X|V)*I*$", "@@@", awakening.v)
 awakening.string <- paste(awakening.v, collapse = " ")
-awakening.chapters <- strsplit(awakening.string, "@@@ ") 
+awakening.chapters <- strsplit(awakening.string, "@@@ ")
+
+# Cutting the Aspern in chapters
+aspern.v <- gsub("^I*(X|V)*I*$", "@@@", aspern.v)
+aspern.string <- paste(aspern.v, collapse = " ")
+aspern.chapters <- strsplit(aspern.string, "@@@ ") 
+
+```
+
+
+```{r}
+# Awakening corpus creation
 awakening.df <- as.data.frame(awakening.chapters, stringsAsFactors = FALSE)
 awakening.df <-awakening.df[2:38,1]
 awakening.df <- as.data.frame(awakening.df)
 colnames(awakening.df) <- "chapters"    
 awakening.docs <- Corpus(VectorSource(awakening.df$chapters))
+
+# Aspern corpus creation
+aspern.df <- as.data.frame(aspern.chapters, stringsAsFactors = FALSE)
+aspern.df <-aspern.df[2:38,1]
+aspern.df <- as.data.frame(aspern.df)
+colnames(aspern.df) <- "chapters"
+aspern.docs <- Corpus(VectorSource(aspern.df$chapters))
 ```
 
-2. Text preprocessing
+Text pre-processing: removing unnecessary simbols and signs, converting letters to lower case, removing numbers, punctuation and white space.
 
 ```{r,error=FALSE, warning=FALSE, message=FALSE}
+# Awakening: Text pre-processing
 toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
 awakening.docs <- tm_map(awakening.docs, toSpace, "/")
 awakening.docs <- tm_map(awakening.docs, toSpace, "@")
@@ -92,18 +130,40 @@ awakening.docs <- tm_map(awakening.docs, removeNumbers)
 awakening.docs <- tm_map(awakening.docs, removeWords, stopwords("english"))
 awakening.docs <- tm_map(awakening.docs, removePunctuation)
 awakening.docs <- tm_map(awakening.docs, stripWhitespace)
+
+# Aspern: Text pre-processing
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+aspern.docs <- tm_map(aspern.docs, toSpace, "/")
+aspern.docs <- tm_map(aspern.docs, toSpace, "@")
+aspern.docs <- tm_map(aspern.docs, toSpace, "\\|")
+aspern.docs <- tm_map(aspern.docs, content_transformer(tolower))
+aspern.docs <- tm_map(aspern.docs, removeNumbers)
+aspern.docs <- tm_map(aspern.docs, removeWords, stopwords("english"))
+aspern.docs <- tm_map(aspern.docs, removePunctuation)
+aspern.docs <- tm_map(aspern.docs, stripWhitespace)
 ```
 
-3. WordCloud preparation and wordcloud graph
+Creation of a WordCloud:
 
-```{r,error=FALSE, warning=FALSE, message=FALSE}
+```{r,error=FALSE, warning=FALSE, message=FALSE,results='hide'}
+# Awakening: Wordcloud
 awakening.dtm <- DocumentTermMatrix(awakening.docs, control=list(weighting=weightTf))
 awakening.m <- as.matrix(t(awakening.dtm))
 awakening_v <- sort(rowSums(awakening.m),decreasing=TRUE)
 awakening.d <- data.frame(word = names(awakening_v),freq=awakening_v)
-head(awakening.d, 10)
 set.seed(1234)
 wordcloud(words = awakening.d$word, freq = awakening.d$freq, min.freq = 1,
+          max.words=200, random.order=FALSE, rot.per=0.35,
+          colors=brewer.pal(8, "Dark2"))
+
+# Aspern: Wordcloud
+aspern.dtm <- DocumentTermMatrix(aspern.docs, control=list(weighting=weightTf))
+aspern.m <- as.matrix(t(aspern.dtm))
+aspern_v <- sort(rowSums(aspern.m),decreasing=TRUE)
+aspern.d <- data.frame(word = names(aspern_v),freq=aspern_v)
+set.seed(1234)
+par(mar = rep(0, 4))
+wordcloud(words = aspern.d$word, freq = aspern.d$freq, min.freq = 1,
           max.words=200, random.order=FALSE, rot.per=0.35,
           colors=brewer.pal(8, "Dark2"))
 ```
@@ -113,7 +173,7 @@ wordcloud(words = awakening.d$word, freq = awakening.d$freq, min.freq = 1,
 
 1. Cutting in chapters and corpus creation
 
-```{r}
+```{r,eval=FALSE,echo=FALSE}
 aspern.v <- gsub("^I*(X|V)*I*$", "@@@", aspern.v)
 aspern.string <- paste(aspern.v, collapse = " ")
 aspern.chapters <- strsplit(aspern.string, "@@@ ") 
@@ -122,13 +182,12 @@ aspern.df <-aspern.df[2:38,1]
 aspern.df <- as.data.frame(aspern.df)
 colnames(aspern.df) <- "chapters"
 aspern.docs <- Corpus(VectorSource(aspern.df$chapters))
-
 ```
 
 
 2. Text preprocessing
 
-```{r,error=FALSE, warning=FALSE, message=FALSE}
+```{r,error=FALSE, warning=FALSE, message=FALSE, eval=FALSE,echo=FALSE}
 toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
 aspern.docs <- tm_map(aspern.docs, toSpace, "/")
 aspern.docs <- tm_map(aspern.docs, toSpace, "@")
@@ -143,7 +202,7 @@ aspern.docs <- tm_map(aspern.docs, stripWhitespace)
 
 3. WordCloud preparation and wordcloud graph
 
-```{r,error=FALSE, warning=FALSE, message=FALSE}
+```{r,error=FALSE, warning=FALSE, message=FALSE,eval=FALSE,echo=FALSE}
 aspern.dtm <- DocumentTermMatrix(aspern.docs, control=list(weighting=weightTf))
 aspern.m <- as.matrix(t(aspern.dtm))
 aspern_v <- sort(rowSums(aspern.m),decreasing=TRUE)
@@ -158,12 +217,13 @@ wordcloud(words = aspern.d$word, freq = aspern.d$freq, min.freq = 1,
 
 ## Commonality cloud and Comparison cloud
 
-1. Creation of a corpus out of the both texts
+Creation of a corpus out of the both texts:
+
 ```{r}
 cc.docs <- Corpus(VectorSource(c(awakening.string,aspern.string)))
 ```
 
-2. Text preprocessing
+Text pre-processing of the new corpus:
 
 ```{r}
 toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
@@ -177,19 +237,24 @@ cc.docs <- tm_map(cc.docs, removePunctuation)
 cc.docs <- tm_map(cc.docs, stripWhitespace)
 
 ```
-
-3.Comparison and Commonality cloud
+Comparison and Commonality cloud:
 
 ```{r,error=FALSE, warning=FALSE, message=FALSE}
 cc.dtm <- DocumentTermMatrix(cc.docs)
 cc.m <- as.matrix(t(cc.dtm))
 colnames(cc.m)<- c("Awakening","Aspern")
+#Comparison cloud
+par(mar = rep(0, 4))
 comparison.cloud(cc.m,max.words = 100,min.frrandom.order=FALSE)
+# Commonality cloud
+par(mar = rep(0, 4))
 commonality.cloud(cc.m,max.words = 100,colors = "steelblue1",min.frrandom.order=FALSE)
 ```
 
 
 ## Sentiment timeline
+
+Loading in relevant lexicons:
 
 ```{r, echo=FALSE, error=FALSE, message=FALSE, warning=FALSE}
 library(tidytext)
@@ -207,7 +272,7 @@ nrc <- get_sentiment_dictionary('nrc', language = "english")
 ```
 
 
-1.Awakening
+Polarity timeline of Awakening:
 
 ```{r,error=FALSE, warning=FALSE, message=FALSE}
 sent.awakening <- readLines("http://www.gutenberg.org/files/160/160-0.txt")
@@ -241,7 +306,7 @@ awakening.smooth <- ggplot(awakening.sentiment, aes(index, polarity))
 
 ```
 
-2.Aspern
+Polarity timeline of Aspern:
 
 ```{r,error=FALSE, warning=FALSE, message=FALSE}
 sent.aspern <- readLines("http://www.gutenberg.org/files/211/211-0.txt")
@@ -273,9 +338,8 @@ aspern.smooth <- ggplot(aspern.sentiment, aes(index, polarity))
 (p3<-aspern.smooth + stat_smooth())
 ```
 
-3. Merging Aspern and Awakening
 
-```{r}
+```{r,message=FALSE,error=FALSE,warning=FALSE}
 g2 <- ggplotGrob(p2)
 g3 <- ggplotGrob(p3)
 g <- rbind(g2, g3, size = "first")
@@ -286,13 +350,12 @@ grid.draw(g)
 ```
 
 
-## Topic Modelling 
+## Topic Modelling: LDA
 
 Pick up 5 topics and try to make sense of the topics giving a label to them.
 
-1.Awakening
-
 ```{r,error=FALSE, warning=FALSE, message=FALSE}
+# Awakening
 top.mod.awakening.dtm <- DocumentTermMatrix(awakening.corpus, control = list(weighting=weightTf))
 burnin = 1000
 iter = 1000
@@ -307,7 +370,6 @@ top.mod.awakening.lda.topics <- as.matrix(topics(top.mod.awakening.lda_basic.mod
 top.mod.awakening.lda.terms <- as.matrix(terms(top.mod.awakening.lda_basic.model, 10))
 top.mod.awakening.lda.terms<- iconv(top.mod.awakening.lda.terms, 'utf-8', 'ascii', sub='')
 #top.mod.awakening.lda.terms
-
 awakening.top10termsPerTopic <- terms(top.mod.awakening.lda_basic.model, 10)
 awakening.top10termsPerTopic <- iconv(top.mod.awakening.lda.terms, 'utf-8', 'ascii', sub='')
 #awakening.top10termsPerTopic
@@ -317,9 +379,8 @@ awakening.topicNames <- apply(awakening.top10termsPerTopic, 2, paste, collapse="
 #awakening.topicNames
 ```
 
-2. Aspern
-
 ```{r,error=FALSE, warning=FALSE, message=FALSE}
+# Aspern
 top.mod.aspern.dtm <- DocumentTermMatrix(aspern.corpus, control = list(weighting=weightTf))
 burnin = 1000
 iter = 1000
@@ -345,8 +406,7 @@ aspern.top10termsPerTopic
 
 ```
 
-
-## Main points of interpretation:
+## Main points of interpretation
 
 * The most common words are names of characters such as Edna, Tita and Mrs.Pontellier.
 
