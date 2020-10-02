@@ -190,6 +190,7 @@ cc.docs <- tm_map(cc.docs, removePunctuation)
 cc.docs <- tm_map(cc.docs, stripWhitespace)
 
 ```
+
 Comparison and Commonality cloud:
 
 ```{r,error=FALSE, warning=FALSE, message=FALSE}
