@@ -168,53 +168,6 @@ wordcloud(words = aspern.d$word, freq = aspern.d$freq, min.freq = 1,
           colors=brewer.pal(8, "Dark2"))
 ```
 
-
-## Aspern
-
-1. Cutting in chapters and corpus creation
-
-```{r,eval=FALSE,echo=FALSE}
-aspern.v <- gsub("^I*(X|V)*I*$", "@@@", aspern.v)
-aspern.string <- paste(aspern.v, collapse = " ")
-aspern.chapters <- strsplit(aspern.string, "@@@ ") 
-aspern.df <- as.data.frame(aspern.chapters, stringsAsFactors = FALSE)
-aspern.df <-aspern.df[2:38,1]
-aspern.df <- as.data.frame(aspern.df)
-colnames(aspern.df) <- "chapters"
-aspern.docs <- Corpus(VectorSource(aspern.df$chapters))
-```
-
-
-2. Text preprocessing
-
-```{r,error=FALSE, warning=FALSE, message=FALSE, eval=FALSE,echo=FALSE}
-toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
-aspern.docs <- tm_map(aspern.docs, toSpace, "/")
-aspern.docs <- tm_map(aspern.docs, toSpace, "@")
-aspern.docs <- tm_map(aspern.docs, toSpace, "\\|")
-aspern.docs <- tm_map(aspern.docs, content_transformer(tolower))
-aspern.docs <- tm_map(aspern.docs, removeNumbers)
-aspern.docs <- tm_map(aspern.docs, removeWords, stopwords("english"))
-aspern.docs <- tm_map(aspern.docs, removePunctuation)
-aspern.docs <- tm_map(aspern.docs, stripWhitespace)
-
-```
-
-3. WordCloud preparation and wordcloud graph
-
-```{r,error=FALSE, warning=FALSE, message=FALSE,eval=FALSE,echo=FALSE}
-aspern.dtm <- DocumentTermMatrix(aspern.docs, control=list(weighting=weightTf))
-aspern.m <- as.matrix(t(aspern.dtm))
-aspern_v <- sort(rowSums(aspern.m),decreasing=TRUE)
-aspern.d <- data.frame(word = names(aspern_v),freq=aspern_v)
-head(aspern.d, 10)
-set.seed(1234)
-wordcloud(words = aspern.d$word, freq = aspern.d$freq, min.freq = 1,
-          max.words=200, random.order=FALSE, rot.per=0.35,
-          colors=brewer.pal(8, "Dark2"))
-
-```
-
 ## Commonality cloud and Comparison cloud
 
 Creation of a corpus out of the both texts:
