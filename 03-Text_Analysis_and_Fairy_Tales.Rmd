@@ -209,7 +209,7 @@ commonality.cloud(cc.m,max.words = 100,colors = "steelblue1",min.frrandom.order=
 
 Loading in relevant lexicons:
 
-```{r, echo=FALSE, error=FALSE, message=FALSE, warning=FALSE}
+```{r, error=FALSE, message=FALSE, warning=FALSE}
 library(tidytext)
 library(dplyr)
 library(tidyr)
