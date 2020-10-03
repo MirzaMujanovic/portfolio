@@ -1,5 +1,13 @@
 ---
 title: "04-Covid19_Dashboard"
+output:
+  html_document:
+    keep_md: true
+    toc: yes
+    df_print: paged
+  html_notebook: default
+  pdf_document:
+    toc: yes
 css: style.css
 ---
 
@@ -56,35 +64,37 @@ covid19_confirmed_git <-"https://raw.githubusercontent.com/CSSEGISandData/COVID-
 covid19_confirmed_git <- read_csv(url(covid19_confirmed_git))
 
 # Worldometer
+## Covid
 codivid19_all <- "https://www.worldometers.info/coronavirus/"
 main_table <- codivid19_all%>%
   xml2::read_html()%>%
   html_nodes(xpath='//*[@id="main_table_countries_today"]') %>%
   html_table()
 main_table <- as.data.frame(main_table)
+
+
 ```
 
 
-```{r, error=FALSE,message=FALSE,warning=FALSE,echo=FALSE}
+```{r, error=FALSE,message=FALSE,warning=FALSE,echo=TRUE}
 ## Filtering data for Balkan countries (plus Italy and Austria)
 balkan <- filter(main_table,Country.Other == "Bosnia and Herzegovina" | Country.Other == "Italy" | Country.Other == "Croatia" | Country.Other == "Serbia"  | Country.Other == "Montenegro"  | Country.Other == "Slovenia"  | Country.Other == "Austria"  | Country.Other == "North Macedonia" | Country.Other == "Greece")
-balkan$TotalCases<-gsub(",", "", balkan$TotalCases)
-balkan$NewCases<-gsub(",", "", balkan$NewCases)
-balkan$TotalRecovered<-gsub(",", "", balkan$TotalRecovered)
-balkan$TotalDeaths<-gsub(",", "", balkan$TotalDeaths)
-balkan$TotalRecovered <- as.numeric(balkan$TotalRecovered)
-balkan$TotalDeaths <- as.numeric(balkan$TotalDeaths)
-balkan$TotalCases<-as.numeric(balkan$TotalCases)
-balkan$NewCases <- as.numeric(balkan$NewCases)
-
-
 ```
+
+
+```{r, error=FALSE,message=FALSE,warning=FALSE,echo=TRUE}
+# Removing comma from numbers
+balkan[c("TotalRecovered","TotalDeaths","TotalCases","NewCases","ActiveCases","Tot.Cases.1M.pop")] <- lapply(balkan[c("TotalRecovered","TotalDeaths","TotalCases","NewCases","ActiveCases","Tot.Cases.1M.pop")], function(x) gsub(",","",x))
+# Turning columns to numeric
+balkan[c("TotalRecovered","TotalDeaths","TotalCases","NewCases","ActiveCases","Tot.Cases.1M.pop")] <- lapply(balkan[c("TotalRecovered","TotalDeaths","TotalCases","NewCases","ActiveCases","Tot.Cases.1M.pop")], as.numeric)
+```
+
 
 ## Curve of confirmed cases 
 
 The graph shows the number of confirmed cases by the last date shown.Updates daily at around 23:59 UTC.
 
-```{r,warning=FALSE,error=FALSE,message=FALSE,fig.width=8,echo=FALSE}
+```{r,warning=FALSE,error=FALSE,message=FALSE,fig.width=8,echo=TRUE}
 # Curve of confirmed cases----
 columns <- colnames(covid19_confirmed_git)[5:ncol(covid19_confirmed_git)]
 final <-as.data.frame(pivot_longer(covid19_confirmed_git, cols = columns, names_to = "Year", values_to = "Confirmed"))
@@ -106,11 +116,51 @@ p <-ggplot(filter, aes(x = Year, y = Confirmed)) +
 ggplotly(p)
 ```
 
+## Total cases per 1 million people
+
+```{r,error=FALSE,message=FALSE,warning=FALSE}
+tot_cases_1m <- melt(balkan[,c("Tot.Cases.1M.pop","Country.Other")])
+head(tot_cases_1m)
+p<-ggplot(tot_cases_1m, aes(x=Country.Other,y=value,fill=Country.Other)) +
+  geom_bar(stat = "identity")+
+  scale_fill_manual(name="Country",
+                    values = c("#E41A1C",
+                               "#377EB8",
+                               "#4DAF4A",
+                               "#984EA3",
+                               "#FF7F00",
+                               "#FFFF33",
+                               "#A65628",
+                               "#F781BF",
+                               "#999999"),
+                    labels=c("Austria",
+                             "Bosnia and Herzegovina",
+                             "Croatia",
+                             "Greece",
+                             "Italy",
+                             "Montenegro",
+                             "N.Macedonia",
+                             "Serbia",
+                             "Slovenia"))+
+  labs(x="",y="Total Cases per 1M people", title = "Total Cases per 1m people - Currently")+
+  theme(legend.title = element_text(size = 8),
+        axis.text.x = element_blank(),
+        legend.text = element_text(size = 8),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "grey"))
+
+ggplotly(p)
+
+```
+
+
+
+
 ## Deaths vs Recovered 
 
 The bar chart shows the total number of recovered people in comparison to the total number of death cases. Updates daily at around 23:59 UTC.
 
-```{r, error=FALSE,message=FALSE,warning=FALSE,echo=FALSE}
+```{r, error=FALSE,message=FALSE,warning=FALSE,echo=TRUE}
 options(scipen = 9999)
 p <- ggplot(balkan) +
   geom_segment( aes(x=Country.Other, xend=Country.Other, y=TotalRecovered, yend=TotalDeaths), color="grey") +
@@ -129,26 +179,31 @@ p <- ggplot(balkan) +
 ggplotly(p)
 ```
 
-## Total cases vs new cases
+## Active cases vs New cases
 
-The bar chart shows the total number of cases in comparison to the number of new cases being constantly reported.
+The bar chart shows the number of  active cases in comparison to the number of new cases being constantly reported.
 
-```{r, error=FALSE,message=FALSE,warning=FALSE,echo=FALSE}
-# Total cases vs new cases
-total_and_new <- melt(balkan[,c("TotalCases","NewCases","Country.Other")])
-p <- ggplot(total_and_new, aes(x=Country.Other, y=value, fill=variable)) +
+```{r, error=FALSE,message=FALSE,warning=FALSE,echo=TRUE}
+# Active cases vs New cases
+active_and_new <- melt(balkan[,c("ActiveCases","NewCases","Country.Other")])
+p <- ggplot(active_and_new, aes(x=Country.Other, y=value, fill=variable)) +
   geom_bar(stat='identity', position='dodge', color="black" ,aes(text=paste("Country: ",Country.Other, "\n", variable,":",value, sep=""))) +
   scale_fill_brewer(palette = "Paired")+
   scale_y_continuous(labels=comma, trans = "log10") +
   ylab("Number of cases")+
   xlab("")+
-  ggtitle(label = "Total cases vs New cases") +
   theme_minimal()+
-  labs(title = "",fill="" )+
+  labs(title = "",fill="")+
   coord_flip()
   
 ggplotly(p, tooltip = "text")
 ```
+
+
+
+
+
+
 
 ## Hospitalization
 
