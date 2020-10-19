@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>5 Churn prediction with Random Forest | index.split</title>
+  <meta name="description" content="" />
+  <meta name="generator" content="bookdown 0.20 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="5 Churn prediction with Random Forest | index.split" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="5 Churn prediction with Random Forest | index.split" />
+  
+  
+  
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="covid-19-dashboard-for-balkan-countries.html"/>
+
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.9.2.1/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.1.0.1/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.1.0.1/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-1.52.2/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-1.52.2/plotly-latest.min.js"></script>
+
+
+<style type="text/css">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./"><B>Mirza Mujanovic Portfolio</B></a></li>
+
+<li class="divider"></li>
+<li class="part"><span><b>I About me</b></span></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Who I am?</a></li>
+<li class="part"><span><b>II My work</b></span></li>
+<li class="chapter" data-level="1" data-path="emotions-in-online-customer-reviews.html"><a href="emotions-in-online-customer-reviews.html"><i class="fa fa-check"></i><b>1</b> Emotions In Online Customer Reviews</a><ul>
+<li class="chapter" data-level="" data-path="emotions-in-online-customer-reviews.html"><a href="emotions-in-online-customer-reviews.html#what-to-expect-in-this-article"><i class="fa fa-check"></i>What to expect in this article?</a></li>
+<li class="chapter" data-level="1.1" data-path="emotions-in-online-customer-reviews.html"><a href="emotions-in-online-customer-reviews.html#dictionaries-for-nlp"><i class="fa fa-check"></i><b>1.1</b> Dictionaries for NLP</a></li>
+<li class="chapter" data-level="1.2" data-path="emotions-in-online-customer-reviews.html"><a href="emotions-in-online-customer-reviews.html#data-set"><i class="fa fa-check"></i><b>1.2</b> Data set</a></li>
+<li class="chapter" data-level="1.3" data-path="emotions-in-online-customer-reviews.html"><a href="emotions-in-online-customer-reviews.html#corpus-cleaning"><i class="fa fa-check"></i><b>1.3</b> Corpus cleaning</a></li>
+<li class="chapter" data-level="1.4" data-path="emotions-in-online-customer-reviews.html"><a href="emotions-in-online-customer-reviews.html#visualisations-of-terms-frequency"><i class="fa fa-check"></i><b>1.4</b> Visualisations of terms frequency</a><ul>
+<li class="chapter" data-level="1.4.1" data-path="emotions-in-online-customer-reviews.html"><a href="emotions-in-online-customer-reviews.html#bar-charts-with-the-most-frequent-terms"><i class="fa fa-check"></i><b>1.4.1</b> Bar charts with the most frequent terms</a></li>
+<li class="chapter" data-level="1.4.2" data-path="emotions-in-online-customer-reviews.html"><a href="emotions-in-online-customer-reviews.html#wordcloud-with-the-most-frequent-terms"><i class="fa fa-check"></i><b>1.4.2</b> Wordcloud with the most frequent terms</a></li>
+<li class="chapter" data-level="1.4.3" data-path="emotions-in-online-customer-reviews.html"><a href="emotions-in-online-customer-reviews.html#the-most-frequent-terms-indicating-emotions"><i class="fa fa-check"></i><b>1.4.3</b> The most frequent terms indicating emotions</a></li>
+</ul></li>
+<li class="chapter" data-level="1.5" data-path="emotions-in-online-customer-reviews.html"><a href="emotions-in-online-customer-reviews.html#sentiment-analysis"><i class="fa fa-check"></i><b>1.5</b> Sentiment analysis</a><ul>
+<li class="chapter" data-level="1.5.1" data-path="emotions-in-online-customer-reviews.html"><a href="emotions-in-online-customer-reviews.html#polarity-timeline"><i class="fa fa-check"></i><b>1.5.1</b> Polarity timeline</a></li>
+<li class="chapter" data-level="1.5.2" data-path="emotions-in-online-customer-reviews.html"><a href="emotions-in-online-customer-reviews.html#analysis-on-sentence-level"><i class="fa fa-check"></i><b>1.5.2</b> Analysis on sentence-level</a></li>
+<li class="chapter" data-level="1.5.3" data-path="emotions-in-online-customer-reviews.html"><a href="emotions-in-online-customer-reviews.html#what-are-the-most-emotional-reviews"><i class="fa fa-check"></i><b>1.5.3</b> What are the most emotional reviews?</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html"><i class="fa fa-check"></i><b>2</b> Twitter Analysis for CO2mustGo initiative</a><ul>
+<li class="chapter" data-level="" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#what-is-co2mustgo"><i class="fa fa-check"></i>What is CO2mustGO?</a></li>
+<li class="chapter" data-level="2.1" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#sankey-diagram-energy-production-capacity"><i class="fa fa-check"></i><b>2.1</b> Sankey diagram: Energy production capacity</a></li>
+<li class="chapter" data-level="" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#twitter-data-analysis"><i class="fa fa-check"></i>Twitter data analysis</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#data"><i class="fa fa-check"></i><b>2.1.1</b> Data</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#text-cleaning-and-preprocessing"><i class="fa fa-check"></i><b>2.2</b> Text cleaning and preprocessing</a></li>
+<li class="chapter" data-level="2.3" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#tweets-distribution"><i class="fa fa-check"></i><b>2.3</b> Tweets distribution</a></li>
+<li class="chapter" data-level="2.4" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#word-frequency-in-tweets"><i class="fa fa-check"></i><b>2.4</b> Word Frequency in Tweets</a></li>
+<li class="chapter" data-level="2.5" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#word-network-in-tweets"><i class="fa fa-check"></i><b>2.5</b> Word Network in Tweets</a></li>
+<li class="chapter" data-level="2.6" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#wordcloud"><i class="fa fa-check"></i><b>2.6</b> Wordcloud</a></li>
+<li class="chapter" data-level="2.7" data-path="emotions-in-online-customer-reviews.html"><a href="emotions-in-online-customer-reviews.html#sentiment-analysis"><i class="fa fa-check"></i><b>2.7</b> Sentiment analysis</a></li>
+<li class="chapter" data-level="2.8" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#visualize-the-emotions"><i class="fa fa-check"></i><b>2.8</b> Visualize the emotions</a></li>
+<li class="chapter" data-level="2.9" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#top-retweeted-tweets"><i class="fa fa-check"></i><b>2.9</b> Top retweeted Tweets</a><ul>
+<li class="chapter" data-level="" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#top-retweets-with-equal-or-more-than-60-mentions"><i class="fa fa-check"></i>Top retweets (with equal or more than 60 mentions)</a></li>
+<li class="chapter" data-level="" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#interactive-graph-with-retweets-text"><i class="fa fa-check"></i>Interactive graph with retweets’ text</a></li>
+</ul></li>
+<li class="chapter" data-level="2.10" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#network-of-retweets"><i class="fa fa-check"></i><b>2.10</b> Network of retweets</a><ul>
+<li class="chapter" data-level="2.10.1" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#where-do-people-tweet-the-most"><i class="fa fa-check"></i><b>2.10.1</b> Where do people tweet the most?</a></li>
+<li class="chapter" data-level="2.10.2" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#who-are-the-users-who-retweet-the-most"><i class="fa fa-check"></i><b>2.10.2</b> Who are the users who retweet the most?</a></li>
+<li class="chapter" data-level="2.10.3" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#who-are-the-most-retweeted-users"><i class="fa fa-check"></i><b>2.10.3</b> Who are the most retweeted users?</a></li>
+<li class="chapter" data-level="2.10.4" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#who-are-users-important-for-connecting-with-others-in-network"><i class="fa fa-check"></i><b>2.10.4</b> Who are users important for connecting with others in network?</a></li>
+<li class="chapter" data-level="2.10.5" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#clustering"><i class="fa fa-check"></i><b>2.10.5</b> Clustering</a></li>
+<li class="chapter" data-level="2.10.6" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#community-detection"><i class="fa fa-check"></i><b>2.10.6</b> Community detection</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="text-analysis-of-novels.html"><a href="text-analysis-of-novels.html"><i class="fa fa-check"></i><b>3</b> Text Analysis of Novels</a><ul>
+<li class="chapter" data-level="3.1" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#data"><i class="fa fa-check"></i><b>3.1</b> Data</a></li>
+<li class="chapter" data-level="3.2" data-path="text-analysis-of-novels.html"><a href="text-analysis-of-novels.html#text-cleaning"><i class="fa fa-check"></i><b>3.2</b> Text cleaning</a></li>
+<li class="chapter" data-level="3.3" data-path="text-analysis-of-novels.html"><a href="text-analysis-of-novels.html#awakening"><i class="fa fa-check"></i><b>3.3</b> Awakening</a></li>
+<li class="chapter" data-level="3.4" data-path="text-analysis-of-novels.html"><a href="text-analysis-of-novels.html#commonality-cloud-and-comparison-cloud"><i class="fa fa-check"></i><b>3.4</b> Commonality cloud and Comparison cloud</a></li>
+<li class="chapter" data-level="3.5" data-path="text-analysis-of-novels.html"><a href="text-analysis-of-novels.html#sentiment-timeline"><i class="fa fa-check"></i><b>3.5</b> Sentiment timeline</a></li>
+<li class="chapter" data-level="3.6" data-path="text-analysis-of-novels.html"><a href="text-analysis-of-novels.html#topic-modelling-lda"><i class="fa fa-check"></i><b>3.6</b> Topic Modelling: LDA</a></li>
+<li class="chapter" data-level="3.7" data-path="text-analysis-of-novels.html"><a href="text-analysis-of-novels.html#main-points-of-interpretation"><i class="fa fa-check"></i><b>3.7</b> Main points of interpretation</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="covid-19-dashboard-for-balkan-countries.html"><a href="covid-19-dashboard-for-balkan-countries.html"><i class="fa fa-check"></i><b>4</b> COVID 19 Dashboard for Balkan countries*</a><ul>
+<li class="chapter" data-level="4.1" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#data"><i class="fa fa-check"></i><b>4.1</b> Data</a></li>
+<li class="chapter" data-level="4.2" data-path="covid-19-dashboard-for-balkan-countries.html"><a href="covid-19-dashboard-for-balkan-countries.html#curve-of-confirmed-cases"><i class="fa fa-check"></i><b>4.2</b> Curve of confirmed cases</a></li>
+<li class="chapter" data-level="4.3" data-path="covid-19-dashboard-for-balkan-countries.html"><a href="covid-19-dashboard-for-balkan-countries.html#total-cases-per-1-million-people"><i class="fa fa-check"></i><b>4.3</b> Total cases per 1 million people</a></li>
+<li class="chapter" data-level="4.4" data-path="covid-19-dashboard-for-balkan-countries.html"><a href="covid-19-dashboard-for-balkan-countries.html#deaths-vs-recovered"><i class="fa fa-check"></i><b>4.4</b> Deaths vs Recovered</a></li>
+<li class="chapter" data-level="4.5" data-path="covid-19-dashboard-for-balkan-countries.html"><a href="covid-19-dashboard-for-balkan-countries.html#active-cases-vs-new-cases"><i class="fa fa-check"></i><b>4.5</b> Active cases vs New cases</a></li>
+<li class="chapter" data-level="4.6" data-path="covid-19-dashboard-for-balkan-countries.html"><a href="covid-19-dashboard-for-balkan-countries.html#hospitalization"><i class="fa fa-check"></i><b>4.6</b> Hospitalization</a><ul>
+<li class="chapter" data-level="4.6.1" data-path="covid-19-dashboard-for-balkan-countries.html"><a href="covid-19-dashboard-for-balkan-countries.html#croatia"><i class="fa fa-check"></i><b>4.6.1</b> Croatia</a></li>
+<li class="chapter" data-level="4.6.2" data-path="covid-19-dashboard-for-balkan-countries.html"><a href="covid-19-dashboard-for-balkan-countries.html#slovenia"><i class="fa fa-check"></i><b>4.6.2</b> Slovenia</a></li>
+<li class="chapter" data-level="4.6.3" data-path="covid-19-dashboard-for-balkan-countries.html"><a href="covid-19-dashboard-for-balkan-countries.html#austria"><i class="fa fa-check"></i><b>4.6.3</b> Austria</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="churn-prediction-with-random-forest.html"><a href="churn-prediction-with-random-forest.html"><i class="fa fa-check"></i><b>5</b> Churn prediction with Random Forest</a><ul>
+<li class="chapter" data-level="5.1" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#data"><i class="fa fa-check"></i><b>5.1</b> Data</a></li>
+<li class="chapter" data-level="5.2" data-path="churn-prediction-with-random-forest.html"><a href="churn-prediction-with-random-forest.html#evaluating-models"><i class="fa fa-check"></i><b>5.2</b> Evaluating Models</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://at.linkedin.com/in/mirzamujanovic?trk=profile-badge" target="blank">LinkedIn: Mirza Mujanovic</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./"></a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="churn-prediction-with-random-forest" class="section level1">
+<h1><span class="header-section-number">5</span> Churn prediction with Random Forest</h1>
+<p>In this project I decided to use Telco dataset, a dataset from the IBM
+Watson Analytics community, and apply Random Forest learning method to make a prediction whether a customer will churn or not.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="churn-prediction-with-random-forest.html#cb1-1"></a><span class="kw">library</span>(curl)</span>
+<span id="cb1-2"><a href="churn-prediction-with-random-forest.html#cb1-2"></a><span class="kw">library</span>(readr)</span>
+<span id="cb1-3"><a href="churn-prediction-with-random-forest.html#cb1-3"></a><span class="kw">library</span>(tidyr)</span>
+<span id="cb1-4"><a href="churn-prediction-with-random-forest.html#cb1-4"></a><span class="kw">library</span>(dplyr)</span>
+<span id="cb1-5"><a href="churn-prediction-with-random-forest.html#cb1-5"></a><span class="kw">library</span>(randomForest)</span>
+<span id="cb1-6"><a href="churn-prediction-with-random-forest.html#cb1-6"></a><span class="kw">library</span>(caret)</span>
+<span id="cb1-7"><a href="churn-prediction-with-random-forest.html#cb1-7"></a><span class="kw">options</span>(<span class="dt">stringsAsFactor=</span><span class="ot">TRUE</span>)</span></code></pre></div>
+<div id="data" class="section level2">
+<h2><span class="header-section-number">5.1</span> Data</h2>
+<ul>
+<li>The data set includes information about:
+<ul>
+<li>Customers who left within the last month – the column is called <strong>Churn</strong>.</li>
+<li>Services that each customer has signed up for – phone, multiple lines, internet, online security, online backup, device protection, tech support, and streaming TV and movies.</li>
+<li>Customer account information – how long they’ve been a customer, contract, payment method, paperless billing, monthly charges, and total charges</li>
+<li>Demographic info about customers – gender, age range, and if they have partners and dependents</li>
+</ul></li>
+</ul>
+<table class=" lightable-paper lightable-hover" style='font-family: "Arial Narrow", arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;'>
+<thead>
+<tr>
+<th style="text-align:left;">
+Variable
+</th>
+<th style="text-align:left;">
+Topic
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Gender
+</td>
+<td style="text-align:left;">
+Whether the customer is a male or a female
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SeniorCitizen
+</td>
+<td style="text-align:left;">
+Whether the customer is a senior citizen or not (1, 0)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Partner
+</td>
+<td style="text-align:left;">
+Whether the customer has a partner or not (Yes, No)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Dependents
+</td>
+<td style="text-align:left;">
+Whether the customer has dependents or not (Yes, No)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Tenure
+</td>
+<td style="text-align:left;">
+Number of months the customer has stayed with the company
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PhoneService
+</td>
+<td style="text-align:left;">
+Whether the customer has a phone service or not (Yes, No)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+MultipleLines
+</td>
+<td style="text-align:left;">
+Whether the customer has multiple lines or not (Yes, No, No phone service)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+InternetService
+</td>
+<td style="text-align:left;">
+Customer’s internet service provider (DSL, Fiber optic, No)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+OnlineSecurity
+</td>
+<td style="text-align:left;">
+Whether the customer has online security or not (Yes, No, No internet service)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+OnlineBackup
+</td>
+<td style="text-align:left;">
+Whether the customer has online backup or not (Yes, No, No internet service)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+DeviceProtection
+</td>
+<td style="text-align:left;">
+Whether the customer has device protection or not (Yes, No, No internet service)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+TechSupport
+</td>
+<td style="text-align:left;">
+Whether the customer has tech support or not (Yes, No, No internet service)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+StreamingTV
+</td>
+<td style="text-align:left;">
+Whether the customer has streaming TV or not (Yes, No, No internet service)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+StreamingMovie
+</td>
+<td style="text-align:left;">
+Whether the customer has streaming movies or not (Yes, No, No internet service)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Contract
+</td>
+<td style="text-align:left;">
+The contract term of the customer (Month-to-month, One year, Two year)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PaperlessBilling
+</td>
+<td style="text-align:left;">
+Whether the customer has paperless billing or not (Yes, No)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PaymentMethod
+</td>
+<td style="text-align:left;">
+The customer’s payment method (Electronic check, Mailed check, Bank transfer (automatic), Credit card (automatic))
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+MonthlyCharges
+</td>
+<td style="text-align:left;">
+The amount charged to the customer monthly
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+TotalCharges
+</td>
+<td style="text-align:left;">
+The total amount charged to the customer
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Churn
+</td>
+<td style="text-align:left;">
+Whether the customer churned or not (Yes or No)
+</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td style="padding: 0; border: 0;" colspan="100%">
+<span style="font-style: italic;">Note: </span> <sup></sup> Information collected from <a href="https://www.kaggle.com/blastchar/telco-customer-churn" class="uri">https://www.kaggle.com/blastchar/telco-customer-churn</a>
+</td>
+</tr>
+</tfoot>
+</table>
+<p>Here are dimensions of our data set and first 6 rows:</p>
+<p>First, we need to remove rows which have at least one NA as a value:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="churn-prediction-with-random-forest.html#cb2-1"></a><span class="co"># Drop Nas</span></span>
+<span id="cb2-2"><a href="churn-prediction-with-random-forest.html#cb2-2"></a><span class="kw">dim</span>(x)</span></code></pre></div>
+<pre><code>## [1] 7043   21</code></pre>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="churn-prediction-with-random-forest.html#cb4-1"></a>x &lt;-<span class="st"> </span>x <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">drop_na</span>()</span>
+<span id="cb4-2"><a href="churn-prediction-with-random-forest.html#cb4-2"></a><span class="kw">dim</span>(x)</span></code></pre></div>
+<pre><code>## [1] 7032   21</code></pre>
+<p>11 are removed from the data set as they held at least one NA as a value. Next, we need to prepare our data set in terms of data types. In order to use Random Forest for churn prediction, we need to make sure that our categorical are represented in numeric manner.</p>
+<p>Therefore, all categorical variables will be converted to factors.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="churn-prediction-with-random-forest.html#cb6-1"></a><span class="co"># Categorical variables to factors</span></span>
+<span id="cb6-2"><a href="churn-prediction-with-random-forest.html#cb6-2"></a>x[<span class="kw">c</span>(<span class="st">&quot;Partner&quot;</span>,<span class="st">&quot;Dependents&quot;</span>,<span class="st">&quot;PhoneService&quot;</span>,<span class="st">&quot;gender&quot;</span>,<span class="st">&quot;MultipleLines&quot;</span>,<span class="st">&quot;InternetService&quot;</span>,<span class="st">&quot;OnlineSecurity&quot;</span>,<span class="st">&quot;OnlineBackup&quot;</span>,<span class="st">&quot;DeviceProtection&quot;</span>,<span class="st">&quot;TechSupport&quot;</span>,<span class="st">&quot;StreamingTV&quot;</span>,<span class="st">&quot;Contract&quot;</span>,<span class="st">&quot;StreamingMovies&quot;</span>,<span class="st">&quot;PaperlessBilling&quot;</span>,<span class="st">&quot;PaymentMethod&quot;</span>,<span class="st">&quot;Churn&quot;</span>)]&lt;-<span class="kw">lapply</span>(x[<span class="kw">c</span>(<span class="st">&quot;Partner&quot;</span>,<span class="st">&quot;Dependents&quot;</span>,<span class="st">&quot;PhoneService&quot;</span>,<span class="st">&quot;gender&quot;</span>,<span class="st">&quot;MultipleLines&quot;</span>,<span class="st">&quot;InternetService&quot;</span>,<span class="st">&quot;OnlineSecurity&quot;</span>,<span class="st">&quot;OnlineBackup&quot;</span>,<span class="st">&quot;DeviceProtection&quot;</span>,<span class="st">&quot;TechSupport&quot;</span>,<span class="st">&quot;StreamingTV&quot;</span>,<span class="st">&quot;Contract&quot;</span>,<span class="st">&quot;StreamingMovies&quot;</span>,<span class="st">&quot;PaperlessBilling&quot;</span>,<span class="st">&quot;PaymentMethod&quot;</span>,<span class="st">&quot;Churn&quot;</span>)], as.factor)</span>
+<span id="cb6-3"><a href="churn-prediction-with-random-forest.html#cb6-3"></a><span class="kw">str</span>(x)</span></code></pre></div>
+<pre><code>## &#39;data.frame&#39;:	7032 obs. of  21 variables:
+##  $ customerID      : chr  &quot;7590-VHVEG&quot; &quot;5575-GNVDE&quot; &quot;3668-QPYBK&quot; &quot;7795-CFOCW&quot; ...
+##  $ gender          : Factor w/ 2 levels &quot;Female&quot;,&quot;Male&quot;: 1 2 2 2 1 1 2 1 1 2 ...
+##  $ SeniorCitizen   : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ Partner         : Factor w/ 2 levels &quot;No&quot;,&quot;Yes&quot;: 2 1 1 1 1 1 1 1 2 1 ...
+##  $ Dependents      : Factor w/ 2 levels &quot;No&quot;,&quot;Yes&quot;: 1 1 1 1 1 1 2 1 1 2 ...
+##  $ tenure          : int  1 34 2 45 2 8 22 10 28 62 ...
+##  $ PhoneService    : Factor w/ 2 levels &quot;No&quot;,&quot;Yes&quot;: 1 2 2 1 2 2 2 1 2 2 ...
+##  $ MultipleLines   : Factor w/ 3 levels &quot;No&quot;,&quot;No phone service&quot;,..: 2 1 1 2 1 3 3 2 3 1 ...
+##  $ InternetService : Factor w/ 3 levels &quot;DSL&quot;,&quot;Fiber optic&quot;,..: 1 1 1 1 2 2 2 1 2 1 ...
+##  $ OnlineSecurity  : Factor w/ 3 levels &quot;No&quot;,&quot;No internet service&quot;,..: 1 3 3 3 1 1 1 3 1 3 ...
+##  $ OnlineBackup    : Factor w/ 3 levels &quot;No&quot;,&quot;No internet service&quot;,..: 3 1 3 1 1 1 3 1 1 3 ...
+##  $ DeviceProtection: Factor w/ 3 levels &quot;No&quot;,&quot;No internet service&quot;,..: 1 3 1 3 1 3 1 1 3 1 ...
+##  $ TechSupport     : Factor w/ 3 levels &quot;No&quot;,&quot;No internet service&quot;,..: 1 1 1 3 1 1 1 1 3 1 ...
+##  $ StreamingTV     : Factor w/ 3 levels &quot;No&quot;,&quot;No internet service&quot;,..: 1 1 1 1 1 3 3 1 3 1 ...
+##  $ StreamingMovies : Factor w/ 3 levels &quot;No&quot;,&quot;No internet service&quot;,..: 1 1 1 1 1 3 1 1 3 1 ...
+##  $ Contract        : Factor w/ 3 levels &quot;Month-to-month&quot;,..: 1 2 1 2 1 1 1 1 1 2 ...
+##  $ PaperlessBilling: Factor w/ 2 levels &quot;No&quot;,&quot;Yes&quot;: 2 1 2 1 2 2 2 1 2 1 ...
+##  $ PaymentMethod   : Factor w/ 4 levels &quot;Bank transfer (automatic)&quot;,..: 3 4 4 1 3 3 2 4 3 1 ...
+##  $ MonthlyCharges  : num  29.9 57 53.9 42.3 70.7 ...
+##  $ TotalCharges    : num  29.9 1889.5 108.2 1840.8 151.7 ...
+##  $ Churn           : Factor w/ 2 levels &quot;No&quot;,&quot;Yes&quot;: 1 1 2 1 2 2 1 1 2 1 ...</code></pre>
+<p>We aim to convert our data set into matrix with only 0s and 1s. Thus, all binomial variables can be turned to 0s and 1s in the following way:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="churn-prediction-with-random-forest.html#cb8-1"></a><span class="co"># Binomial categorical variables to 0 and 1</span></span>
+<span id="cb8-2"><a href="churn-prediction-with-random-forest.html#cb8-2"></a>x<span class="op">$</span>PhoneService &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(x<span class="op">$</span>PhoneService)<span class="op">-</span><span class="dv">1</span></span>
+<span id="cb8-3"><a href="churn-prediction-with-random-forest.html#cb8-3"></a>x<span class="op">$</span>Partner &lt;-<span class="kw">as.numeric</span>(x<span class="op">$</span>Partner)<span class="op">-</span><span class="dv">1</span></span>
+<span id="cb8-4"><a href="churn-prediction-with-random-forest.html#cb8-4"></a>x<span class="op">$</span>Dependents &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(x<span class="op">$</span>Dependents)<span class="op">-</span><span class="dv">1</span></span>
+<span id="cb8-5"><a href="churn-prediction-with-random-forest.html#cb8-5"></a>x<span class="op">$</span>Churn &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(x<span class="op">$</span>Churn)<span class="op">-</span><span class="dv">1</span></span>
+<span id="cb8-6"><a href="churn-prediction-with-random-forest.html#cb8-6"></a>x<span class="op">$</span>gender &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(x<span class="op">$</span>gender)<span class="op">-</span><span class="dv">1</span></span></code></pre></div>
+<p>Now it is left to convert multi-class variables 0s and 1s. Before we do it, let’s inspect our data a bit:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="churn-prediction-with-random-forest.html#cb9-1"></a><span class="co">## Categorical variables with more than 2 categories</span></span>
+<span id="cb9-2"><a href="churn-prediction-with-random-forest.html#cb9-2"></a><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">5</span>,<span class="dv">2</span>))</span>
+<span id="cb9-3"><a href="churn-prediction-with-random-forest.html#cb9-3"></a><span class="co"># Multiple lines</span></span>
+<span id="cb9-4"><a href="churn-prediction-with-random-forest.html#cb9-4"></a><span class="kw">ggplot</span>(x, <span class="kw">aes</span>(MultipleLines,<span class="dt">fill=</span>MultipleLines)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb9-5"><a href="churn-prediction-with-random-forest.html#cb9-5"></a><span class="st">  </span><span class="kw">geom_bar</span>() <span class="op">+</span></span>
+<span id="cb9-6"><a href="churn-prediction-with-random-forest.html#cb9-6"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title=</span><span class="st">&quot;Multiple lines&quot;</span>,<span class="dt">x=</span><span class="st">&quot;&quot;</span>,<span class="dt">y=</span><span class="st">&quot;Count&quot;</span>)</span></code></pre></div>
+<p><img src="main_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="churn-prediction-with-random-forest.html#cb10-1"></a><span class="co"># Internet services</span></span>
+<span id="cb10-2"><a href="churn-prediction-with-random-forest.html#cb10-2"></a><span class="kw">ggplot</span>(x, <span class="kw">aes</span>(InternetService,<span class="dt">fill=</span>InternetService)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb10-3"><a href="churn-prediction-with-random-forest.html#cb10-3"></a><span class="st">  </span><span class="kw">geom_bar</span>() <span class="op">+</span></span>
+<span id="cb10-4"><a href="churn-prediction-with-random-forest.html#cb10-4"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title=</span><span class="st">&quot;Internet service&quot;</span>,<span class="dt">x=</span><span class="st">&quot;&quot;</span>,<span class="dt">y=</span><span class="st">&quot;Count&quot;</span>)</span></code></pre></div>
+<p><img src="main_files/figure-html/unnamed-chunk-7-2.png" width="672" /></p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="churn-prediction-with-random-forest.html#cb11-1"></a><span class="co"># OnlineSecurity</span></span>
+<span id="cb11-2"><a href="churn-prediction-with-random-forest.html#cb11-2"></a><span class="kw">ggplot</span>(x, <span class="kw">aes</span>(OnlineSecurity,<span class="dt">fill=</span>OnlineSecurity)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb11-3"><a href="churn-prediction-with-random-forest.html#cb11-3"></a><span class="st">  </span><span class="kw">geom_bar</span>() <span class="op">+</span></span>
+<span id="cb11-4"><a href="churn-prediction-with-random-forest.html#cb11-4"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title=</span><span class="st">&quot;OnlineSecurity&quot;</span>,<span class="dt">x=</span><span class="st">&quot;&quot;</span>,<span class="dt">y=</span><span class="st">&quot;Count&quot;</span>)</span></code></pre></div>
+<p><img src="main_files/figure-html/unnamed-chunk-7-3.png" width="672" /></p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="churn-prediction-with-random-forest.html#cb12-1"></a><span class="co"># OnlineBackup</span></span>
+<span id="cb12-2"><a href="churn-prediction-with-random-forest.html#cb12-2"></a><span class="kw">ggplot</span>(x, <span class="kw">aes</span>(OnlineBackup,<span class="dt">fill=</span>OnlineBackup)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb12-3"><a href="churn-prediction-with-random-forest.html#cb12-3"></a><span class="st">  </span><span class="kw">geom_bar</span>() <span class="op">+</span></span>
+<span id="cb12-4"><a href="churn-prediction-with-random-forest.html#cb12-4"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title=</span><span class="st">&quot;OnlineBackup&quot;</span>,<span class="dt">x=</span><span class="st">&quot;&quot;</span>,<span class="dt">y=</span><span class="st">&quot;Count&quot;</span>)</span></code></pre></div>
+<p><img src="main_files/figure-html/unnamed-chunk-7-4.png" width="672" /></p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="churn-prediction-with-random-forest.html#cb13-1"></a><span class="co"># DeviceProtection</span></span>
+<span id="cb13-2"><a href="churn-prediction-with-random-forest.html#cb13-2"></a><span class="kw">ggplot</span>(x, <span class="kw">aes</span>(DeviceProtection,<span class="dt">fill=</span>DeviceProtection)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb13-3"><a href="churn-prediction-with-random-forest.html#cb13-3"></a><span class="st">  </span><span class="kw">geom_bar</span>() <span class="op">+</span></span>
+<span id="cb13-4"><a href="churn-prediction-with-random-forest.html#cb13-4"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title=</span><span class="st">&quot;DeviceProtection&quot;</span>,<span class="dt">x=</span><span class="st">&quot;&quot;</span>,<span class="dt">y=</span><span class="st">&quot;Count&quot;</span>)</span></code></pre></div>
+<p><img src="main_files/figure-html/unnamed-chunk-7-5.png" width="672" /></p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="churn-prediction-with-random-forest.html#cb14-1"></a><span class="co"># TechSupport</span></span>
+<span id="cb14-2"><a href="churn-prediction-with-random-forest.html#cb14-2"></a><span class="kw">ggplot</span>(x, <span class="kw">aes</span>(TechSupport,<span class="dt">fill=</span>TechSupport)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb14-3"><a href="churn-prediction-with-random-forest.html#cb14-3"></a><span class="st">  </span><span class="kw">geom_bar</span>() <span class="op">+</span></span>
+<span id="cb14-4"><a href="churn-prediction-with-random-forest.html#cb14-4"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title=</span><span class="st">&quot;TechSupport&quot;</span>,<span class="dt">x=</span><span class="st">&quot;&quot;</span>,<span class="dt">y=</span><span class="st">&quot;Count&quot;</span>)</span></code></pre></div>
+<p><img src="main_files/figure-html/unnamed-chunk-7-6.png" width="672" /></p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="churn-prediction-with-random-forest.html#cb15-1"></a><span class="co"># StreamingTV</span></span>
+<span id="cb15-2"><a href="churn-prediction-with-random-forest.html#cb15-2"></a><span class="kw">ggplot</span>(x, <span class="kw">aes</span>(StreamingTV,<span class="dt">fill=</span>StreamingTV)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb15-3"><a href="churn-prediction-with-random-forest.html#cb15-3"></a><span class="st">  </span><span class="kw">geom_bar</span>() <span class="op">+</span></span>
+<span id="cb15-4"><a href="churn-prediction-with-random-forest.html#cb15-4"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title=</span><span class="st">&quot;StreamingTV&quot;</span>,<span class="dt">x=</span><span class="st">&quot;&quot;</span>,<span class="dt">y=</span><span class="st">&quot;Count&quot;</span>)</span></code></pre></div>
+<p><img src="main_files/figure-html/unnamed-chunk-7-7.png" width="672" /></p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="churn-prediction-with-random-forest.html#cb16-1"></a><span class="co"># StreamingMovies</span></span>
+<span id="cb16-2"><a href="churn-prediction-with-random-forest.html#cb16-2"></a><span class="kw">ggplot</span>(x, <span class="kw">aes</span>(StreamingMovies,<span class="dt">fill=</span>StreamingMovies)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb16-3"><a href="churn-prediction-with-random-forest.html#cb16-3"></a><span class="st">  </span><span class="kw">geom_bar</span>() <span class="op">+</span></span>
+<span id="cb16-4"><a href="churn-prediction-with-random-forest.html#cb16-4"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title=</span><span class="st">&quot;StreamingMovies&quot;</span>,<span class="dt">x=</span><span class="st">&quot;&quot;</span>,<span class="dt">y=</span><span class="st">&quot;Count&quot;</span>)</span></code></pre></div>
+<p><img src="main_files/figure-html/unnamed-chunk-7-8.png" width="672" /></p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="churn-prediction-with-random-forest.html#cb17-1"></a><span class="co"># Contract</span></span>
+<span id="cb17-2"><a href="churn-prediction-with-random-forest.html#cb17-2"></a><span class="kw">ggplot</span>(x, <span class="kw">aes</span>(Contract,<span class="dt">fill=</span>Contract)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb17-3"><a href="churn-prediction-with-random-forest.html#cb17-3"></a><span class="st">  </span><span class="kw">geom_bar</span>() <span class="op">+</span></span>
+<span id="cb17-4"><a href="churn-prediction-with-random-forest.html#cb17-4"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title=</span><span class="st">&quot;Contract&quot;</span>,<span class="dt">x=</span><span class="st">&quot;&quot;</span>,<span class="dt">y=</span><span class="st">&quot;Count&quot;</span>)</span></code></pre></div>
+<p><img src="main_files/figure-html/unnamed-chunk-7-9.png" width="672" /></p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="churn-prediction-with-random-forest.html#cb18-1"></a><span class="co"># PaymentMethod</span></span>
+<span id="cb18-2"><a href="churn-prediction-with-random-forest.html#cb18-2"></a><span class="kw">ggplot</span>(x, <span class="kw">aes</span>(PaymentMethod,<span class="dt">fill=</span>PaymentMethod)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb18-3"><a href="churn-prediction-with-random-forest.html#cb18-3"></a><span class="st">  </span><span class="kw">geom_bar</span>() <span class="op">+</span></span>
+<span id="cb18-4"><a href="churn-prediction-with-random-forest.html#cb18-4"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title=</span><span class="st">&quot;PaymentMethod&quot;</span>,<span class="dt">x=</span><span class="st">&quot;&quot;</span>,<span class="dt">y=</span><span class="st">&quot;Count&quot;</span>)</span></code></pre></div>
+<p><img src="main_files/figure-html/unnamed-chunk-7-10.png" width="672" /></p>
+<p>We can apply one hot encoding to our data set by using R’s base function <code>model.matrix</code>. In the code below, ~.+0 leads to encoding of all categorical variables without producing an intercept.</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="churn-prediction-with-random-forest.html#cb19-1"></a><span class="co"># One-hot encoding</span></span>
+<span id="cb19-2"><a href="churn-prediction-with-random-forest.html#cb19-2"></a>x.mat&lt;-<span class="st"> </span><span class="kw">model.matrix</span>(<span class="op">~</span>MultipleLines<span class="op">+</span>InternetService<span class="op">+</span>OnlineSecurity<span class="op">+</span>OnlineBackup<span class="op">+</span>DeviceProtection<span class="op">+</span>TechSupport<span class="op">+</span>StreamingTV<span class="op">+</span>Contract<span class="op">+</span>StreamingMovies<span class="op">+</span>PaperlessBilling<span class="op">+</span>PaymentMethod<span class="op">+</span><span class="dv">0</span>,<span class="dt">data =</span> x)</span></code></pre></div>
+<p>Now is our data set pre-processed:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="churn-prediction-with-random-forest.html#cb20-1"></a><span class="co"># Creation of the final data frame with 0s and 1s</span></span>
+<span id="cb20-2"><a href="churn-prediction-with-random-forest.html#cb20-2"></a>final.df&lt;-<span class="kw">as.data.frame</span>(x.mat)</span>
+<span id="cb20-3"><a href="churn-prediction-with-random-forest.html#cb20-3"></a>final.df&lt;-<span class="st"> </span><span class="kw">cbind</span>(x.mat,x<span class="op">$</span>tenure,x<span class="op">$</span>TotalCharges,x<span class="op">$</span>MonthlyCharges,x<span class="op">$</span>PhoneService,x<span class="op">$</span>Partner,x<span class="op">$</span>Dependents,x<span class="op">$</span>gender,x<span class="op">$</span>Churn)</span>
+<span id="cb20-4"><a href="churn-prediction-with-random-forest.html#cb20-4"></a><span class="kw">colnames</span>(final.df)[<span class="dv">24</span><span class="op">:</span><span class="dv">31</span>]&lt;-<span class="kw">c</span>(<span class="st">&quot;tenure&quot;</span>,<span class="st">&quot;TotalCharges&quot;</span>,<span class="st">&quot;MonthlyCharges&quot;</span>,<span class="st">&quot;PhoneService&quot;</span>,<span class="st">&quot;Partner&quot;</span>,<span class="st">&quot;Dependents&quot;</span>,<span class="st">&quot;gender&quot;</span>,<span class="st">&quot;Churn&quot;</span>)</span>
+<span id="cb20-5"><a href="churn-prediction-with-random-forest.html#cb20-5"></a><span class="kw">head</span>(final.df)</span></code></pre></div>
+<pre><code>##   MultipleLinesNo MultipleLinesNo phone service MultipleLinesYes
+## 1               0                             1                0
+## 2               1                             0                0
+## 3               1                             0                0
+## 4               0                             1                0
+## 5               1                             0                0
+## 6               0                             0                1
+##   InternetServiceFiber optic InternetServiceNo
+## 1                          0                 0
+## 2                          0                 0
+## 3                          0                 0
+## 4                          0                 0
+## 5                          1                 0
+## 6                          1                 0
+##   OnlineSecurityNo internet service OnlineSecurityYes
+## 1                                 0                 0
+## 2                                 0                 1
+## 3                                 0                 1
+## 4                                 0                 1
+## 5                                 0                 0
+## 6                                 0                 0
+##   OnlineBackupNo internet service OnlineBackupYes
+## 1                               0               1
+## 2                               0               0
+## 3                               0               1
+## 4                               0               0
+## 5                               0               0
+## 6                               0               0
+##   DeviceProtectionNo internet service DeviceProtectionYes
+## 1                                   0                   0
+## 2                                   0                   1
+## 3                                   0                   0
+## 4                                   0                   1
+## 5                                   0                   0
+## 6                                   0                   1
+##   TechSupportNo internet service TechSupportYes StreamingTVNo internet service
+## 1                              0              0                              0
+## 2                              0              0                              0
+## 3                              0              0                              0
+## 4                              0              1                              0
+## 5                              0              0                              0
+## 6                              0              0                              0
+##   StreamingTVYes ContractOne year ContractTwo year
+## 1              0                0                0
+## 2              0                1                0
+## 3              0                0                0
+## 4              0                1                0
+## 5              0                0                0
+## 6              1                0                0
+##   StreamingMoviesNo internet service StreamingMoviesYes PaperlessBillingYes
+## 1                                  0                  0                   1
+## 2                                  0                  0                   0
+## 3                                  0                  0                   1
+## 4                                  0                  0                   0
+## 5                                  0                  0                   1
+## 6                                  0                  1                   1
+##   PaymentMethodCredit card (automatic) PaymentMethodElectronic check
+## 1                                    0                             1
+## 2                                    0                             0
+## 3                                    0                             0
+## 4                                    0                             0
+## 5                                    0                             1
+## 6                                    0                             1
+##   PaymentMethodMailed check tenure TotalCharges MonthlyCharges PhoneService
+## 1                         0      1        29.85          29.85            0
+## 2                         1     34      1889.50          56.95            1
+## 3                         1      2       108.15          53.85            1
+## 4                         0     45      1840.75          42.30            0
+## 5                         0      2       151.65          70.70            1
+## 6                         0      8       820.50          99.65            1
+##   Partner Dependents gender Churn
+## 1       1          0      0     0
+## 2       0          0      1     0
+## 3       0          0      1     1
+## 4       0          0      1     0
+## 5       0          0      0     1
+## 6       0          0      0     1</code></pre>
+<p>Now we need to split our data into test and train data. The proportion is 70:30.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="churn-prediction-with-random-forest.html#cb22-1"></a><span class="co"># Creation of training and test data sets</span></span>
+<span id="cb22-2"><a href="churn-prediction-with-random-forest.html#cb22-2"></a>index &lt;-<span class="st"> </span>caret<span class="op">::</span><span class="kw">createDataPartition</span>(x<span class="op">$</span>Churn, <span class="dt">p =</span> <span class="fl">0.7</span>, <span class="dt">list =</span> F)</span>
+<span id="cb22-3"><a href="churn-prediction-with-random-forest.html#cb22-3"></a>train &lt;-<span class="st"> </span>final.df[index,]</span>
+<span id="cb22-4"><a href="churn-prediction-with-random-forest.html#cb22-4"></a>test &lt;-<span class="st"> </span>final.df[<span class="op">-</span>index,]</span>
+<span id="cb22-5"><a href="churn-prediction-with-random-forest.html#cb22-5"></a></span>
+<span id="cb22-6"><a href="churn-prediction-with-random-forest.html#cb22-6"></a><span class="co"># Partitioning test data</span></span>
+<span id="cb22-7"><a href="churn-prediction-with-random-forest.html#cb22-7"></a>x_test &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(test[,<span class="op">-</span><span class="dv">31</span>])  </span>
+<span id="cb22-8"><a href="churn-prediction-with-random-forest.html#cb22-8"></a>y_test &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(test[,<span class="dv">31</span>])</span>
+<span id="cb22-9"><a href="churn-prediction-with-random-forest.html#cb22-9"></a></span>
+<span id="cb22-10"><a href="churn-prediction-with-random-forest.html#cb22-10"></a><span class="co"># Partitioning train data</span></span>
+<span id="cb22-11"><a href="churn-prediction-with-random-forest.html#cb22-11"></a>x_train &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(train[,<span class="op">-</span><span class="dv">31</span>])</span>
+<span id="cb22-12"><a href="churn-prediction-with-random-forest.html#cb22-12"></a>y_train &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(train[,<span class="dv">31</span>])</span></code></pre></div>
+<p>To train our random forest model we use function <code>randomForest()</code>. At this point we will not aim to fine tune our model, so we will define just two parameters,<code>ntree</code> and <code>maxnodes</code>:</p>
+<ul>
+<li><code>ntree</code> defines the number of trees to build in the forest.</li>
+<li><code>maxnodes</code> defines the maximum number of terminal nodes each tree in the forest can have.</li>
+</ul>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="churn-prediction-with-random-forest.html#cb23-1"></a><span class="co"># Random Forest</span></span>
+<span id="cb23-2"><a href="churn-prediction-with-random-forest.html#cb23-2"></a><span class="co"># Training</span></span>
+<span id="cb23-3"><a href="churn-prediction-with-random-forest.html#cb23-3"></a><span class="kw">library</span>(randomForest)</span>
+<span id="cb23-4"><a href="churn-prediction-with-random-forest.html#cb23-4"></a>rfModel &lt;-<span class="st"> </span><span class="kw">randomForest</span>(<span class="dt">x=</span>x_train,</span>
+<span id="cb23-5"><a href="churn-prediction-with-random-forest.html#cb23-5"></a>                        <span class="dt">y=</span><span class="kw">factor</span>(y_train),</span>
+<span id="cb23-6"><a href="churn-prediction-with-random-forest.html#cb23-6"></a>                        <span class="dt">ntree=</span><span class="dv">500</span>,</span>
+<span id="cb23-7"><a href="churn-prediction-with-random-forest.html#cb23-7"></a>                        <span class="dt">maxnodes=</span><span class="dv">24</span>)</span></code></pre></div>
+<p>Since predictions are made based on features our model was trained on, it is possible to observe importance of each feature. The more important a feature, the greater influence it exerts on predictions:</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="churn-prediction-with-random-forest.html#cb24-1"></a>importance_features &lt;-<span class="st"> </span>randomForest<span class="op">::</span><span class="kw">importance</span>(rfModel)</span>
+<span id="cb24-2"><a href="churn-prediction-with-random-forest.html#cb24-2"></a>importance_features &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(importance_features)</span>
+<span id="cb24-3"><a href="churn-prediction-with-random-forest.html#cb24-3"></a>importance_features<span class="op">$</span>features &lt;-<span class="st"> </span><span class="kw">row.names</span>(importance_features)</span>
+<span id="cb24-4"><a href="churn-prediction-with-random-forest.html#cb24-4"></a>importance_features &lt;-<span class="st"> </span>importance_features[<span class="kw">order</span>(importance_features<span class="op">$</span>MeanDecreaseGini ,<span class="dt">decreasing =</span> <span class="ot">TRUE</span>),]</span>
+<span id="cb24-5"><a href="churn-prediction-with-random-forest.html#cb24-5"></a></span>
+<span id="cb24-6"><a href="churn-prediction-with-random-forest.html#cb24-6"></a><span class="kw">library</span>(plotly)</span>
+<span id="cb24-7"><a href="churn-prediction-with-random-forest.html#cb24-7"></a>p&lt;-<span class="kw">ggplot</span>(importance_features) <span class="op">+</span></span>
+<span id="cb24-8"><a href="churn-prediction-with-random-forest.html#cb24-8"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="kw">reorder</span>(features,MeanDecreaseGini),MeanDecreaseGini),<span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>)<span class="op">+</span></span>
+<span id="cb24-9"><a href="churn-prediction-with-random-forest.html#cb24-9"></a><span class="st">  </span><span class="kw">theme_minimal</span>()<span class="op">+</span></span>
+<span id="cb24-10"><a href="churn-prediction-with-random-forest.html#cb24-10"></a><span class="st">  </span><span class="kw">coord_flip</span>()<span class="op">+</span></span>
+<span id="cb24-11"><a href="churn-prediction-with-random-forest.html#cb24-11"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title=</span><span class="st">&quot;Important features&quot;</span>,<span class="dt">x=</span><span class="st">&quot;Features&quot;</span>)</span>
+<span id="cb24-12"><a href="churn-prediction-with-random-forest.html#cb24-12"></a><span class="kw">ggplotly</span>(p)</span></code></pre></div>
+<div id="htmlwidget-5a3430d41046e87a560b" style="width:672px;height:480px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-5a3430d41046e87a560b">{"x":{"data":[{"x":[98.0968972574245,64.7946406267455,53.2586456295902,52.0274360362383,42.2193748440697,25.6948206396203,20.2793707959874,17.1170365050978,11.4546694587833,11.2853451921864,10.787783126808,10.4499226829782,10.2247906181667,9.50456300561635,9.19442028324637,7.7733783964197,4.16478611670656,4.14952474919524,3.44646323324325,2.41058842561987,2.1890462013369,1.88532482631987,1.56678644980686,1.49267046499891,1.47495957092391,1.23485376659703,1.07572523234598,0.837642699683155,0.821023050946535,0.5688183304264],"y":[30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1],"text":["reorder(features, MeanDecreaseGini): tenure<br />MeanDecreaseGini: 98.0968973","reorder(features, MeanDecreaseGini): TotalCharges<br />MeanDecreaseGini: 64.7946406","reorder(features, MeanDecreaseGini): InternetServiceFiber optic<br />MeanDecreaseGini: 53.2586456","reorder(features, MeanDecreaseGini): PaymentMethodElectronic check<br />MeanDecreaseGini: 52.0274360","reorder(features, MeanDecreaseGini): ContractTwo year<br />MeanDecreaseGini: 42.2193748","reorder(features, MeanDecreaseGini): MonthlyCharges<br />MeanDecreaseGini: 25.6948206","reorder(features, MeanDecreaseGini): OnlineSecurityYes<br />MeanDecreaseGini: 20.2793708","reorder(features, MeanDecreaseGini): ContractOne year<br />MeanDecreaseGini: 17.1170365","reorder(features, MeanDecreaseGini): TechSupportYes<br />MeanDecreaseGini: 11.4546695","reorder(features, MeanDecreaseGini): StreamingTVNo internet service<br />MeanDecreaseGini: 11.2853452","reorder(features, MeanDecreaseGini): InternetServiceNo<br />MeanDecreaseGini: 10.7877831","reorder(features, MeanDecreaseGini): StreamingMoviesNo internet service<br />MeanDecreaseGini: 10.4499227","reorder(features, MeanDecreaseGini): OnlineBackupNo internet service<br />MeanDecreaseGini: 10.2247906","reorder(features, MeanDecreaseGini): DeviceProtectionNo internet service<br />MeanDecreaseGini:  9.5045630","reorder(features, MeanDecreaseGini): OnlineSecurityNo internet service<br />MeanDecreaseGini:  9.1944203","reorder(features, MeanDecreaseGini): TechSupportNo internet service<br />MeanDecreaseGini:  7.7733784","reorder(features, MeanDecreaseGini): OnlineBackupYes<br />MeanDecreaseGini:  4.1647861","reorder(features, MeanDecreaseGini): PaperlessBillingYes<br />MeanDecreaseGini:  4.1495247","reorder(features, MeanDecreaseGini): Partner<br />MeanDecreaseGini:  3.4464632","reorder(features, MeanDecreaseGini): PaymentMethodMailed check<br />MeanDecreaseGini:  2.4105884","reorder(features, MeanDecreaseGini): Dependents<br />MeanDecreaseGini:  2.1890462","reorder(features, MeanDecreaseGini): DeviceProtectionYes<br />MeanDecreaseGini:  1.8853248","reorder(features, MeanDecreaseGini): StreamingTVYes<br />MeanDecreaseGini:  1.5667864","reorder(features, MeanDecreaseGini): MultipleLinesYes<br />MeanDecreaseGini:  1.4926705","reorder(features, MeanDecreaseGini): PaymentMethodCredit card (automatic)<br />MeanDecreaseGini:  1.4749596","reorder(features, MeanDecreaseGini): StreamingMoviesYes<br />MeanDecreaseGini:  1.2348538","reorder(features, MeanDecreaseGini): MultipleLinesNo phone service<br />MeanDecreaseGini:  1.0757252","reorder(features, MeanDecreaseGini): PhoneService<br />MeanDecreaseGini:  0.8376427","reorder(features, MeanDecreaseGini): MultipleLinesNo<br />MeanDecreaseGini:  0.8210231","reorder(features, MeanDecreaseGini): gender<br />MeanDecreaseGini:  0.5688183"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,0,0,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(0,0,0,1)"}},"hoveron":"points","showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":43.7625570776256,"r":7.30593607305936,"b":40.1826484018265,"l":235.981735159817},"font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187},"title":{"text":"Important features","font":{"color":"rgba(0,0,0,1)","family":"","size":17.5342465753425},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-4.30758561592351,102.973301203774],"tickmode":"array","ticktext":["0","25","50","75","100"],"tickvals":[0,25,50,75,100],"categoryorder":"array","categoryarray":["0","25","50","75","100"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.65296803652968,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.689497716895},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"y","title":{"text":"MeanDecreaseGini","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.4,30.6],"tickmode":"array","ticktext":["gender","MultipleLinesNo","PhoneService","MultipleLinesNo phone service","StreamingMoviesYes","PaymentMethodCredit card (automatic)","MultipleLinesYes","StreamingTVYes","DeviceProtectionYes","Dependents","PaymentMethodMailed check","Partner","PaperlessBillingYes","OnlineBackupYes","TechSupportNo internet service","OnlineSecurityNo internet service","DeviceProtectionNo internet service","OnlineBackupNo internet service","StreamingMoviesNo internet service","InternetServiceNo","StreamingTVNo internet service","TechSupportYes","ContractOne year","OnlineSecurityYes","MonthlyCharges","ContractTwo year","PaymentMethodElectronic check","InternetServiceFiber optic","TotalCharges","tenure"],"tickvals":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30],"categoryorder":"array","categoryarray":["gender","MultipleLinesNo","PhoneService","MultipleLinesNo phone service","StreamingMoviesYes","PaymentMethodCredit card (automatic)","MultipleLinesYes","StreamingTVYes","DeviceProtectionYes","Dependents","PaymentMethodMailed check","Partner","PaperlessBillingYes","OnlineBackupYes","TechSupportNo internet service","OnlineSecurityNo internet service","DeviceProtectionNo internet service","OnlineBackupNo internet service","StreamingMoviesNo internet service","InternetServiceNo","StreamingTVNo internet service","TechSupportYes","ContractOne year","OnlineSecurityYes","MonthlyCharges","ContractTwo year","PaymentMethodElectronic check","InternetServiceFiber optic","TotalCharges","tenure"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.65296803652968,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.689497716895},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"x","title":{"text":"Features","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":false,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.689497716895}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","showSendToCloud":false},"source":"A","attrs":{"b20380678d2":{"x":{},"y":{},"type":"scatter"}},"cur_data":"b20380678d2","visdat":{"b20380678d2":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<p>As we can see from this output, the <code>tenure</code> feature seems to be the most important factor in making the final prediction. Factors such as <code>InternetServiceFiber optic</code>,<code>TotalCharges</code> and <code>ContractTwo year</code> come subsequently.</p>
+</div>
+<div id="evaluating-models" class="section level2">
+<h2><span class="header-section-number">5.2</span> Evaluating Models</h2>
+<p>In order to evaluate our model we will take a look at accuracy, precision and recall.</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="churn-prediction-with-random-forest.html#cb25-1"></a><span class="co"># Evaluating Models</span></span>
+<span id="cb25-2"><a href="churn-prediction-with-random-forest.html#cb25-2"></a>prediction_insample &lt;-<span class="st"> </span><span class="kw">as.double</span>(<span class="kw">predict</span>(rfModel, x_train)) <span class="op">-</span><span class="st"> </span><span class="dv">1</span></span>
+<span id="cb25-3"><a href="churn-prediction-with-random-forest.html#cb25-3"></a>prediction_outsample &lt;-<span class="st"> </span><span class="kw">as.double</span>(<span class="kw">predict</span>(rfModel, x_test)) <span class="op">-</span><span class="st"> </span><span class="dv">1</span></span></code></pre></div>
+<p>Accuracy is the percentage of correct predictions out of all predictions.</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="churn-prediction-with-random-forest.html#cb26-1"></a><span class="co"># Accuracy</span></span>
+<span id="cb26-2"><a href="churn-prediction-with-random-forest.html#cb26-2"></a>accu_insample &lt;-<span class="st"> </span><span class="kw">mean</span>(y_train <span class="op">==</span><span class="st"> </span>prediction_insample)</span>
+<span id="cb26-3"><a href="churn-prediction-with-random-forest.html#cb26-3"></a>accu_outsample &lt;-<span class="st"> </span><span class="kw">mean</span>(y_test <span class="op">==</span><span class="st"> </span>prediction_outsample)</span>
+<span id="cb26-4"><a href="churn-prediction-with-random-forest.html#cb26-4"></a><span class="kw">print</span>(<span class="kw">sprintf</span>(<span class="st">&#39;In-Sample Accuracy: %0.2f&#39;</span>, accu_insample))</span></code></pre></div>
+<pre><code>## [1] &quot;In-Sample Accuracy: 0.80&quot;</code></pre>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="churn-prediction-with-random-forest.html#cb28-1"></a><span class="kw">print</span>(<span class="kw">sprintf</span>(<span class="st">&#39;Out-Sample Accuracy: %0.2f&#39;</span>, accu_outsample))</span></code></pre></div>
+<pre><code>## [1] &quot;Out-Sample Accuracy: 0.78&quot;</code></pre>
+<p>We managed to achieve pretty good out-sample accuracy even without thorough fine-tuning our parameters.
+Precision is the number of true positives divided by the total number of true positives and false positives.</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="churn-prediction-with-random-forest.html#cb30-1"></a><span class="co"># Precision</span></span>
+<span id="cb30-2"><a href="churn-prediction-with-random-forest.html#cb30-2"></a>prec_insample &lt;-<span class="st"> </span><span class="kw">sum</span>(prediction_insample <span class="op">&amp;</span><span class="st"> </span>y_train) <span class="op">/</span><span class="st"> </span><span class="kw">sum</span>(prediction_insample)</span>
+<span id="cb30-3"><a href="churn-prediction-with-random-forest.html#cb30-3"></a>prec_outsample &lt;-<span class="st"> </span><span class="kw">sum</span>(prediction_outsample <span class="op">&amp;</span><span class="st"> </span>y_test) <span class="op">/</span><span class="st"> </span><span class="kw">sum</span>(prediction_outsample)</span>
+<span id="cb30-4"><a href="churn-prediction-with-random-forest.html#cb30-4"></a><span class="kw">print</span>(<span class="kw">sprintf</span>(<span class="st">&#39;In-Sample Precision: %0.2f&#39;</span>, prec_insample))</span></code></pre></div>
+<pre><code>## [1] &quot;In-Sample Precision: 0.70&quot;</code></pre>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="churn-prediction-with-random-forest.html#cb32-1"></a><span class="kw">print</span>(<span class="kw">sprintf</span>(<span class="st">&#39;Out-Sample Precision: %0.2f&#39;</span>, prec_outsample))</span></code></pre></div>
+<pre><code>## [1] &quot;Out-Sample Precision: 0.72&quot;</code></pre>
+<p>Recall is defined as the number of true positives divided by number of true positives plus false negatives.</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="churn-prediction-with-random-forest.html#cb34-1"></a><span class="co"># Recall </span></span>
+<span id="cb34-2"><a href="churn-prediction-with-random-forest.html#cb34-2"></a>recall_insample &lt;-<span class="st"> </span><span class="kw">sum</span>(prediction_insample <span class="op">&amp;</span><span class="st"> </span>y_train) <span class="op">/</span><span class="st"> </span><span class="kw">sum</span>(y_train)</span>
+<span id="cb34-3"><a href="churn-prediction-with-random-forest.html#cb34-3"></a>recall_outsample &lt;-<span class="st"> </span><span class="kw">sum</span>(prediction_outsample <span class="op">&amp;</span><span class="st"> </span>y_test) <span class="op">/</span><span class="st"> </span><span class="kw">sum</span>(y_test)</span>
+<span id="cb34-4"><a href="churn-prediction-with-random-forest.html#cb34-4"></a><span class="kw">print</span>(<span class="kw">sprintf</span>(<span class="st">&#39;In-Sample Recall: %0.4f&#39;</span>, recall_insample))</span></code></pre></div>
+<pre><code>## [1] &quot;In-Sample Recall: 0.4055&quot;</code></pre>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="churn-prediction-with-random-forest.html#cb36-1"></a><span class="kw">print</span>(<span class="kw">sprintf</span>(<span class="st">&#39;Out-Sample Recall: %0.4f&#39;</span>, recall_outsample))</span></code></pre></div>
+<pre><code>## [1] &quot;Out-Sample Recall: 0.3636&quot;</code></pre>
+<p>Finally, in order to estimate how good our model is in comparison to the random prediction, we will inspect ROC curve and the <strong>A</strong>rea <strong>U</strong>nder the <strong>C</strong>urve.</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="churn-prediction-with-random-forest.html#cb38-1"></a><span class="kw">library</span>(ROCR)</span>
+<span id="cb38-2"><a href="churn-prediction-with-random-forest.html#cb38-2"></a></span>
+<span id="cb38-3"><a href="churn-prediction-with-random-forest.html#cb38-3"></a>pred_prob_insample &lt;-<span class="st"> </span><span class="kw">as.double</span>(<span class="kw">predict</span>(rfModel, x_train, <span class="dt">type=</span><span class="st">&#39;prob&#39;</span>)[,<span class="dv">2</span>])</span>
+<span id="cb38-4"><a href="churn-prediction-with-random-forest.html#cb38-4"></a>pred_prob_outsample &lt;-<span class="st"> </span><span class="kw">as.double</span>(<span class="kw">predict</span>(rfModel, x_test, <span class="dt">type=</span><span class="st">&#39;prob&#39;</span>)[,<span class="dv">2</span>])</span>
+<span id="cb38-5"><a href="churn-prediction-with-random-forest.html#cb38-5"></a></span>
+<span id="cb38-6"><a href="churn-prediction-with-random-forest.html#cb38-6"></a>pred &lt;-<span class="st"> </span><span class="kw">prediction</span>(pred_prob_outsample, y_test)</span>
+<span id="cb38-7"><a href="churn-prediction-with-random-forest.html#cb38-7"></a>perf &lt;-<span class="st"> </span><span class="kw">performance</span>(pred, <span class="dt">measure =</span> <span class="st">&quot;tpr&quot;</span>, <span class="dt">x.measure =</span> <span class="st">&quot;fpr&quot;</span>) </span>
+<span id="cb38-8"><a href="churn-prediction-with-random-forest.html#cb38-8"></a>auc &lt;-<span class="st"> </span><span class="kw">performance</span>(pred, <span class="dt">measure=</span><span class="st">&#39;auc&#39;</span>)<span class="op">@</span>y.values[[<span class="dv">1</span>]]</span>
+<span id="cb38-9"><a href="churn-prediction-with-random-forest.html#cb38-9"></a></span>
+<span id="cb38-10"><a href="churn-prediction-with-random-forest.html#cb38-10"></a><span class="kw">plot</span>(perf,<span class="dt">main=</span><span class="kw">sprintf</span>(<span class="st">&#39;Random Forest (AUC: %0.2f)&#39;</span>, auc),<span class="dt">col=</span><span class="st">&#39;darkblue&#39;</span>,<span class="dt">lwd=</span><span class="dv">2</span>) <span class="op">+</span><span class="st"> </span><span class="kw">grid</span>()</span></code></pre></div>
+<pre><code>## integer(0)</code></pre>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="churn-prediction-with-random-forest.html#cb40-1"></a><span class="kw">abline</span>(<span class="dt">a =</span> <span class="dv">0</span>, <span class="dt">b =</span> <span class="dv">1</span>, <span class="dt">col=</span><span class="st">&#39;darkgray&#39;</span>, <span class="dt">lty=</span><span class="dv">4</span>, <span class="dt">lwd=</span><span class="dv">2</span>)</span></code></pre></div>
+<p><img src="main_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="covid-19-dashboard-for-balkan-countries.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/06-Random_Forest_Churn.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["main.pdf", "main.epub"],
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+</body>
+
+</html>
