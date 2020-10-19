@@ -10,8 +10,7 @@ output: html_document
 In this project I decided to use Telco dataset, a dataset from the IBM
 Watson Analytics community, and apply Random Forest learning method to make a prediction whether a customer will churn or not.
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r, include=FALSE}
 setwd("C:/Users/Mirza/Desktop/Home for R/Mirza_Mujanovic_Portfolio")
 ```
 
