@@ -447,6 +447,54 @@ knitr::include_graphics("Graphics/wordcloud_neg_pos_twitter.PNG")
 
 
 
+## Word associations
+
+With the function `findAssocs()` we are able to inspect correlation between given term and every other word in our term-document-matrix. Strong associations are indicated with numbers closer to 1, while weaker associations are closer to 0. In addition, the function enables setting a cut-off threshold, so that, for instance, it extracts just correlations higher or equal than 0.6.
+
+```{r,error=FALSE,message=FALSE,warning=FALSE}
+library(cowplot)
+library(ggplot2)
+library(ggthemes)
+tdm <- TermDocumentMatrix(review.docs, control=list(weighting=weightTf))
+```
+
+
+```{r}
+# Association with the term "globalwarming"
+associations <- findAssocs(tdm,terms="globalwarming", corlimit=0.6)
+associations <- as.data.frame(associations)
+associations$terms <- row.names(associations)
+associations$terms <- factor(associations$terms, levels=associations$terms)
+
+assoc_globalwarming <- ggplot(associations, aes(y=terms)) + geom_point (aes(x=globalwarming), data=associations, size=0.01)+
+  theme_gdocs()+ geom_text(aes(x=globalwarming, label=globalwarming),
+                           colour="red", hjust=-.5, size=3)+
+  labs(title = "Terms correlated with the term 'globalwarming' (corr > 0.6)")+
+  theme(text=element_text(size=8), 
+        axis.title.y=element_blank())
+ggplotly(assoc_globalwarming)
+```
+
+```{r}
+# Association with the term "lose"
+associations <- findAssocs(tdm,terms="lose", corlimit=0.6)
+associations <- as.data.frame(associations)
+associations$terms <- row.names(associations)
+associations$terms <- factor(associations$terms, levels=associations$terms)
+
+assoc_lose <- ggplot(associations, aes(y=terms)) + geom_point (aes(x=lose), data=associations, size=0.01)+
+  theme_gdocs()+ geom_text(aes(x=lose, label=lose),
+                           colour="red", hjust=-.5, size=3)+
+  labs(title = "Terms correlated with the term 'lose' (corr > 0.6)")+
+  theme(text=element_text(size=8), 
+        axis.title.y=element_blank())
+ggplotly(assoc_lose)
+```
+
+
+
+
+
 ## Sentiment analysis
 
 Knowing the nature of the carbon footprint related topics and based on the previous assumption about vivid discussions on Twitter, an analysis of emotions in Tweets would help us in opinion mining.
@@ -580,8 +628,6 @@ knitr::include_graphics("Graphics/retweeted_1_twitter.PNG")
 [The plot doesn't load? Check it out here](https://raw.githubusercontent.com/MirzaMujanovic/Mirza_Mujanovic_Portfolio/master/Graphics/retweeted_1_twitter.PNG).
 :::
 ```
-
-
 
 
 ### Interactive graph with retweets' text {-}

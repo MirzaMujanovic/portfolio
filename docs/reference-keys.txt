@@ -1,4 +1,8 @@
-fig:unnamed-chunk-1
+fig:unnamed-chunk-2
+fig:unnamed-chunk-27
+fig:unnamed-chunk-30
+fig:unnamed-chunk-65
+fig:unnamed-chunk-95
 emotions-in-online-customer-reviews
 dictionaries-for-nlp
 data-set
@@ -19,6 +23,7 @@ tweets-distribution
 word-frequency-in-tweets
 word-network-in-tweets
 wordcloud
+word-associations
 sentiment-analysis-1
 visualize-the-emotions
 top-retweeted-tweets
