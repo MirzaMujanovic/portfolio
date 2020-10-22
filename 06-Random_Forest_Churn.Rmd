@@ -12,21 +12,33 @@ output:
 
 # Churn prediction with Random Forest
 
-In this project I decided to use Telco dataset, a dataset from the IBM
-Watson Analytics community, and apply Random Forest learning method to make a prediction whether a customer will churn or not.
-
-```{r, include=FALSE}
-setwd("C:/Users/Mirza/Desktop/Home for R/Mirza_Mujanovic_Portfolio")
+```{r,echo=FALSE, fig.align='center', out.width="50%",fig.cap="Foto from technologyadvice.com"}
+knitr::include_graphics("Graphics/churn.png")
 ```
 
+In this project I decided to use Telco dataset, a dataset from the IBM
+Watson Analytics community, and apply Random Forest learning method to make prediction whether a customer will churn or not based on features and information about customers who churned within the last month or are still customers.
+
+## Why predicting customer churn?
+
+<div style="text-align: justify"> 
+
+Consumer churn prediction models are developed to determine which consumers are likely to churn and to encourage an effective segmentation of the customer base to enable companies to approach customers at risk of leaving with a retention strategy. Such a prediction models help small marketing budgets to be wisely utilized to minimize turnover, i.e. to maximize the return on marketing expenditure (ROMI). Customer retention has usually been found to be extremely profitable for companies because it costs five to six times more to acquire new customer than to retain an existing customer. Additionally, long-term customers are more profitable, appear to be less susceptible to aggressive marketing activities, appear to be less costly to service, and can create new referrals by positive word-of - mouth.
+
+Consequently, even a small improvement in customer retention may yield significant returns.
+
+*Note: for references take a look at the Reference section*
+
+</div> 
+
 ```{r,error=FALSE,warning=FALSE,message=FALSE}
+options(stringsAsFactor=TRUE)
 library(curl)
 library(readr)
 library(tidyr)
 library(dplyr)
 library(randomForest)
 library(caret)
-options(stringsAsFactor=TRUE)
 ```
 
 ## Data
@@ -34,8 +46,8 @@ options(stringsAsFactor=TRUE)
 * The data set includes information about:  
     + Customers who left within the last month – the column is called **Churn**.
     + Services that each customer has signed up for – phone, multiple lines, internet, online security, online backup, device protection, tech support, and streaming TV and movies.
-    + Customer account information – how long they’ve been a customer, contract, payment method, paperless billing, monthly charges, and total charges
-    + Demographic info about customers – gender, age range, and if they have partners and dependents
+    + Customer account information – how long they’ve been a customer, contract, payment method, paperless billing, monthly charges, and total charges.
+    + Demographic info about customers – gender, age range, and if they have partners and dependents.
 
 ```{r eval = TRUE, echo = FALSE, warning=FALSE, message = FALSE}
 library(dplyr)
@@ -77,7 +89,10 @@ Here are dimensions of our data set and first 6 rows:
 ```{r,error=FALSE,warning=FALSE,message=FALSE,echo=FALSE}
 # Read in data
 x <- read.csv(curl("https://raw.githubusercontent.com/treselle-systems/customer_churn_analysis/master/WA_Fn-UseC_-Telco-Customer-Churn.csv"))
+head(x)
 ```
+
+## Data Pre-processing
 
 First, we need to remove rows which have at least one NA as a value:
 
@@ -181,8 +196,9 @@ Now is our data set pre-processed:
 final.df<-as.data.frame(x.mat)
 final.df<- cbind(x.mat,x$tenure,x$TotalCharges,x$MonthlyCharges,x$PhoneService,x$Partner,x$Dependents,x$gender,x$Churn)
 colnames(final.df)[24:31]<-c("tenure","TotalCharges","MonthlyCharges","PhoneService","Partner","Dependents","gender","Churn")
-head(final.df)
 ```
+
+## Data partition
 
 Now we need to split our data into test and train data. The proportion is 70:30.
 
@@ -206,6 +222,8 @@ To train our random forest model we use function `randomForest()`. At this point
 
 * `ntree` defines the number of trees to build in the forest.
 * `maxnodes` defines the maximum number of terminal nodes each tree in the forest can have.
+
+## Random Forest model
 
 ```{r}
 # Random Forest
@@ -239,7 +257,7 @@ ggplotly(p)
 As we can see from this output, the `tenure` feature seems to be the most important factor in making the final prediction. Factors such as `InternetServiceFiber optic`,`TotalCharges` and `ContractTwo year` come subsequently.
 
 
-## Evaluating Models
+## Evaluating Model
 
 In order to evaluate our model we will take a look at accuracy, precision and recall.
 
@@ -255,8 +273,8 @@ Accuracy is the percentage of correct predictions out of all predictions.
 # Accuracy
 accu_insample <- mean(y_train == prediction_insample)
 accu_outsample <- mean(y_test == prediction_outsample)
-print(sprintf('In-Sample Accuracy: %0.2f', accu_insample))
-print(sprintf('Out-Sample Accuracy: %0.2f', accu_outsample))
+print(sprintf('In-Sample Accuracy: %0.4f', accu_insample))
+print(sprintf('Out-Sample Accuracy: %0.4f', accu_outsample))
 ```
 
 We managed to achieve pretty good out-sample accuracy even without thorough fine-tuning our parameters.
@@ -266,8 +284,8 @@ Precision is the number of true positives divided by the total number of true po
 # Precision
 prec_insample <- sum(prediction_insample & y_train) / sum(prediction_insample)
 prec_outsample <- sum(prediction_outsample & y_test) / sum(prediction_outsample)
-print(sprintf('In-Sample Precision: %0.2f', prec_insample))
-print(sprintf('Out-Sample Precision: %0.2f', prec_outsample))
+print(sprintf('In-Sample Precision: %0.4f', prec_insample))
+print(sprintf('Out-Sample Precision: %0.4f', prec_outsample))
 ```
 
 Recall is defined as the number of true positives divided by number of true positives plus false negatives. 
@@ -280,6 +298,7 @@ print(sprintf('In-Sample Recall: %0.4f', recall_insample))
 print(sprintf('Out-Sample Recall: %0.4f', recall_outsample))
 ```
 
+
 Finally, in order to estimate how good our model is in comparison to the random prediction, we will inspect ROC curve and the **A**rea **U**nder the **C**urve.
 
 ```{r,error=FALSE,warning=FALSE,error=FALSE}
@@ -287,12 +306,24 @@ library(ROCR)
 
 pred_prob_insample <- as.double(predict(rfModel, x_train, type='prob')[,2])
 pred_prob_outsample <- as.double(predict(rfModel, x_test, type='prob')[,2])
-
 pred <- prediction(pred_prob_outsample, y_test)
 perf <- performance(pred, measure = "tpr", x.measure = "fpr") 
 auc <- performance(pred, measure='auc')@y.values[[1]]
 
-plot(perf,main=sprintf('Random Forest (AUC: %0.2f)', auc),col='darkblue',lwd=2) + grid()
-abline(a = 0, b = 1, col='darkgray', lty=4, lwd=2)
+{plot(perf,main=sprintf('Random Forest (AUC: %0.2f)', auc),col='darkblue',lwd=2) + grid()
+abline(a = 0, b = 1, col='darkgray', lty=4, lwd=2)}
 ```
 
+## References
+
+* Hwang, Y. H. (2019). Hands-on data science for marketing: Improve your marketing strategies with machine learning using Python and R. Birmingham: Packt Publishing.
+
+* W. Verbeke, D. Martens, C. Mues, B. Baesens. Building comprehensible customer churn prediction models with advanced rule induction techniques
+Expert Syst. Appl., 38 (3) (2011), pp. 2354-2364.
+
+* M.R. Colgate, P.J. Danaher. Implementing a customer relationship strategy: the asymmetric impact of poor versus excellent execution
+J. Acad. Mark. Sci., 28 (3) (2000), pp. 375-387.
+
+* J. Ganesh, M.J. Arnold, K.E. Reynolds. Understanding the customer base of service providers: an examination of the differences between switchers and stayers.J. Mark., 64 (3) (2000), pp. 65-87.
+
+* D.V. den Poel, B. Larivière. Customer attrition analysis for financial services using proportional hazard models. Eur. J. Oper. Res., 157 (1) (2004), pp. 196-217.
