@@ -386,6 +386,8 @@ review.docs <- tm_map(review.docs, review.toSpace, "\\|")
 review.docs <- tm_map(review.docs, content_transformer(tolower))
 review.docs <- tm_map(review.docs, removeNumbers)
 review.docs <- tm_map(review.docs, removeWords, stopwords("english"))
+my_list <- c("carbonfootprint","greenhouse","can","will","wont")
+review.docs <- tm_map(review.docs, removeWords,my_list)
 review.docs <- tm_map(review.docs, content_transformer(tolower))
 review.docs <- tm_map(review.docs, removePunctuation)
 review.docs <- tm_map(review.docs, stripWhitespace)
@@ -492,12 +494,44 @@ ggplotly(assoc_lose)
 ```
 
 
+## LDA
 
+We could try to break collection of tweets into several topics, so that we can independently understand what topics tweets are associated with. Topic modeling is a tool for unsupervised classification of certain documents that finds natural groups of topics even though we are not sure what we are searching for.
+
+```{r,error=FALSE,warning=FALSE,message=FALSE}
+# Libraries
+library(sjmisc)
+library(topicmodels)
+library(ldatuning)
+# Document Term Matrix
+review.dtm <- DocumentTermMatrix(review.docs)
+burnin = 1000
+iter = 10000
+keep = 50
+set.seed(510)
+raw.sum=apply(review.dtm,1,FUN=sum) #sum by raw each raw of the table
+review.dtm = review.dtm[raw.sum!=0,]
+lda_basic.model<- LDA(review.dtm, k = 4L, method = "Gibbs",
+                      control = list(burnin = burnin, iter = iter, keep = keep, alpha = 0.01))
+lda.terms <- as.matrix(terms(lda_basic.model, 10))
+lda.terms<- iconv(lda.terms, 'utf-8', 'ascii', sub='')
+top10termsPerTopic <- terms(lda_basic.model, 10)
+top10termsPerTopic <- iconv(lda.terms, 'utf-8', 'ascii', sub='')
+colnames(top10termsPerTopic)<-c("Renewable sources of energy","Carbonfootprint emissions","Carbonfootprint by businesses","Global warming")
+top10termsPerTopic
+```
+
+We could identify 4 topics such as:
+
+* Renewable resources
+* Carbonfootprint emissions
+* Carbonfootprint by and sustainability in business
+* Climate and environment crisis caused by global warming
 
 
 ## Sentiment analysis
 
-Knowing the nature of the carbon footprint related topics and based on the previous assumption about vivid discussions on Twitter, an analysis of emotions in Tweets would help us in opinion mining.
+Knowing the nature of the carbon footprint relatFed topics and based on the previous assumption about vivid discussions on Twitter, an analysis of emotions in Tweets would help us in opinion mining.
 
 ```{r, error=FALSE, message=FALSE, warning=FALSE}
 # Sentiment analysis 
@@ -528,6 +562,7 @@ p <- ggplot(pivot[-1,], aes(x = hour, y = sentiment)) + geom_line(group = 1, col
 
 ggplotly(p)
 ```
+
 The visualisation above depicts the average sentiment score of Tweets during a day. It seems that at 10:00 and 15:00 Tweets tend to be less positive than at 17:00 for instance. This information helps for scheduling Tweets so that they don't get caught in the "bad moment".
 
 ## Visualize the emotions
