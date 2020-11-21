@@ -1,3 +1,47 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:2b838d46797ec2aef75f56d7b945cc4ba5ad73c520308a7404a3d152b47c4d36
-size 1568
+--- 
+knit: "bookdown::render_book"
+site: bookdown::bookdown_site
+title: " "
+output_dir: "docs"
+documentclass: book
+bibliography: [book.bib, packages.bib]
+biblio-style: apalike
+link-citations: yes
+css: style.css
+---
+
+# (PART) About me {-}
+
+# Who I am? {-}
+
+```{r, out.width = "40%", echo = FALSE, fig.align = "center"}
+knitr::include_graphics("Graphics/my_picture.jpg")
+```
+
+
+<div style="text-align: justify">  
+
+
+My name is Mirza Mujanović, I am an ever-curious, eager to learn and ready to adapt student in his third semester of Marketing master program at the Vienna University of Economics and Business. Originally, I come from Tuzla, Bosnia & Herzegovina, where I finished high school and first two semesters at the Faculty of Economics. In 2015, I moved to Vienna to study, and in 2019 completed a bachelor’s program in business administration at the Vienna University of Economics and Business (WU) in 2019. Currently, I hold a part-time position of teaching and eLearning assistant at the WU. Thinking of my future plans I see myself working in the field of data analytics or data science for marketing.
+
+
+</div>
+ 
+<div style="text-align: justify"> 
+
+Random facts about me:
+
+* Big basketball fan. Nowadays, fan of sports analytics.
+* Interested in psychology-related topics.
+* Used to collect old money together with my older sister. 
+* Favorite food: Bulgogi and pudding (but not together, of course!).
+
+
+
+::: {.infobox .download data-latex="{download}"}
+[You can download my CV here](CV/my_cv.pdf)
+:::
+
+
+
+</div>
