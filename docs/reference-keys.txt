@@ -1,3 +1,8 @@
+fig:unnamed-chunk-2
+fig:unnamed-chunk-27
+fig:unnamed-chunk-30
+fig:unnamed-chunk-66
+fig:unnamed-chunk-96
 emotions-in-online-customer-reviews
 dictionaries-for-nlp
 data-set
