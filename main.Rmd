@@ -1,0 +1,2747 @@
+--- 
+knit: "bookdown::render_book"
+site: bookdown::bookdown_site
+title: " "
+output_dir: "docs"
+documentclass: book
+bibliography: [book.bib, packages.bib]
+biblio-style: apalike
+link-citations: yes
+css: style.css
+---
+
+# (PART) About me {-}
+
+# Who I am? {-}
+
+```{r, out.width = "40%", echo = FALSE, fig.align = "center"}
+knitr::include_graphics("Graphics/my_picture.jpg")
+```
+
+
+<div style="text-align: justify"> 
+
+My name is Mirza Mujanović, I am an ever-curious, eager to learn and ready to adapt student in his third semester of Marketing master program at the Vienna University of Economics and Business. Originally, I come from Tuzla, Bosnia & Herzegovina, where I finished high school and first two semesters at the Faculty of Economics. In 2015, I moved to Vienna to study, and in 2019 completed a bachelor’s program in business administration at the Vienna University of Economics and Business (WU) in 2019. Currently, I hold a part-time position of teaching and eLearning assistant at the WU. Thinking of my future plans I see myself working in the field of data analytics or data science for marketing.
+
+
+</div>
+ 
+<div style="text-align: justify"> 
+
+Random facts about me:
+
+* Big basketball fan. Nowadays, fan of sports analytics.
+* Interested in psychology-related topics.
+* Used to collect old money together with my older sister. 
+* Favorite food: Bulgogi and pudding (but not together, of course!).
+
+
+
+::: {.infobox .download data-latex="{download}"}
+[You can download my CV here](CV/my_cv.pdf)
+:::
+
+
+
+</div>
+
+<!--chapter:end:index.Rmd-->
+
+---
+title: "Emotions_In_Online_Customer_Reviews"
+output:
+  html_document:
+    toc: yes
+    df_print: paged
+  html_notebook: default
+  pdf_document:
+    toc: yes
+---
+
+# (PART) My work {-}
+
+# Emotions In Online Customer Reviews 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(error= FALSE, message = FALSE, warning = FALSE, fig.align = "center")
+```
+
+```{r,echo=FALSE, fig.align='center', out.width="50%",fig.cap="Foto von Andrea Piacquadio von Pexels"}
+knitr::include_graphics("Graphics/emotions.jpg")
+```
+
+
+<div style="text-align: justify"> 
+
+Consumers usually seek quality and relevant information when buying new products. With the expansion and availability of the Internet, online consumer reviews have become a valuable resource to look at. Several studies tried to demystify relationship between product sales and online customer reviews. On the one hand, some of them, such as [Senecal and Nantel (2004)](https://www.researchgate.net/publication/222519112_The_Influence_of_Online_Product_Recommendations_on_Consumers'Online_Choices), suggest that participants who consulted product recommendations selected these products twice as often as those who did not consult recommendations. On the other hand, [Zhang and Dellarocas (2006)](https://www.researchgate.net/publication/227600950_Exploring_the_Value_of_Online_Product_Reviews_in_Forecasting_Sales_The_Case_of_Motion_Pictures) find that online reviews and do not influence sales and serve solely as prediction.
+
+Between these two opinion fronts, one thing is certain: both sides aim to find out how consumers perceive and process word-of-mouth in a digital environment. In the academic paper [The Role of Emotions for the Perceived Usefulness in Online Customer Reviews](#https://www.jstor.org/stable/pdf/20619095.pdf
+) authors suggests that emotions impact the helpfulness ratings, i.e., the quality of online reviews as perceived by other customers. They found that, on average, the most prominent emotion dimensions that influence helpfulness ratings are **trust, joy, and anticipation**. Inspired by these findings, I decided to apply natural language processing techniques to analyze online customer reviews of a bestselling product on Amazon and try to detect those emotions using available lexicons. Final insights will show us whether trust, joy and anticipation can be identified in the reviews, thus improve helpfulness of reviews for potential customers.
+
+</div>
+
+## What to expect in this article? {-}
+
+First, I will extract text via web-scrapping and form a corpus. Next, the text in the corpus will be pre-processed. Subsequently, from the pre-processed text will be stored in form of document-term-matrices or term-document matrices. Finally, an exploratory text analysis will be conducted and corresponding marketing implications pointed out.
+
+```{r,echo=FALSE}
+# Packages ----
+library(sentimentr)
+library(purrr)
+library(textdata)
+library(ggplot2)
+library(ggthemes)
+library(xml2)
+library(rvest)
+library(wordcloud)
+library(RColorBrewer)
+library(NLP)
+library(tm)
+library(tidytext)
+library(dplyr)
+library(tidyr)
+library(ggthemes)
+library(plotly)
+library(tidyverse)
+library(broom)
+library(remotes)
+library(janeaustenr)
+library(qdap)
+library(syuzhet)
+library(sjmisc)
+library(topicmodels)
+```
+
+## Dictionaries for NLP
+
+For this exercise I will use 3 different lexicons available for R.
+One of them is AFINN, a lexicon of words rated for valence between minus five (indicating negative valence) and plus five (indicating positive valence). Next, I will use NRC Emotion Lexicon, which consists of English words and their labels for eight basic emotions (anger, fear, anticipation, trust, surprise, sadness, joy, and disgust) and two sentiments (negative and positive).
+
+```{r}
+# Dictionaries ----
+afinn <- get_sentiments("afinn")
+bing <- get_sentiments("bing")
+loughran <- get_sentiments("loughran")
+nrc <- get_sentiment_dictionary('nrc', language = "english")
+```
+
+## Data set
+
+```{r,eval=FALSE, echo=FALSE}
+# Web scraping ----
+scraping <- function(ASIN, page_num){
+  
+  url_reviews <- paste0("https://www.amazon.com/product-reviews/",ASIN,"/?pageNumber=",page_num)
+  
+  doc <- read_html(url_reviews)
+  
+  # Review Title
+review_title <- doc %>% 
+    html_nodes("[class='a-size-base a-link-normal review-title a-color-base review-title-content a-text-bold']") %>%
+    html_text()
+  
+  # Review Text
+review_text <- doc %>% 
+    html_nodes("[class='a-size-base review-text review-text-content']") %>%
+    html_text()
+  
+  # Number of stars in review
+review_star <-  doc %>%
+    html_nodes("[data-hook='review-star-rating']") %>%
+    html_text()
+  
+  # Return a tibble
+  tibble(review_title,
+         review_text,
+         review_star,
+         page = page_num) %>% return()
+}
+
+#scraping(ASIN = "B087LW2KFG", page_num = 5)
+
+#----
+ASIN <- "B081FZV45H" # New Apple MacBook Pro (16-inch, 16GB RAM, 512GB Storage, 2.6GHz Intel Core i7) - Space Gray
+page_range <- 1:20 # Let's say we want to scrape pages 1 to 10
+
+# Create a table that scrambles page numbers using `sample()`
+# For randomising page reads!
+match_key <- tibble(n = page_range,
+                    key = sample(page_range,length(page_range)))
+
+lapply(page_range, function(i){
+  j <- match_key[match_key$n==i,]$key
+  
+  message("Getting page ",i, " of ",length(page_range), "; Actual: page ",j) # Progress bar
+  
+  Sys.sleep(3) # Take a three second break
+  
+  if((i %% 3) == 0){ # After every three scrapes... take another two second break
+    
+    message("Taking a break...") # Prints a 'taking a break' message on your console
+    
+    Sys.sleep(2) # Take an additional two second break
+  }
+  scraping(ASIN = ASIN, page_num = j) # Scrape
+}) -> output_list
+```
+
+
+For our analysis, we will use text of 200 online customer reviews from *Apple MacBook Pro (16-inch, 16GB RAM, 512GB Storage, 2.6GHz Intel Core i7)* obtained in unpre-processed form:
+
+```{r, echo=FALSE}
+# Load in data
+output_list <- readRDS("data/MacBook.rds")
+# Compile online customer reviews with corresponding page
+review <- bind_rows(output_list, .id = "page")
+# Transform the text to UTF-8 
+review$review_text <- iconv(review$review_text, 'utf-8', 'ascii', sub='')
+# Observe the text
+head(review$review_text,10)
+```
+
+## Corpus cleaning
+
+From the results above we could see that text contains unnecessary characters. Therefore, I will use some usual procedure to clean up the reviews' text and make it more understandable.
+
+For the purpose of this exercise and for efficiency reasons, we will use the volatile corpus, that stores the collection of documents in RAM memory. To create a volatile corpus, I need to pass reviews' text in such a form that each review text is interpretated as a document.
+
+```{r}
+# Creation of volatile corpus
+review.corpus <- VCorpus(VectorSource(review$review_text))
+```
+We see that the volatile corpus contains as many documents as many online reviews we collected.
+
+To undertake a custom transformation, I will use `tm` package and `content_transformer()` function.
+It takes a custom function as input, which defines what transformation needs to be done: 
+
+```{r}
+review.toSpace<- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+review.corpus <- tm_map(review.corpus, review.toSpace, "/") # remove "/"
+review.corpus <- tm_map(review.corpus, review.toSpace, "@") # remove "@"
+review.corpus <- tm_map(review.corpus, review.toSpace, "\\|") # remove "\\|"
+review.corpus <- tm_map(review.corpus, content_transformer(tolower)) # convert all capital letters to small
+review.corpus <- tm_map(review.corpus, removeNumbers) # convert all capital letters to small
+review.corpus <- tm_map(review.corpus, removeWords, stopwords("english")) # remove stop-words 
+review.corpus <- tm_map(review.corpus, removePunctuation) # remove punctuation
+review.corpus <- tm_map(review.corpus, stripWhitespace) # strip extra whitespace from a document
+```
+
+After cleaning the corpus, we can use document-term-matrix to store our cleaned corpus:
+
+```{r}
+review.dtm <- DocumentTermMatrix(review.corpus)
+```
+
+However, document-term-matrix is not the most suitable to work with, because it stores review texts in rows and terms frequencies in columns. We will transform it with `tidy` function:
+
+```{r}
+# Tidy up the document-term-matrix
+review.tidy <- tidy(review.dtm)
+review.tidy$count <-as.numeric(review.tidy$count) # Ensure correct class
+colnames(review.tidy)[2]<- 'word' # change name of the column from "term" to "word"
+review.tidy$document <- as.numeric(review.tidy$document) # Ensure correct class
+```
+
+Our tidy format has dimensions 6907 (the total number of terms) x 3 (document, term and count of the term in corresponding document):
+
+```{r}
+dim(review.tidy) # Dimensions
+head(review.tidy)# Display first 6 rows
+```
+
+## Visualisations of terms frequency
+
+### Bar charts with the most frequent terms
+
+We would be interested in the most frequent words used in customer reviews. Sometimes just a glimpse of the most frequent words is sufficient to get some insights. 
+
+Here we see that word "love" and "great" appears among most frequent terms.
+
+```{r}
+# Most frequent terms ----
+review.tdm <- TermDocumentMatrix(review.corpus)
+review.m <- as.data.frame.matrix(review.tdm)
+review.v <- sort(rowSums(review.m),decreasing=TRUE)
+word.names<-names(review.v)
+df.review.v<-data.frame(review.v,word.names)
+colnames(df.review.v)<-c("n","word")
+p<-ggplot(data=df.review.v[1:20,], aes(x=reorder(word,n), y=n)) +
+  geom_bar(stat="identity",fill="steelblue") + 
+  coord_flip() + 
+  ggtitle("20 most frequent words in customer reviews - MacBook Pro")+
+  xlab("Count")+
+  ylab("Word")+
+  theme_test()
+ggplotly(p)
+
+```
+
+### Wordcloud with the most frequent terms
+
+Similarly to the bar chart with the most frequent words, we could use **wordcloud** as well. It displays words from the corpus and signalizes their frequency by displaying more frequent words bigger relative to those that appear less frequently in the corpus. In the wordcloud below you can see 200 most frequent words, where the minimum frequency was set to 1.
+
+```{r,message=FALSE,warning=FALSE,error=FALSE}
+# Wordcloud
+review.tdm <- TermDocumentMatrix(review.corpus)
+review.m <- as.matrix(review.tdm)
+review.v <- sort(rowSums(review.m),decreasing=TRUE)
+review.d <- data.frame(word = names(review.v),freq=review.v)
+set.seed(1234)
+wordcloud(words = review.d$word, freq = review.d$freq, min.freq = 1,
+          max.words=200, random.order=FALSE, rot.per=0.35,
+          colors=brewer.pal(8, "Dark2"))
+```
+
+### The most frequent terms indicating emotions
+
+When it comes to anticipation, words such as "good","time","happy" or "powerful" indicates that this emotion can be identified among customer reviews. On the other hand, there are some words that could be a signal both for good and bad experience: "finally","money" or "wait". 
+
+```{r}
+# Anticipation words----
+nrc.anticipation <- subset(nrc, nrc$sentiment=="anticipation")
+review.anticipation.words <- inner_join(review.tidy, nrc.anticipation)
+review.anticipation.words <- count(review.anticipation.words, word)
+review.anticipation.words <- review.anticipation.words[order(review.anticipation.words$n,decreasing = TRUE),]
+p<-ggplot(data=review.anticipation.words[1:20,], aes(x=reorder(word,n), y=n)) +
+  geom_bar(stat="identity",fill="orange") + 
+  coord_flip() + 
+  ggtitle("20 most frequent anticipation words in customer reviews")+
+  xlab("Count")+
+  ylab("Word")+
+  theme_minimal()
+ggplotly(p)
+```
+
+Similarly to anticipation, now we observe a list of top 20 words that indicate trust. It reveals new quite frequent term in the corpus: "recommend". 
+
+```{r}
+# Trust words----
+nrc.trust <- subset(nrc, nrc$sentiment=="trust")
+review.trust.words <- inner_join(review.tidy, nrc.trust)
+review.trust.words <- count(review.trust.words, word)
+review.trust.words <- review.trust.words[order(review.trust.words$n,decreasing = TRUE),]
+p<-ggplot(data=review.trust.words[1:20,], aes(x=reorder(word,n), y=n)) +
+  geom_bar(stat="identity",fill="royalblue1") + 
+  coord_flip() + 
+  ggtitle("20 most frequent trust words in customer reviews")+
+  xlab("Count")+
+  ylab("Word")+
+  theme_minimal()
+ggplotly(p)
+```
+
+Although at the bottom of the list, "The top 20 list" of joy words displays some additional words that we did not observe previously such as "beautiful","gorgeous","wonderful","improvement","excellent".
+
+```{r}
+# Joy words ----
+nrc.joy <- subset(nrc, nrc$sentiment=="joy")
+review.joy.words <- inner_join(review.tidy, nrc.joy)
+review.joy.words <- count(review.joy.words, word)
+review.joy.words <- review.joy.words[order(review.joy.words$n,decreasing = TRUE),]
+p<-ggplot(data=review.joy.words[1:20,], aes(x=reorder(word,n), y=n)) +
+  geom_bar(stat="identity",fill="darkorange1") + 
+  coord_flip() + 
+  ggtitle("20 most frequent trust words in customer reviews")+
+  xlab("Count")+
+  ylab("Word")+
+  theme_minimal()
+ggplotly(p)
+```
+
+## Sentiment analysis
+
+### Polarity timeline
+
+One usual way to compare and quantify emotions in text is via polarity. We simply count number of unique words in each document (=review) labelled as negative and deduct from the count of unique positive words. For instance, the first review contains 2 unique positive words ("great" and "strong") and none negative unique words. Therefore, its polarity score is 2.
+
+This polarity timeline suggests very important implication: the reviews' sentiment is moving above the 0, bearly going even below +2, giving an indication that this product continuously meet customers' expectations. That is a good signal to believe that customers are rather satisfied with the product.    
+
+```{r}
+# Polarity timeline ----
+review.sentiment <- inner_join(review.tidy, bing)
+review.sentiment <- count(review.sentiment, sentiment, index=document)
+review.sentiment <- spread(review.sentiment, sentiment, n, fill=0)
+review.sentiment$polarity <- review.sentiment$positive - review.sentiment$negative
+review.sentiment$pos <- ifelse(review.sentiment$polarity >=0, "Positive", "Negative")
+p<-ggplot(review.sentiment, aes(x=index, y=polarity, fill=pos))+geom_bar(stat="identity", position="identity", width=1)+theme_gdocs()+ggtitle(label="Polarity timeline")
+ggplotly(p)
+
+# Smooth curve
+review.smooth <- ggplot(review.sentiment, aes(index, polarity))
+p<-review.smooth + stat_smooth() + theme_gdocs() + ggtitle("Polarity timeline - smooth")
+ggplotly(p)
+
+```
+
+In the polarity graph at index 81 we identify a review with sentiment score of even 34! This seems to be a thrilled customer every brand loves! Let us take closer look:
+
+```{r}
+review.sentiment <- inner_join(review.tidy, bing)
+doc_81<-filter(review.sentiment, document=="81")
+head(doc_81[order(doc_81$count,decreasing = T),])
+```
+
+Finally, it certainly pays off to check the actual review:
+
+```{r, out.width="50%"}
+# Outlier in polarity score
+review$review_text[81]
+```
+
+It seems that our assumption was correct! The customer was definitely thrilled! This is a nice example how you can identify and take closer look at reviews that stand out based on its polarity score.
+
+### Analysis on sentence-level
+
+Text analysis provides freedom to choose level of observation. So far, we explored words and their frequencies, we explored customer reviews and quantified their sentiment in two dimensions (positive and negative). Next, we will approach the task of identifying the most negative and positive reviews by organizing text by sentences. By doing so, we will directly access those sentences whose average sentiment stand out.   
+
+```{r}
+# Calculating the average sentiment
+review.highlighted<-review$review_text%>%
+  get_sentences() %>%
+  sentiment_by()
+head(review.highlighted)
+```
+
+```{r}
+# Preparing data
+review.score <- subset(review.highlighted, select = c("ave_sentiment","element_id"))
+review.worst <- review.score[order(review.score$ave_sentiment,decreasing = FALSE),]
+review.worst<-review.worst$element_id[1:10]
+review.best <- review.score[order(review.score$ave_sentiment, decreasing = TRUE),]
+review.best <- review.best$element_id[1:10]
+sentences<-review$review_text %>% get_sentences()
+sentences<-as.matrix(sentences)
+```
+
+And here we have "the worst 10 sentences" from customer reviews;
+```{r}
+# 10 worst sentences
+sentences[review.worst]
+```
+Despite the fact that positive sentiment prevails, we see that there are certain problems associated with MacBook laptop. Issues with screen, problems with woofers, disappointment that there are no ports, unsatisfying value-price ratio.
+
+```{r}
+# 10 most positive sentences
+sentences[review.best]
+```
+If we take a look at "10 most positive sentences" from customer reviews, we would find a similar evidence as we obtained with polarity score. However, by reading those sentences a reader can have better feeling what the reviewer is actually satisfied or unsatisfied with. Here we see that some people admire the speed for instance.
+
+### What are the most emotional reviews?
+
+Package `sentimentr` provides nice function `emotion()` which uses a dictionary to find emotion words and then compute the rate per sentence. The final emotion score ranges between 0 (no emotion used) and 1 (all words used were emotional).
+
+```{r}
+# Extract emotions terms
+reviews.emotion <- review$review_text %>% get_sentences() %>% emotion()
+
+# Top 50 sentences with the highest emotion score 
+top_emotional_sentences <- unique(reviews.emotion[order(reviews.emotion$emotion,decreasing = TRUE),]$element_id[1:50])
+
+# The most emotional reviews
+sentences[top_emotional_sentences,]
+```
+
+We can see that identified sentences very clearly reflect emotions that customers expressed. It seems that intensity of emotions is high in both positive and negative direction.
+
+Finally, we can plot detected emotions in order to get a bit more clear insight in emotional structure detected in the reviews:
+
+```{r, out.width="100%",message=FALSE,error=FALSE,warning=FALSE}
+# Plot of emotion
+p<-plot(reviews.emotion,
+     transformation.function = syuzhet::get_dct_transform,
+     drop.unused.emotions = TRUE, facet = TRUE)
+ggplotly(p)
+```
+
+<div style="text-align: justify"> 
+
+This plot depicts emotional inclination of the reviews. Curves indicating emotional propensity of trust, joy and anticipation suggest strong inclination towards mentioned emotions. In line with the academic paper [The Role of Emotions for the Perceived Usefulness in Online Customer Reviews](https://www.jstor.org/stable/pdf/20619095.pdf), we have found an evidence that online reviews analyzed encode emotions contributing to the higher helpfulness rating, i.e. quality of reviews.
+
+In the end, it is important to mention that the role and influence of emotions defined by Plutchik on the quality of reviews differ across different product categories. 
+
+</div> 
+
+
+
+<!--chapter:end:01-Emotions_In_Online_Customer_Reviews.Rmd-->
+
+---
+title: '"CO2mustGO" Iniciative'
+---
+
+# Twitter Analysis for CO2mustGo initiative
+
+```{r, echo=FALSE, error=FALSE, message=FALSE, warning=FALSE}
+library(shinycssloaders)
+library(reshape2)
+library(ggplot2)
+library(dplyr)
+library(rvest)
+library(plotly)
+library(scales)
+library(tidyverse)
+library(wesanderson)    
+library(shiny)
+library(shinydashboard)
+library(twitteR)
+library(rtweet)
+library(sentimentr)
+library(tidyverse)
+library(rvest)
+library(purrr)
+library(devtools)
+library(textdata)
+library(ggplot2)
+library(ggthemes)
+library(xml2)
+library(qdap)
+library(rvest)
+library(wordcloud)
+library(RColorBrewer)
+library(NLP)
+library(tm)
+library(tidytext)
+library(dplyr)
+library(tidyr)
+library(ggthemes)
+library(plotly)
+library(tidyverse)
+library(broom)
+library(remotes)
+library(janeaustenr)
+library(qdap)
+library(glue)
+library(syuzhet)
+library(rtweet)
+library(ggplot2)
+library(igraph)
+library(ggraph)
+library(widyr)
+library(syuzhet)
+```
+
+## What is CO2mustGO? {-}
+
+```{r,echo=FALSE, fig.align='center', out.width="50%",fig.cap="Foto von Andrea Piacquadio von Pexels"}
+knitr::include_graphics("Graphics/CO2.jpg")
+```
+<div style="text-align: justify"> 
+
+At the beginning of 2020 I heared that my working colleagues from another institute at the WU have launched an initiative called CO2mustGO initiative. The initiative aims to gather multinational group of students, researchers and teachers from the Vienna University of Economics and Business and other universities around Europe, to unite around the single issue of carbon price. This project started as a university course, with the vision of uniting students and scientists in an international movement supporting every serious carbon price initiative globally. Since my hometown, Tuzla, [heavily suffers from the air pollution](http://unmaskmycity.org/project/tuzla/#:~:text=The%20Tuzla%20Thermal%20Power%20Plant%20is%20one%20of%20the%20ten,the%20largest%20source%20of%20PM2.), I felt that I should give my contribution to this initiative and joined them in April 2020. I decided to support it with my R programming skills. Consequently, I ended up analyzing Twitter data, as it is one of the hot-spots for this topic.
+
+My role was to spark interest of stakeholders regarding this issue by using data available. Therefore, my tasks were related to using R to create understandable visualizations and to make use of Twitter data available.  
+
+</div> 
+
+
+```{r, echo=FALSE,fig.align='center',out.width="100%",warning=FALSE,error=FALSE, message=FALSE,fig.cap="Energy production capacities in the EU",eval=FALSE}
+# Packages
+
+library(networkD3)
+library(tidyr)
+library(tidyverse)
+library(plotly)
+
+# Major
+table <- read.csv("data/capacity_data.csv", stringsAsFactors = T)
+```
+
+## Sankey diagram: Energy production capacity
+
+```{r, echo=TRUE,fig.align='center',out.width="100%",warning=FALSE,error=FALSE, message=FALSE,eval=FALSE}
+# Creation of source
+table$typ_11 <- factor(table$typ_11,levels = c("c1","c2","g1","g2","g3","g4","n","o1","o2","o3","o4","r1","res"),labels = c("0","1","2","3","4","5","6","7","8","9","10","11","12"))
+source1 <- as.vector.factor(table$typ_11)
+source1 <- as.numeric(source1)
+
+#Country as mediator
+table2 <- table
+table2$country<-as.character(table2$country)
+table2$country[table$country=="AT"] <- 14
+table2$country[table$country=="BE"] <- 15
+table2$country[table$country=="BG"] <- 16
+table2$country[table$country=="CH"] <- 17
+table2$country[table$country=="CY"] <- 18
+table2$country[table$country=="CZ"] <- 19
+table2$country[table$country=="DE"] <- 20
+table2$country[table$country=="DK"] <- 21
+table2$country[table$country=="EE"] <- 22
+table2$country[table$country=="ES"] <- 23
+table2$country[table$country=="FI"] <- 24
+table2$country[table$country=="FR"] <- 25
+table2$country[table$country=="GR"] <- 26
+table2$country[table$country=="HR"] <- 27
+table2$country[table$country=="HU"] <- 28
+table2$country[table$country=="IE"] <- 29
+table2$country[table$country=="IT"] <- 30
+table2$country[table$country=="LT"] <- 31
+table2$country[table$country=="LU"] <- 32
+table2$country[table$country=="LV"] <- 33
+table2$country[table$country=="NL"] <- 34
+table2$country[table$country=="NO"] <- 35
+table2$country[table$country=="PL"] <- 36
+table2$country[table$country=="PT"] <- 37
+table2$country[table$country=="RO"] <- 38
+table2$country[table$country=="SE"] <- 39
+table2$country[table$country=="SI"] <- 40
+table2$country[table$country=="SK"] <- 41
+table2$country[table$country=="UK"] <- 42
+target1<- table2$country
+
+#Creation of mediator(country),source and value
+value <- table2 %>% group_by(country,typ_11) %>%
+  count(mw_2018)
+
+#1st part of Target
+target1 <- value$country
+target1<-as.numeric(target1)
+
+#1st part of Value
+value1<-value$mw_2018
+
+#Creation of the final target
+value.df <-table2 %>% group_by(country)%>% summarise(sum(mw_2018))
+value.df$country<-as.numeric(value.df$country)
+
+#2nd part of Source(from countries to total capacity)
+target1.2 <-value.df$country
+
+#2nd part of Values (total of countries to the grand total)
+value1.2<-value.df$`sum(mw_2018)`
+
+#Final target
+
+ft<-rep(13,29)
+final_target <- c(target1,ft)
+
+#final source
+final_soruce <-c(source1,target1.2)
+
+#final value
+final_value <-c(value1,value1.2)
+
+fig <- plot_ly(
+  type = "sankey",
+  orientation = "h",
+  valuesuffix = "MW",
+  arrangement = "snap",
+  node = list(
+    label = c(
+      "Coal-lignite", # Node 0
+      "Coal-hard", # Node 1
+      "G1-gas", # Node 2
+      "G2-gas", # Node 3
+      "G3-gas", # Node 4
+      "G4-gas", # Node 5
+      "Nunclear",  # Node 6
+      "O1-oil", # Node 7
+      "O2-oil", # Node 8
+      "O3-oil", # Node 9
+      "O4-oil", # Node 10
+      "Renewables",# Node 11
+      "Hydro", # Node 12
+      "Total capacity", # Node 13
+      "AT",#Node 14
+      "BE",#Node 15
+      "BG",#Node 16
+      "CH",#Node 17
+      "CY",#Node 18
+      "CZ",#Node 19
+      "DE",#Node 20
+      "DK",#Node 21
+      "EE",#Node 22
+      "ES",#Node 23
+      "FI",#Node 24
+      "FR",#Node 25
+      "GR",#Node 26
+      "HR",#Node 27
+      "HU",#Node 28
+      "IE",#Node 29
+      "IT",#Node 30
+      "LT",#Node 31
+      "LU",#Node 32
+      "LV",#Node 33
+      "NL",#Node 34
+      "NO",#Node 35
+      "PL",#Node 36
+      "PT",#Node 37
+      "RO",#Node 38
+      "SE",#Node 39
+      "SI",#Node 40
+      "SK",#Node 41
+      "UK")),#Node 42
+  link = list(
+    source = final_soruce,
+    target = final_target,
+    value = final_value))
+
+total.capacity <- fig %>% layout(title = "Energy Production Capacity in the EU")
+total.capacity
+
+```
+
+```{r, echo=FALSE,fig.align='center',out.width="100%",warning=FALSE,error=FALSE, message=FALSE,fig.cap="Energy production capacities in the EU"}
+library(widgetframe)
+new <- readRDS("data/total.capacity.rds")
+new
+```
+<div style="text-align: justify"> 
+
+In order to depict the nature of energy production facilities across EU countries, I created this sankey diagram. On the left side, you can see types of energy sources across the EU countries (data is not updated). In the middle, you can see respective countries. Finally, on the right you see the total of energy production. Especially nice feature of the visualization is the interactive component, so that, for instance, using "Box select" option, you can merge certain number of components of the same type (e.g., select 3 sources of energy) and the visualization changes accordingly.
+
+</div> 
+
+
+## Twitter data analysis {-}
+
+<div style="text-align: justify"> 
+
+Twitter is nowadays among platforms that host strong communities. Carbon footprint and its repercussions belongs to prominent climate issue. Consequently, I decided to analyze Tweets downloaded via Twitter API on on 10.06.2020. The aim was simply to explore data about tweets with hashtags #carbonfootprint or #co2 and try to draw conclusions on how to approach social media presence on Twitter.
+
+</div> 
+
+
+### Data
+
+Our data was stored in CSV format.`rtweet` package provides nice function to read in data conveniently.
+
+```{r,error=FALSE, message=FALSE, warning=FALSE}
+#library(rtweet)
+
+# Read in Tweets data
+carbon_tweets <- read_twitter_csv("data/#carbonfootprintOR#greenhouse-tweets.csv", unflatten = T)
+
+
+# Delete empty columns
+carbon_tweets <- carbon_tweets[, colSums(is.na(carbon_tweets)) != nrow(carbon_tweets)]
+
+# Head of the data set
+dim(carbon_tweets)
+```
+Our data set contains 1858 Tweets and 86 features.
+
+## Text cleaning and preprocessing
+
+Tweets text in our data set requires some preprocessing and cleaning as it contains elements that are not helpful for our analysis.
+
+```{r,error=FALSE, message=FALSE, warning=FALSE}
+# Text cleaning 
+carbon_tweets$stripped_text <- gsub("https\\S*","",  carbon_tweets$text)
+carbon_tweets$stripped_text <- gsub("@\\S*","", carbon_tweets$stripped_text)
+carbon_tweets$stripped_text <- gsub("amp","",carbon_tweets$stripped_text)
+carbon_tweets$stripped_text <- gsub("[\r\n]","",carbon_tweets$stripped_text)
+carbon_tweets$stripped_text <- gsub("[[:punct:]]", "",carbon_tweets$stripped_text)
+
+# Text to lowercase, punctuation removed, frequency of the each word added
+carbon_tweets_clean <- carbon_tweets %>%
+  dplyr::select(stripped_text) %>%
+  unnest_tokens(word, stripped_text)
+
+# Remove stop words
+data("stop_words")
+carbon_tweets_words <- carbon_tweets_clean %>%
+  anti_join(stop_words)
+
+```
+
+## Tweets distribution
+
+Since our data set contains information about the time Tweets are posted, I was interested to see the distribution of Tweets in the given period. 
+
+```{r,error=FALSE, message=FALSE, warning=FALSE}
+# Distribution of tweets considered in the data.
+
+search_term <- '#carbonfootprint OR #co2'
+by <- 'hour'
+p <- ts_plot(carbon_tweets, by = by, trim = 2) + geom_point(col = "#00acee") + theme_minimal() + labs(title = paste0("Tweets with ",search_term," by ",by),x = 'Date', y = 'Count')
+ggplotly(p)
+```
+
+The period captured in our data set is from 15:00 on 2nd of June to 11:00 A.M. on 10th of June. Interestingly enough, there was certain occasion on 6th of June important for our topic. We see from the number of Tweets with hashtags #carbonfootprint or #co2, which stood at 43! This happening has to be more closely analyzed.
+
+
+## Word Frequency in Tweets  
+
+Next, I wanted to inspect the word frequency in the Tweets from the data set. 
+
+```{r,error=FALSE, message=FALSE, warning=FALSE}
+p <- carbon_tweets_words %>%
+  dplyr::count(word, sort=T) %>%
+  top_n(10) %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(x = word, y = n)) +
+  geom_col(fill="deepskyblue") +
+  theme_minimal()+
+  xlab(NULL) +
+  coord_flip() +
+  labs(x = "Count",
+       y = "Unique words",
+       title = "Count of unique words found in tweets")
+ggplotly(p)
+```
+
+Generally, no major surprises regarding the most frequent words. It can be noted that term "worldenvironmentday" appears frequently as the World Environment Day is on 5th of June.
+
+##  Word Network in Tweets 
+
+Knowing that Tweets are short messages, I decided to inspect word network in order to possibly observe some unusual word combinations. The word network is made based on bi-grams. Basically, based on the number of times two words shows up together.
+
+```{r, error=FALSE, message=FALSE, warning=FALSE}
+# Remove punctuation, convert to lowercase, add id for each tweet!
+carbon_tweets_paired_words <- carbon_tweets %>%
+  dplyr::select(stripped_text) %>%
+  unnest_tokens(paired_words, stripped_text, token = "ngrams", n = 2)
+
+#library(tidyr)
+carbon_tweets_separated_words <- carbon_tweets_paired_words %>%
+  separate(paired_words, c("word1", "word2"), sep = " ")
+
+carbon_tweets_filtered <- carbon_tweets_separated_words %>%
+  filter(!word1 %in% stop_words$word) %>%
+  filter(!word2 %in% stop_words$word)
+
+carbon_words_counts <- carbon_tweets_filtered %>%
+  dplyr::count(word1, word2, sort = TRUE)
+
+#library(igraph)
+#library(ggraph)
+
+# Plot carbon change word network
+p<- carbon_words_counts %>%
+  filter(n >=30) %>%
+  graph_from_data_frame() %>%
+  ggraph(layout = "fr") +
+  geom_edge_link(aes(edge_alpha = 0.5, edge_width = n)) +
+  geom_node_point(color = "darkslategray4", size = 3) +
+  geom_node_text(aes(label = name), vjust = 1.8, size = 3) +
+  labs(title = "Word Network: Tweets using the hashtag #carbonfootprint or #co2",
+       subtitle = "Text mining twitter data ",
+       x = "", y = "")
+p
+```
+
+```{r,eval=FALSE, error=FALSE, message=FALSE, warning=FALSE,echo=FALSE,out.width="90%",fig.align='center'}
+knitr::include_graphics("Graphics/wordnetwork.PNG")
+```
+
+```{r,echo=FALSE, eval=FALSE}
+::: {.infobox .graph data-latex="{graph}"}
+[The plot doesn't load? Check it out here](https://raw.githubusercontent.com/MirzaMujanovic/Mirza_Mujanovic_Portfolio/master/Graphics/wordnetwork.png).
+:::
+```
+
+
+
+<div style="text-align: justify"> 
+
+An interesting observation is that the word network shows the word **"justiceforvinayaki"** appering together with **"climatecrisis"**. More specifically, "justiceforvinayaki" is actually a hashtag related to the story behind the pregnant elephant's killing in Kerala's Palakkad. More you can read [here](https://zeenews.india.com/india/justiceforvinayaki-story-behind-the-pregnant-elephants-killing-in-keralas-palakkad-2288223.html).
+
+</div> 
+
+## Wordcloud 
+
+In order to get a bigger picture of frequent terms in Tweets, I created a wordcloud.
+
+```{r, error=FALSE, message=FALSE, warning=FALSE}
+# Text preparation
+carbon_tweets$stripped_text <- iconv(carbon_tweets$stripped_text, 'utf-8', 'ascii', sub='')
+review.docs <- Corpus(VectorSource(carbon_tweets$stripped_text))
+review.toSpace<- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+review.docs <- tm_map(review.docs, review.toSpace, "/")
+review.docs <- tm_map(review.docs, review.toSpace, "@")
+review.docs <- tm_map(review.docs, review.toSpace, "\\|")
+review.docs <- tm_map(review.docs, content_transformer(tolower))
+review.docs <- tm_map(review.docs, removeNumbers)
+review.docs <- tm_map(review.docs, removeWords, stopwords("english"))
+my_list <- c("carbonfootprint","greenhouse","can","will","wont")
+review.docs <- tm_map(review.docs, removeWords,my_list)
+review.docs <- tm_map(review.docs, content_transformer(tolower))
+review.docs <- tm_map(review.docs, removePunctuation)
+review.docs <- tm_map(review.docs, stripWhitespace)
+review.tdm <- TermDocumentMatrix(review.docs)
+review.m <- as.matrix(review.tdm)
+review.v <- sort(rowSums(review.m),decreasing=TRUE)
+review.d <- data.frame(word = names(review.v),freq=review.v)
+set.seed(1234)
+wordcloud(words = review.d$word, freq = review.d$freq,
+               max.words = 200,
+               min.freq = 10,
+               random.order=FALSE, rot.per=0.15,
+               colors=brewer.pal(8, "Dark2"), scale=c(8,.3), vfont=c("sans serif","plain"))
+```
+
+```{r,echo=FALSE, out.width="90%",fig.align='center',eval=FALSE}
+knitr::include_graphics("Graphics/wordcloud_twitter.PNG")
+```
+```{r,echo=FALSE,eval=FALSE}
+::: {.infobox .graph data-latex="{graph}"}
+[The plot doesn't load? Check it out here](https://raw.githubusercontent.com/MirzaMujanovic/Mirza_Mujanovic_Portfolio/master/Graphics/wordcloud_twitter.png).
+:::
+```
+
+
+
+
+Minimum word frequency is set to 10, and the wordcloud depicts 200 most frequent terms. 
+
+As you probably already know, Twitter is a place where discussions are going on frequently. Therefore, it made sense to try to reorganize the wordcloud to indicate positive vs negative terms.
+
+```{r, error=FALSE, message=FALSE, warning=FALSE,results='hide'}
+library(wordcloud) 
+library(reshape2)
+par(mar = rep(0, 4))
+set.seed(1234)
+p<-carbon_tweets_words%>%
+  inner_join(get_sentiments("bing")) %>%
+  count(word, sentiment,sort = TRUE) %>%
+  acast(word ~ sentiment, value.var = "n", fill = 0) %>%
+  comparison.cloud(colors = c("darkred","darkgreen"),
+                   max.words = 400,
+                   min.freq= 10,
+                   scale = c(4.0,0.25))
+p
+```
+
+```{r,echo=FALSE, out.width="80%",fig.align='center',eval=FALSE}
+library(knitr)
+knitr::include_graphics("Graphics/wordcloud_neg_pos_twitter.PNG")
+```
+
+```{r,echo=FALSE,eval=FALSE}
+::: {.infobox .graph data-latex="{graph}"}
+[The plot doesn't load? Check it out here](https://raw.githubusercontent.com/MirzaMujanovic/Mirza_Mujanovic_Portfolio/master/Graphics/wordcloud_neg_pos_twitter.PNG).
+:::
+
+```
+
+
+
+## Word associations
+
+With the function `findAssocs()` we are able to inspect correlation between given term and every other word in our term-document-matrix. Strong associations are indicated with numbers closer to 1, while weaker associations are closer to 0. In addition, the function enables setting a cut-off threshold, so that, for instance, it extracts just correlations higher or equal than 0.6.
+
+```{r,error=FALSE,message=FALSE,warning=FALSE}
+library(cowplot)
+library(ggplot2)
+library(ggthemes)
+tdm <- TermDocumentMatrix(review.docs, control=list(weighting=weightTf))
+```
+
+
+```{r}
+# Association with the term "globalwarming"
+associations <- findAssocs(tdm,terms="globalwarming", corlimit=0.6)
+associations <- as.data.frame(associations)
+associations$terms <- row.names(associations)
+associations$terms <- factor(associations$terms, levels=associations$terms)
+
+assoc_globalwarming <- ggplot(associations, aes(y=terms)) + geom_point (aes(x=globalwarming), data=associations, size=0.01)+
+  theme_gdocs()+ geom_text(aes(x=globalwarming, label=globalwarming),
+                           colour="red", hjust=-.5, size=3)+
+  labs(title = "Terms correlated with the term 'globalwarming' (corr > 0.6)")+
+  theme(text=element_text(size=8), 
+        axis.title.y=element_blank())
+ggplotly(assoc_globalwarming)
+```
+
+```{r}
+# Association with the term "lose"
+associations <- findAssocs(tdm,terms="lose", corlimit=0.6)
+associations <- as.data.frame(associations)
+associations$terms <- row.names(associations)
+associations$terms <- factor(associations$terms, levels=associations$terms)
+
+assoc_lose <- ggplot(associations, aes(y=terms)) + geom_point (aes(x=lose), data=associations, size=0.01)+
+  theme_gdocs()+ geom_text(aes(x=lose, label=lose),
+                           colour="red", hjust=-.5, size=3)+
+  labs(title = "Terms correlated with the term 'lose' (corr > 0.6)")+
+  theme(text=element_text(size=8), 
+        axis.title.y=element_blank())
+ggplotly(assoc_lose)
+```
+
+
+## LDA
+
+We could try to break collection of tweets into several topics, so that we can independently understand what topics tweets are associated with. Topic modeling is a tool for unsupervised classification of certain documents that finds natural groups of topics even though we are not sure what we are searching for.
+
+```{r,error=FALSE,warning=FALSE,message=FALSE}
+# Libraries
+library(sjmisc)
+library(topicmodels)
+library(ldatuning)
+# Document Term Matrix
+review.dtm <- DocumentTermMatrix(review.docs)
+burnin = 1000
+iter = 10000
+keep = 50
+set.seed(510)
+raw.sum=apply(review.dtm,1,FUN=sum) #sum by raw each raw of the table
+review.dtm = review.dtm[raw.sum!=0,]
+lda_basic.model<- LDA(review.dtm, k = 4L, method = "Gibbs",
+                      control = list(burnin = burnin, iter = iter, keep = keep, alpha = 0.01))
+lda.terms <- as.matrix(terms(lda_basic.model, 10))
+lda.terms<- iconv(lda.terms, 'utf-8', 'ascii', sub='')
+top10termsPerTopic <- terms(lda_basic.model, 10)
+top10termsPerTopic <- iconv(lda.terms, 'utf-8', 'ascii', sub='')
+colnames(top10termsPerTopic)<-c("Renewable sources of energy","Carbonfootprint emissions","Carbonfootprint by businesses","Global warming")
+top10termsPerTopic
+```
+
+We could identify 4 topics such as:
+
+* Renewable resources
+* Carbonfootprint emissions
+* Carbonfootprint by and sustainability in business
+* Climate and environment crisis caused by global warming
+
+
+## Sentiment analysis
+
+Knowing the nature of the carbon footprint relatFed topics and based on the previous assumption about vivid discussions on Twitter, an analysis of emotions in Tweets would help us in opinion mining.
+
+```{r, error=FALSE, message=FALSE, warning=FALSE}
+# Sentiment analysis 
+sentiment <- carbon_tweets[,3:5] %>% unnest_tokens(output = 'word', input = 'text')
+
+#Add sentiment dataset
+sentiment_dataset <- get_sentiments("afinn")
+sentiment_dataset <- arrange(sentiment_dataset, -value)
+
+#Merge
+sentiment <- merge(sentiment, sentiment_dataset, by = 'word')
+
+#Clean
+sentiment$word <- NULL
+sentiment$screen_name <- NULL
+
+#Time
+sentiment$hour <- format(base::round.POSIXt(sentiment$created_at, units="hours"), format="%H:%M")
+
+#Pivot
+pivot <- sentiment %>%
+  group_by(hour) %>%
+  summarise(sentiment = mean(value))
+
+
+#Plot
+p <- ggplot(pivot[-1,], aes(x = hour, y = sentiment)) + geom_line(group = 1, color="deepskyblue") + geom_point() + theme_minimal() + labs(title = paste0('Average sentiment of tweetings mentioning "',search_term,'"'),x = 'Date', y = 'Sentiment', caption = 'Source: Twitter API')
+
+ggplotly(p)
+```
+
+The visualisation above depicts the average sentiment score of Tweets during a day. It seems that at 10:00 and 15:00 Tweets tend to be less positive than at 17:00 for instance. This information helps for scheduling Tweets so that they don't get caught in the "bad moment".
+
+## Visualize the emotions
+
+In order to decide what sort of discussion was going on the period of observation, we can visualise the count of words indicating emotions.
+
+```{r, error=FALSE, message=FALSE, warning=FALSE}
+# Get sentiments using the four different lexicons
+syuzhet <- get_sentiment(carbon_tweets$stripped_text, method="syuzhet")
+bing <- get_sentiment(carbon_tweets$stripped_text, method="bing")
+afinn <- get_sentiment(carbon_tweets$stripped_text, method="afinn")
+nrc <- get_sentiment(carbon_tweets$stripped_text, method="nrc")
+sentiments <- data.frame(syuzhet, bing, afinn, nrc)
+
+# get the emotions using the NRC dictionary
+nrc.sentiment <- get_nrc_sentiment(carbon_tweets$stripped_text)
+emo_bar = colSums(nrc.sentiment)
+emo_sum = data.frame(count=emo_bar, emotion=names(emo_bar))
+emo_sum$emotion = factor(emo_sum$emotion, levels=emo_sum$emotion[order(emo_sum$count, decreasing = TRUE)])
+
+# Visualize the emotions from NRC sentiments
+plot_ly(emo_sum, x=~emotion, y=~count, type="bar", color=~emotion) %>%
+  layout(xaxis=list(title=""), showlegend=FALSE,
+         title="Distribution of emotion categories")
+```
+
+It seems that positivity, trust, anticipation and joy are far more present in Tweets than emotions usually associated with something negative.
+
+Again, we can organize wordcloud so that it does not show just positive or negative words, but rather words associated with corresponding emotion.
+
+```{r, error=FALSE, message=FALSE, warning=FALSE, results='hide'}
+# Comparison word cloud
+all = c(
+  paste(carbon_tweets$stripped_text[nrc.sentiment$anger > 0], collapse=" "),
+  paste(carbon_tweets$stripped_text[nrc.sentiment$anticipation > 0], collapse=" "),
+  paste(carbon_tweets$stripped_text[nrc.sentiment$disgust > 0], collapse=" "),
+  paste(carbon_tweets$stripped_text[nrc.sentiment$fear > 0], collapse=" "),
+  paste(carbon_tweets$stripped_text[nrc.sentiment$joy > 0], collapse=" "),
+  paste(carbon_tweets$stripped_text[nrc.sentiment$sadness > 0], collapse=" "),
+  paste(carbon_tweets$stripped_text[nrc.sentiment$surprise > 0], collapse=" "),
+  paste(carbon_tweets$stripped_text[nrc.sentiment$trust > 0], collapse=" ")
+)
+all <- removeWords(all, stopwords("english"))
+# create corpus
+corpus = Corpus(VectorSource(all))
+#
+# create term-document matrix
+tdm = TermDocumentMatrix(corpus)
+#
+# convert as matrix
+tdm = as.matrix(tdm)
+tdm1 <- tdm[nchar(rownames(tdm)) < 11,]
+#
+# add column names
+colnames(tdm) = c('anger', 'anticipation', 'disgust', 'fear', 'joy', 'sadness', 'surprise', 'trust')
+colnames(tdm1) <- colnames(tdm)
+comparison.cloud(tdm1, random.order=FALSE,
+                 colors = c("#00B2FF", "red", "#FF0099", "#6600CC", "green", "orange", "blue", "brown"), title.size=1, max.words=250, scale=c(2.5, 0.4),rot.per=0.4)
+
+```
+
+```{r,echo=FALSE, out.width="80%", fig.align='center',eval=FALSE}
+knitr::include_graphics("Graphics/comparison_cloud.PNG")
+```
+
+```{r,eval=FALSE,echo=FALSE}
+::: {.infobox .graph data-latex="{graph}"}
+[The plot doesn't load? Check it out here](https://raw.githubusercontent.com/MirzaMujanovic/Mirza_Mujanovic_Portfolio/master/Graphics/comparison_cloud.PNG).
+:::
+```
+
+
+## Top retweeted Tweets
+
+### Top retweets (with equal or more than 60 mentions) {-}
+
+Next task was to identify Tweets that stand out. The graph below helped me to identify days on which certain Tweets were re-tweeted substaintially more than usually. 
+
+```{r, error=FALSE, message=FALSE, warning=FALSE}
+# Select top retweeted tweets
+selected <- which(carbon_tweets$retweet_count >= 60)
+
+# Plot 
+dates <-as.POSIXct(strptime(carbon_tweets$created_at, format="%Y-%m-%d"))
+plot(x=dates, y=carbon_tweets$retweet_count, type="l", col="grey",
+     xlab="Date", ylab="Times retweeted")
+colors <- rainbow(10)[1:length(selected)]
+points(dates[selected], carbon_tweets$retweet_count[selected],
+       pch=19, col=colors)
+```
+
+```{r,echo=FALSE, out.width="80%", fig.align="center",eval=FALSE}
+library(knitr)
+knitr::include_graphics("Graphics/retweeted_1_twitter.PNG")
+```
+```{r,eval=FALSE,echo=FALSE}
+::: {.infobox .graph data-latex="{graph}"}
+[The plot doesn't load? Check it out here](https://raw.githubusercontent.com/MirzaMujanovic/Mirza_Mujanovic_Portfolio/master/Graphics/retweeted_1_twitter.PNG).
+:::
+```
+
+
+### Interactive graph with retweets' text {-}
+
+In this interactive graph I manage to identify Tweets with their text that were re-tweeted frequently. If you hover over big sky-blue points you will see the actual text of each Tweet.
+
+```{r,error=FALSE, message=FALSE, warning=FALSE}
+# Plotly
+carbon_tweets$created_at <-as.POSIXct(strptime(carbon_tweets$created_at, format="%Y-%m-%d"))
+p<-ggplot(carbon_tweets, aes(x=created_at, y=retweet_count, col=retweet_count, size=retweet_count, retweet_text=retweet_text, created_at=created_at, retweet_name=retweet_name))+geom_point() +xlab(label="Date")+ylab(label="Retweet count")+ggtitle(label="Top retweeted tweets")
+
+ggplotly(p,tooltip = c("retweet_text","retweet_name"))
+```
+The most re-tweeted Tweet comes from [Forest Products Resolute](https://www.resolutefp.com/en/?langtype=4105), which is a global leader in the forest products industry with a diverse range of products, including market pulp, tissue, wood products and papers, which are marketed in close to 70 countries. They tweeted that they are going to take decisive actions towards lowering carbon footprint.
+
+## Network of retweets
+
+Finally, I decided to explore the network of the Tweets in order to identify some communities on Twitter that the initiative could potentially join.
+
+```{r,error=FALSE, message=FALSE, warning=FALSE}
+# Create data frame for the network
+rt_df <- carbon_tweets[, c("screen_name" , "retweet_screen_name" )]
+
+# Remove rows with missing values
+rt_df_new <- rt_df[complete.cases(rt_df), ]
+
+# Convert to matrix
+matrx <- as.matrix(rt_df_new)
+
+# Create the retweet network
+nw_rtweet <- graph_from_edgelist(el = matrx, directed = TRUE)
+
+# View the retweet network
+print.igraph(nw_rtweet)
+```
+
+
+```{r, error=FALSE, message=FALSE, warning=FALSE, echo=FALSE}
+followers <-carbon_tweets[, c("screen_name" , "followers_count" )]
+
+# Remove rows with missing values
+followers <- followers[complete.cases(rt_df), ]
+followers <-unique(followers)
+# Categorize high and low follower count
+dim(followers)
+followers$follow <- ifelse(followers$followers_count > 500, "1", "0")
+# Assign external network attributes to retweet network
+V(nw_rtweet)$followers <- followers$follow
+
+```
+
+### Where do people tweet the most? 
+
+The interactive world-map plot below allows you to zoom-in certain regions to have a better look what countries are hot-spots when it comes to carbon footprint and co2-related topics.
+
+```{r,error=FALSE, message=FALSE, warning=FALSE}
+# Extract geolocation data and append new columns
+library(rtweet)
+library(sf)
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(rgeos)
+
+pol_coord <- lat_lng(carbon_tweets)
+pol_geo <- na.omit(pol_coord[, c("lat", "lng","location","retweet_count")])
+world <- ne_countries(scale = "medium", returnclass = "sf")
+p<-ggplot(data = world) +
+    geom_sf() +
+    xlab("Longitude") + ylab("Latitude") +
+    geom_point(data= pol_geo,aes(x=lng, y=lat,loc=location,retweet_count=retweet_count),col = "#00acee")+
+    theme(panel.grid.major = element_line(color = gray(.25), linetype ="dashed",    size = 0.15),panel.background = element_rect(fill = "aliceblue"))+
+    ggtitle("World map with tweets location and retweet count", subtitle = paste0("(", length(unique(pol_geo$location)), " countries)"))
+ggplotly(p,tooltip = c("location","retweet_count"))  
+
+```
+
+
+### Who are the users who retweet the most?
+
+```{r,error=FALSE, message=FALSE, warning=FALSE}
+# Calculate the out-degree scores
+out_degree <- degree(nw_rtweet, mode = c("out"))
+
+# Sort the users in descending order of out-degree scores
+out_degree_sort <- sort(out_degree, decreasing = TRUE)
+head(out_degree_sort,10)
+# INTERPRETATION: Users who retweeted the most.
+
+#Hubs: Tweeter accounts with a lot of outgoing edges.
+hs <- hub_score(nw_rtweet, weights=NA)$vector
+sort(hs, decreasing = TRUE)[1:20]
+```
+
+Ex-kurs: An edge (a set of two elements) is drawn as a line connecting two vertices, called endpoints or end vertices or end vertices.They are likely to retweet.
+
+### Who are the most retweeted users? 
+
+```{r,error=FALSE, message=FALSE, warning=FALSE}
+# Calculate the in-degree scores
+in_degree <- degree(nw_rtweet, mode = c("in"))
+# Sort the users in descending order of in-degree scores
+in_degree_sort <- sort(in_degree, decreasing = TRUE)
+head(in_degree_sort,10)
+```
+
+Let's identify who are authorities, i.e., Twitter accounts with a lot of incoming edges.
+
+```{r,error=FALSE, message=FALSE, warning=FALSE}
+as <- authority_score(nw_rtweet, weights=NA)$vector
+sort(as, decreasing = TRUE)[1:20]
+```
+
+An edge (a set of two elements) is drawn as a line connecting two vertices, called endpoints or end vertices or end vertices.They are likely to be retweeted.
+
+### Who are users important for connecting with others in network?
+
+Here I aimed to identify users with important role in allowing information to pass through network. Usually, users with higher betweenness has more control over the network.
+
+```{r,error=FALSE, message=FALSE, warning=FALSE}
+# Calculate the betweenness scores of the network
+betwn_nw <- betweenness(nw_rtweet, directed = TRUE)
+# Sort the users in descending order of betweenness scores
+betwn_nw_sort <- betwn_nw %>%
+  sort(decreasing = TRUE) %>%
+  round() %>% head(10)
+betwn_nw_sort
+```
+
+
+### Clustering
+```{r,error=FALSE, message=FALSE, warning=FALSE}
+largest_cliques(nw_rtweet) #list only 20 vertices in that cluster
+```
+
+### Community detection 
+
+Finally, I tried to identify communities, i.e., groups of account that might be interested in engaging in conversation about carbon footprint and co2 emissions.
+
+```{r,error=FALSE, message=FALSE, warning=FALSE}
+#Community detection based on edge betweenness (Newman-Girvan)
+comm <- cluster_edge_betweenness(nw_rtweet)
+sort(sizes(comm), decreasing = T)[1:20]
+comm_1 <- communities(comm)
+
+# Tweet accounts in the Community 60 (the biggest community)
+comm_1$`60` 
+# Tweet accounts in the Community 44 (the second biggest community)
+comm_1$`44`
+# Tweet accounts in the Community 16 (the second biggest community)
+comm_1$`16`
+```
+
+
+
+
+
+
+
+
+
+<!--chapter:end:02-C02_must_go_iniciative.Rmd-->
+
+---
+title: "Text Analysis and Novels"
+output:
+  html_document:
+    keep_md: true
+    toc: yes
+    df_print: paged
+  html_notebook: default
+  pdf_document:
+    toc: yes
+---
+
+# Text Analysis of Novels
+
+```{r,fig.show='hold', out.width = "50%", fig.align = "center",error=FALSE,message=FALSE,warning=FALSE,echo=FALSE,fig.cap="Novels used in analysis"}
+library(cowplot)
+library(ggplot2)
+ggdraw() + draw_image("Graphics/aspern.jpg")
+ggdraw() + draw_image("Graphics/awakening.jpg")
+
+```
+
+Although I like reading books, unfortunately I don't find much time to read. However, I found that NLP is giving an opportunity to learn more about novels without reading it. My idea here is to try to learn as much as possible about two novels, *The Aspern Papers* and *Awakening*.
+
+```{r, echo=FALSE,error=FALSE,warning=FALSE,message=FALSE}
+options(warn = -1)
+library(NLP)
+library(RColorBrewer)
+library(tm)
+library(ggplot2)
+library(topicmodels)
+library(skmeans)
+library(clue)
+library(fpc)
+library(cluster)
+library(wordcloud)
+library(stringdist)
+library(slam)
+library(wordcloud)
+library(textstem)
+library(grid)
+library(gtable)
+library(tidytext)
+library(dplyr)
+library(tidyr)
+library(plotly)
+library(udpipe)
+library(igraph)
+library(SnowballC)
+library(textstem)
+```
+
+
+## Data
+
+Downloading Novels 'The Awakening' and 'The Aspern Papers' 
+
+```{r}
+awakening <- scan("http://www.gutenberg.org/files/160/160-0.txt", what="character", blank.lines.skip = TRUE, sep="\n")
+aspern <- scan("http://www.gutenberg.org/files/211/211-0.txt", what="character", blank.lines.skip = TRUE, sep="\n")
+
+awakening<- iconv(awakening, 'utf-8', 'ascii', sub='')
+aspern<- iconv(aspern, 'utf-8', 'ascii', sub='')
+```
+
+
+## Text cleaning
+
+Cleaning headers of the two novels.
+
+```{r}
+# Awakening: cleaning headers
+awakening.begin <- which(awakening=="THE AWAKENING")[2]
+awakening.end   <- which(awakening=="*****") - 1
+awakening.v<- awakening[awakening.begin:awakening.end]
+```
+
+```{r}
+# Aspern: cleaning headers
+aspern.begin <- which(aspern=="Macmillan and Co., 1888.")+1
+aspern.end   <- which(aspern=="End of the Project Gutenberg EBook of The Aspern Papers, by Henry James") - 1
+aspern.v <- aspern[aspern.begin:aspern.end]
+head(aspern.v)
+```
+
+## Awakening
+
+Cutting in chapters and corpus creation:
+
+```{r}
+# Cutting the Awakening in chapters
+awakening.v <- gsub("^I*(X|V)*I*$", "@@@", awakening.v)
+awakening.string <- paste(awakening.v, collapse = " ")
+awakening.chapters <- strsplit(awakening.string, "@@@ ")
+
+# Cutting the Aspern in chapters
+aspern.v <- gsub("^I*(X|V)*I*$", "@@@", aspern.v)
+aspern.string <- paste(aspern.v, collapse = " ")
+aspern.chapters <- strsplit(aspern.string, "@@@ ") 
+
+```
+
+
+```{r}
+# Awakening corpus creation
+awakening.df <- as.data.frame(awakening.chapters, stringsAsFactors = FALSE)
+awakening.df <-awakening.df[2:38,1]
+awakening.df <- as.data.frame(awakening.df)
+colnames(awakening.df) <- "chapters"    
+awakening.docs <- Corpus(VectorSource(awakening.df$chapters))
+
+# Aspern corpus creation
+aspern.df <- as.data.frame(aspern.chapters, stringsAsFactors = FALSE)
+aspern.df <-aspern.df[2:38,1]
+aspern.df <- as.data.frame(aspern.df)
+colnames(aspern.df) <- "chapters"
+aspern.docs <- Corpus(VectorSource(aspern.df$chapters))
+```
+
+Text pre-processing: removing unnecessary simbols and signs, converting letters to lower case, removing numbers, punctuation and white space.
+
+```{r,error=FALSE, warning=FALSE, message=FALSE}
+# Awakening: Text pre-processing
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+awakening.docs <- tm_map(awakening.docs, toSpace, "/")
+awakening.docs <- tm_map(awakening.docs, toSpace, "@")
+awakening.docs <- tm_map(awakening.docs, toSpace, "\\|")
+awakening.docs <- tm_map(awakening.docs, content_transformer(tolower))
+awakening.docs <- tm_map(awakening.docs, removeNumbers)
+awakening.docs <- tm_map(awakening.docs, removeWords, stopwords("english"))
+awakening.docs <- tm_map(awakening.docs, removePunctuation)
+awakening.docs <- tm_map(awakening.docs, stripWhitespace)
+
+# Aspern: Text pre-processing
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+aspern.docs <- tm_map(aspern.docs, toSpace, "/")
+aspern.docs <- tm_map(aspern.docs, toSpace, "@")
+aspern.docs <- tm_map(aspern.docs, toSpace, "\\|")
+aspern.docs <- tm_map(aspern.docs, content_transformer(tolower))
+aspern.docs <- tm_map(aspern.docs, removeNumbers)
+aspern.docs <- tm_map(aspern.docs, removeWords, stopwords("english"))
+aspern.docs <- tm_map(aspern.docs, removePunctuation)
+aspern.docs <- tm_map(aspern.docs, stripWhitespace)
+```
+
+Creation of a WordCloud:
+
+```{r,error=FALSE, warning=FALSE, message=FALSE,results='hide'}
+# Awakening: Wordcloud
+awakening.dtm <- DocumentTermMatrix(awakening.docs, control=list(weighting=weightTf))
+awakening.m <- as.matrix(t(awakening.dtm))
+awakening_v <- sort(rowSums(awakening.m),decreasing=TRUE)
+awakening.d <- data.frame(word = names(awakening_v),freq=awakening_v)
+set.seed(1234)
+wordcloud(words = awakening.d$word, freq = awakening.d$freq, min.freq = 1,
+          max.words=200, random.order=FALSE, rot.per=0.35,
+          colors=brewer.pal(8, "Dark2"))
+
+# Aspern: Wordcloud
+aspern.dtm <- DocumentTermMatrix(aspern.docs, control=list(weighting=weightTf))
+aspern.m <- as.matrix(t(aspern.dtm))
+aspern_v <- sort(rowSums(aspern.m),decreasing=TRUE)
+aspern.d <- data.frame(word = names(aspern_v),freq=aspern_v)
+set.seed(1234)
+par(mar = rep(0, 4))
+wordcloud(words = aspern.d$word, freq = aspern.d$freq, min.freq = 1,
+          max.words=200, random.order=FALSE, rot.per=0.35,
+          colors=brewer.pal(8, "Dark2"))
+```
+
+## Commonality cloud and Comparison cloud
+
+Creation of a corpus out of the both texts:
+
+```{r}
+cc.docs <- Corpus(VectorSource(c(awakening.string,aspern.string)))
+```
+
+Text pre-processing of the new corpus:
+
+```{r}
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+cc.docs <- tm_map(cc.docs, toSpace, "/")
+cc.docs <- tm_map(cc.docs, toSpace, "@")
+cc.docs <- tm_map(cc.docs, toSpace, "\\|")
+cc.docs <- tm_map(cc.docs, content_transformer(tolower))
+cc.docs <- tm_map(cc.docs, removeNumbers)
+cc.docs <- tm_map(cc.docs, removeWords, stopwords("english"))
+cc.docs <- tm_map(cc.docs, removePunctuation)
+cc.docs <- tm_map(cc.docs, stripWhitespace)
+
+```
+
+Comparison and Commonality cloud:
+
+```{r,error=FALSE, warning=FALSE, message=FALSE}
+cc.dtm <- DocumentTermMatrix(cc.docs)
+cc.m <- as.matrix(t(cc.dtm))
+colnames(cc.m)<- c("Awakening","Aspern")
+#Comparison cloud
+par(mar = rep(0, 4))
+comparison.cloud(cc.m,max.words = 100,min.frrandom.order=FALSE)
+# Commonality cloud
+par(mar = rep(0, 4))
+commonality.cloud(cc.m,max.words = 100,colors = "steelblue1",min.frrandom.order=FALSE)
+```
+
+
+## Sentiment timeline
+
+Loading in relevant lexicons:
+
+```{r, error=FALSE, message=FALSE, warning=FALSE}
+library(tidytext)
+library(dplyr)
+library(tidyr)
+library(plotly)
+library(ggthemes)
+library(sentimentr)
+library(syuzhet)
+data("sentiments")
+afinn <- get_sentiments("afinn")
+bing <- get_sentiments("bing")
+loughran <- get_sentiments("loughran")
+nrc <- get_sentiment_dictionary('nrc', language = "english")
+```
+
+
+Polarity timeline of Awakening:
+
+```{r,error=FALSE, warning=FALSE, message=FALSE}
+sent.awakening <- readLines("http://www.gutenberg.org/files/160/160-0.txt")
+sent.awakening <-iconv(sent.awakening, 'utf-8', 'ascii', sub='')
+awakening.corpus <- VCorpus(VectorSource(sent.awakening))
+awakening.corpus <- tm_map(awakening.corpus, content_transformer(tolower))
+awakening.corpus <- tm_map(awakening.corpus, removeNumbers)
+awakening.corpus <- tm_map(awakening.corpus, removeWords, stopwords("english"))
+awakening.corpus <- tm_map(awakening.corpus, removePunctuation)
+awakening.corpus <- tm_map(awakening.corpus, stripWhitespace)
+awakening.dtm <- DocumentTermMatrix(awakening.corpus)
+awakening.tidy <- tidy(awakening.dtm)
+awakening.tidy$count <-as.numeric(awakening.tidy$count)
+colnames(awakening.tidy)[2]<- 'word'
+awakening.tidy$document <- as.numeric(awakening.tidy$document)
+nrc.joy <- subset(nrc, nrc$sentiment=="joy")
+joy.words <- inner_join(awakening.tidy, nrc.joy)
+joy.words <- count(joy.words, word)
+
+bing <- get_sentiments("bing")
+awakening.sentiment <- inner_join(awakening.tidy, bing)
+awakening.sentiment <- count(awakening.sentiment, sentiment, index=document)
+awakening.sentiment <- spread(awakening.sentiment, sentiment, n, fill=0)
+awakening.sentiment$polarity <- awakening.sentiment$positive - awakening.sentiment$negative
+awakening.sentiment$pos <- ifelse(awakening.sentiment$polarity >=0, "pos", "neg")
+ggplot(awakening.sentiment, aes(x=index, y=polarity, fill=pos))+geom_bar(stat="identity", position="identity", width=1)
+awakening.smooth <- ggplot(awakening.sentiment, aes(index, polarity))
+
+(p2<-awakening.smooth + stat_smooth())
+
+
+```
+
+Polarity timeline of Aspern:
+
+```{r,error=FALSE, warning=FALSE, message=FALSE}
+sent.aspern <- readLines("http://www.gutenberg.org/files/211/211-0.txt")
+aspern.corpus <- VCorpus(VectorSource(sent.aspern))
+aspern.corpus <- tm_map(aspern.corpus, content_transformer(tolower))
+aspern.corpus <- tm_map(aspern.corpus, removeNumbers)
+aspern.corpus <- tm_map(aspern.corpus, removeWords, stopwords("english"))
+aspern.corpus <- tm_map(aspern.corpus, removePunctuation)
+aspern.corpus <- tm_map(aspern.corpus, stripWhitespace)
+sent.aspern <-iconv(sent.aspern, 'utf-8', 'ascii', sub='')
+aspern.dtm <- DocumentTermMatrix(aspern.corpus)
+aspern.tidy <- tidy(aspern.dtm)
+aspern.tidy$count <-as.numeric(aspern.tidy$count)
+colnames(aspern.tidy)[2]<- 'word'
+aspern.tidy$document <- as.numeric(aspern.tidy$document)
+nrc.joy <- subset(nrc, nrc$sentiment=="joy")
+joy.words <- inner_join(aspern.tidy, nrc.joy)
+joy.words <- count(joy.words, word)
+
+#bing <- subset(sentiments, sentiments$lexicon=='bing')[,-4]
+aspern.sentiment <- inner_join(aspern.tidy, bing)
+aspern.sentiment <- count(aspern.sentiment, sentiment, index=document)
+aspern.sentiment <- spread(aspern.sentiment, sentiment, n, fill=0)
+aspern.sentiment$polarity <- aspern.sentiment$positive - aspern.sentiment$negative
+aspern.sentiment$pos <- ifelse(aspern.sentiment$polarity >=0, "pos", "neg")
+ggplot(aspern.sentiment, aes(x=index, y=polarity, fill=pos))+geom_bar(stat="identity", position="identity", width=1)
+aspern.smooth <- ggplot(aspern.sentiment, aes(index, polarity))
+
+(p3<-aspern.smooth + stat_smooth())
+```
+
+
+```{r,message=FALSE,error=FALSE,warning=FALSE}
+g2 <- ggplotGrob(p2)
+g3 <- ggplotGrob(p3)
+g <- rbind(g2, g3, size = "first")
+g$widths <- unit.pmax(g2$widths, g3$widths)
+grid.newpage()
+grid.draw(g)
+
+```
+
+
+## Topic Modelling: LDA
+
+Pick up 5 topics and try to make sense of the topics giving a label to them.
+
+```{r,error=FALSE, warning=FALSE, message=FALSE}
+# Awakening
+top.mod.awakening.dtm <- DocumentTermMatrix(awakening.corpus, control = list(weighting=weightTf))
+burnin = 1000
+iter = 1000
+keep = 50
+set.seed(510)
+top.mod.awakening.n <- nrow(top.mod.awakening.dtm)
+top.mod.awakening.dtm <- top.mod.awakening.dtm[row_sums(top.mod.awakening.dtm > 0) > 1,]
+top.mod.awakening.lda_basic.model<- LDA(top.mod.awakening.dtm, k = 5L, method = "Gibbs",
+                      control = list(burnin = burnin, iter = iter, keep = keep, alpha = 1) )
+top.mod.awakening.lda.topics <- as.matrix(topics(top.mod.awakening.lda_basic.model))
+#top.mod.awakening.lda.topics
+top.mod.awakening.lda.terms <- as.matrix(terms(top.mod.awakening.lda_basic.model, 10))
+top.mod.awakening.lda.terms<- iconv(top.mod.awakening.lda.terms, 'utf-8', 'ascii', sub='')
+#top.mod.awakening.lda.terms
+awakening.top10termsPerTopic <- terms(top.mod.awakening.lda_basic.model, 10)
+awakening.top10termsPerTopic <- iconv(top.mod.awakening.lda.terms, 'utf-8', 'ascii', sub='')
+#awakening.top10termsPerTopic
+colnames(awakening.top10termsPerTopic)<-c("Edna in her house/room"," Work, life and love - Leaving the papers after he/she died","Madame Edna - Mademoiselle Ratignolle - Robert","Emotions - Description of a face ","Mrs.Pontellier - Edna - Robert")
+awakening.top10termsPerTopic
+awakening.topicNames <- apply(awakening.top10termsPerTopic, 2, paste, collapse=" ")
+#awakening.topicNames
+```
+
+```{r,error=FALSE, warning=FALSE, message=FALSE}
+# Aspern
+top.mod.aspern.dtm <- DocumentTermMatrix(aspern.corpus, control = list(weighting=weightTf))
+burnin = 1000
+iter = 1000
+keep = 50
+set.seed(510)
+top.mod.aspern.n <- nrow(top.mod.aspern.dtm)
+top.mod.aspern.dtm <- top.mod.aspern.dtm[row_sums(top.mod.aspern.dtm > 0) > 1,]
+top.mod.aspern.lda_basic.model<- LDA(top.mod.aspern.dtm, k = 5L, method = "Gibbs",
+                                        control = list(burnin = burnin, iter = iter, keep = keep, alpha = 1) )
+top.mod.aspern.lda.topics <- as.matrix(topics(top.mod.aspern.lda_basic.model))
+#top.mod.aspern.lda.topics
+top.mod.aspern.lda.terms <- as.matrix(terms(top.mod.aspern.lda_basic.model, 10))
+top.mod.aspern.lda.terms<- iconv(top.mod.aspern.lda.terms, 'utf-8', 'ascii', sub='')
+#top.mod.aspern.lda.terms
+
+aspern.top10termsPerTopic <- terms(top.mod.aspern.lda_basic.model, 10)
+aspern.top10termsPerTopic <- iconv(top.mod.aspern.lda.terms, 'utf-8', 'ascii', sub='')
+#aspern.top10termsPerTopic
+colnames(aspern.top10termsPerTopic)<-c("Home - Seeing somebody - description of eyes - leaving","Jeffrey","Tita","Aunt","Time - Woman - Venice")
+aspern.top10termsPerTopic
+#aspern.topicNames <- apply(aspern.top10termsPerTopic, 2, paste, collapse=" ")
+#aspern.topicNames
+
+```
+
+## Main points of interpretation
+
+* The most common words are names of characters such as Edna, Tita and Mrs.Pontellier.
+
+* According to the sentiment analysis, Awakening novel is slightly from the beginning to the end. On the other hand, Aspern has a slight drop in the negative  sentiment, but the end is positive.
+
+* Awakening is as twice as longer text than Aspern.
+
+* Due to lemmatization could not address the time of speaking (wheater it is told in past or future)
+
+* Words "said",little","think","house","good","like","one","come","back","thought" are the most common.
+
+<!--chapter:end:03-Text_Analysis_and_Fairy_Tales.Rmd-->
+
+---
+title: "04-Covid19_Dashboard"
+output:
+  html_document:
+    keep_md: true
+    toc: yes
+    df_print: paged
+  html_notebook: default
+  pdf_document:
+    toc: yes
+css: style.css
+---
+
+# COVID 19 Dashboard for Balkan countries*
+
+::: {.infobox .graph data-latex="{graph}"}
+[Here you go directly to the dashboard](https://mirza-mujanovic.shinyapps.io/covid-19/)
+:::
+
+## Data
+
+```{r,echo=FALSE,error=FALSE,message=FALSE,warning=FALSE}
+library(reshape2)
+library(ggplot2)
+library(dplyr)
+library(rvest)
+library(plotly)
+library(scales)
+library(wesanderson)    
+library(shiny)
+library(twitteR)
+library(rtweet)
+library(sentimentr)
+library(tidyverse)
+library(purrr)
+library(devtools)
+library(textdata)
+library(ggplot2)
+library(ggthemes)
+library(xml2)
+library(qdap)
+library(wordcloud)
+library(RColorBrewer)
+library(NLP)
+library(tm)
+library(tidytext)
+library(dplyr)
+library(tidyr)
+library(ggthemes)
+library(plotly)
+library(tidyverse)
+library(broom)
+library(remotes)
+library(janeaustenr)
+library(qdap)
+library(glue)
+library(syuzhet)
+```
+
+
+```{r, error=FALSE,message=FALSE,warning=FALSE}
+# Github 
+covid19_confirmed_git <-"https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv"
+covid19_confirmed_git <- read_csv(url(covid19_confirmed_git))
+
+# Worldometer
+## Covid
+codivid19_all <- "https://www.worldometers.info/coronavirus/"
+main_table <- codivid19_all%>%
+  xml2::read_html()%>%
+  html_nodes(xpath='//*[@id="main_table_countries_today"]') %>%
+  html_table()
+main_table <- as.data.frame(main_table)
+
+
+```
+
+
+```{r, error=FALSE,message=FALSE,warning=FALSE,echo=TRUE}
+## Filtering data for Balkan countries (plus Italy and Austria)
+balkan <- filter(main_table,Country.Other == "Bosnia and Herzegovina" | Country.Other == "Italy" | Country.Other == "Croatia" | Country.Other == "Serbia"  | Country.Other == "Montenegro"  | Country.Other == "Slovenia"  | Country.Other == "Austria"  | Country.Other == "North Macedonia" | Country.Other == "Greece")
+```
+
+
+```{r, error=FALSE,message=FALSE,warning=FALSE,echo=TRUE}
+# Removing comma from numbers
+balkan[c("TotalRecovered","TotalDeaths","TotalCases","NewCases","ActiveCases","Tot.Cases.1M.pop")] <- lapply(balkan[c("TotalRecovered","TotalDeaths","TotalCases","NewCases","ActiveCases","Tot.Cases.1M.pop")], function(x) gsub(",","",x))
+# Turning columns to numeric
+balkan[c("TotalRecovered","TotalDeaths","TotalCases","NewCases","ActiveCases","Tot.Cases.1M.pop")] <- lapply(balkan[c("TotalRecovered","TotalDeaths","TotalCases","NewCases","ActiveCases","Tot.Cases.1M.pop")], as.numeric)
+```
+
+
+## Curve of confirmed cases 
+
+The graph shows the number of confirmed cases by the last date shown.Updates daily at around 23:59 UTC.
+
+```{r,warning=FALSE,error=FALSE,message=FALSE,fig.width=8,echo=TRUE}
+# Curve of confirmed cases----
+columns <- colnames(covid19_confirmed_git)[5:ncol(covid19_confirmed_git)]
+final <-as.data.frame(pivot_longer(covid19_confirmed_git, cols = columns, names_to = "Year", values_to = "Confirmed"))
+final$Year <- as.Date.character(final$Year,"%m/%d/%y")
+colnames(final) <- c("Province","Country","Lat","Long","Year","Confirmed") 
+filter <- filter(final, Country == "Bosnia and Herzegovina" | Country == "Italy" | Country == "Croatia" | Country == "Serbia"  | Country == "Slovenia"  | Country == "Montenegro"  | Country == "Austria" | Country == "North Macedonia" | Country == "Greece")
+p <-ggplot(filter, aes(x = Year, y = Confirmed)) + 
+  geom_line(aes(color = Country), size = 1) +
+  scale_color_brewer(palette="Set1")+
+  theme(legend.title = element_text(size = 6),legend.text = element_text(size = 6),  
+  # Remove panel background
+  panel.background = element_blank(),
+  # Add axis line
+  axis.line = element_line(colour = "grey"))+
+  scale_y_log10(labels = comma)+
+  scale_x_date(date_labels = "%b-%d", date_breaks = "4 week")+
+  ylab("Confirmed cases")+
+  labs(caption="Data source: https://github.com/CSSEGISandData/COVID-19")
+ggplotly(p)
+```
+
+## Total cases per 1 million people
+
+```{r,error=FALSE,message=FALSE,warning=FALSE}
+tot_cases_1m <- melt(balkan[,c("Tot.Cases.1M.pop","Country.Other")])
+head(tot_cases_1m)
+p<-ggplot(tot_cases_1m, aes(x=Country.Other,y=value,fill=Country.Other)) +
+  geom_bar(stat = "identity")+
+  scale_fill_manual(name="Country",
+                    values = c("#E41A1C",
+                               "#377EB8",
+                               "#4DAF4A",
+                               "#984EA3",
+                               "#FF7F00",
+                               "#FFFF33",
+                               "#A65628",
+                               "#F781BF",
+                               "#999999"),
+                    labels=c("Austria",
+                             "Bosnia and Herzegovina",
+                             "Croatia",
+                             "Greece",
+                             "Italy",
+                             "Montenegro",
+                             "N.Macedonia",
+                             "Serbia",
+                             "Slovenia"))+
+  labs(x="",y="Total Cases per 1M people", title = "Total Cases per 1m people - Currently")+
+  theme(legend.title = element_text(size = 8),
+        axis.text.x = element_blank(),
+        legend.text = element_text(size = 8),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "grey"))
+
+ggplotly(p)
+
+```
+
+
+
+
+## Deaths vs Recovered 
+
+The bar chart shows the total number of recovered people in comparison to the total number of death cases. Updates daily at around 23:59 UTC.
+
+```{r, error=FALSE,message=FALSE,warning=FALSE,echo=TRUE}
+options(scipen = 9999)
+p <- ggplot(balkan) +
+  geom_segment( aes(x=Country.Other, xend=Country.Other, y=TotalRecovered, yend=TotalDeaths), color="grey") +
+  geom_point( aes(x=Country.Other, y=TotalRecovered), color=rgb(0.2,0.7,0.1,0.5), size=3 ) +
+  geom_point( aes(x=Country.Other, y=TotalDeaths), color=rgb(0.7,0.2,0.1,0.5), size=3 ) + coord_flip()+
+  scale_y_log10()+
+  theme_minimal() +
+  theme(
+  legend.position = "none",
+  panel.background = element_blank(),
+  panel.grid = element_blank(),
+  axis.line = element_line(colour = "grey")) +
+    xlab("") +
+    ylab("Number of cases")+
+    ggtitle(label = "Death vs Recovered")
+ggplotly(p)
+```
+
+## Active cases vs New cases
+
+The bar chart shows the number of  active cases in comparison to the number of new cases being constantly reported.
+
+```{r, error=FALSE,message=FALSE,warning=FALSE,echo=TRUE}
+# Active cases vs New cases
+active_and_new <- melt(balkan[,c("ActiveCases","NewCases","Country.Other")])
+p <- ggplot(active_and_new, aes(x=Country.Other, y=value, fill=variable)) +
+  geom_bar(stat='identity', position='dodge', color="black" ,aes(text=paste("Country: ",Country.Other, "\n", variable,":",value, sep=""))) +
+  scale_fill_brewer(palette = "Paired")+
+  scale_y_continuous(labels=comma, trans = "log10") +
+  ylab("Number of cases")+
+  xlab("")+
+  theme_minimal()+
+  labs(title = "",fill="")+
+  coord_flip()
+  
+ggplotly(p, tooltip = "text")
+```
+
+
+
+
+
+
+
+## Hospitalization
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE,error=FALSE,fig.show='asis'}
+hospitalization <- read.csv("data/Hospitalization_all_locs.csv")
+hospitalization$X <- NULL
+
+columns <- colnames(hospitalization)[3:ncol(hospitalization)]
+pivot_hospitalization<-as.data.frame(pivot_longer(hospitalization, cols = columns))
+colnames(pivot_hospitalization) <- c("Country","Date","Variable","Value") 
+pivot_hospitalization.mean.EU <- filter(pivot_hospitalization,
+                                          Variable == "admis_mean"|
+                                          Variable == "allbed_mean"|
+                                          Variable == "bedover_mean"|
+                                          Variable == "ICUbed_mean"|
+                                          Variable == "icuover_mean"|
+                                          Variable == "invVen_mean"|
+                                          Variable == "newICU_mean")
+pivot_hospitalization.mean.EU <- filter(pivot_hospitalization.mean.EU, Value > 0)
+pivot_hospitalization.mean.EU$Date <- as.Date(as.POSIXct(pivot_hospitalization.mean.EU$Date,"%Y%M%D"))
+```
+
+### Croatia
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE,error=FALSE,fig.show='asis'}
+#Croatia
+pivot_hospitalization.mean.cro <- filter(pivot_hospitalization.mean.EU,Country == "Croatia")
+
+p <- ggplot(pivot_hospitalization.mean.cro,aes(x=Date,y=Value)) +
+  geom_line(aes(color=Variable), size=1) +
+  scale_color_brewer(palette = "Set1") +
+  theme(legend.title = element_text(size = 6),legend.text = element_text(size = 6),  
+  panel.background = element_blank(),
+  axis.line = element_line(colour = "grey"))+
+  scale_y_sqrt()+
+  ggtitle(label = "Hospitalisation numbers in Croatia")+
+  scale_x_date(date_labels = "%B-%d", date_breaks = "5 week")+
+  ylab("Mean")+
+  labs(caption="Data source: ")
+
+ggplotly(p)
+```
+
+### Slovenia 
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE,error=FALSE,fig.show='asis'}
+#Slovenia
+pivot_hospitalization.mean.slo <- filter(pivot_hospitalization.mean.EU,Country == "Slovenia")
+
+p <- ggplot(pivot_hospitalization.mean.slo,aes(x=Date,y=Value)) +
+  geom_line(aes(color=Variable), size=1) +
+  scale_color_brewer(palette = "Set1") +
+  theme(legend.title = element_text(size = 6),legend.text = element_text(size = 6),  
+  panel.background = element_blank(),
+  axis.line = element_line(colour = "grey"))+
+  scale_y_sqrt()+
+  ggtitle(label = "Hospitalisation numbers in Slovenia")+
+  scale_x_date(date_labels = "%B-%d", date_breaks = "5 week")+
+  ylab("Mean")+
+  labs(caption="Data source: ")
+
+ggplotly(p)
+```
+
+### Austria
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE,error=FALSE,fig.show='asis'}
+#Austria
+pivot_hospitalization.mean.at <- filter(pivot_hospitalization.mean.EU,Country == "Austria")
+
+p <- ggplot(pivot_hospitalization.mean.at,aes(x=Date,y=Value)) +
+  geom_line(aes(color=Variable), size=1) +
+  scale_color_brewer(palette = "Set1") +
+  theme(legend.title = element_text(size = 6),legend.text = element_text(size = 6),  
+  panel.background = element_blank(),
+  axis.line = element_line(colour = "grey"))+
+  scale_y_sqrt()+
+  ggtitle(label = "Hospitalisation numbers in Austria")+
+  scale_x_date(date_labels = "%B-%d", date_breaks = "5 week")+
+  ylab("Mean")+
+  labs(caption="Data source: ")
+
+ggplotly(p)
+```
+
+
+<!--chapter:end:04-Covid19_Dashboard.Rmd-->
+
+---
+title: "Random Forest - Churn"
+output:
+  html_document:
+    keep_md: true
+    toc: yes
+    df_print: paged
+  html_notebook: default
+  pdf_document:
+    toc: yes
+---
+
+# Churn prediction with Random Forest
+
+```{r,echo=FALSE, fig.align='center', out.width="50%",fig.cap="Foto from technologyadvice.com"}
+knitr::include_graphics("Graphics/churn.png")
+```
+
+In this project I decided to use Telco dataset, a dataset from the IBM
+Watson Analytics community, and apply Random Forest learning method to make prediction whether a customer will churn or not based on features and information about customers who churned within the last month or are still customers.
+
+## Why predicting customer churn?
+
+<div style="text-align: justify"> 
+
+Consumer churn prediction models are developed to determine which consumers are likely to churn and to encourage an effective segmentation of the customer base to enable companies to approach customers at risk of leaving with a retention strategy. Such a prediction models help small marketing budgets to be wisely utilized to minimize turnover, i.e. to maximize the return on marketing expenditure (ROMI). Customer retention has usually been found to be extremely profitable for companies because it costs five to six times more to acquire new customer than to retain an existing customer. Additionally, long-term customers are more profitable, appear to be less susceptible to aggressive marketing activities, appear to be less costly to service, and can create new referrals by positive word-of - mouth.
+
+Consequently, even a small improvement in customer retention may yield significant returns.
+
+*Note: for references take a look at the Reference section*
+
+</div> 
+
+```{r,error=FALSE,warning=FALSE,message=FALSE}
+options(stringsAsFactor=TRUE)
+library(curl)
+library(readr)
+library(tidyr)
+library(dplyr)
+library(randomForest)
+library(caret)
+```
+
+## Data
+
+* The data set includes information about:  
+    + Customers who left within the last month – the column is called **Churn**.
+    + Services that each customer has signed up for – phone, multiple lines, internet, online security, online backup, device protection, tech support, and streaming TV and movies.
+    + Customer account information – how long they’ve been a customer, contract, payment method, paperless billing, monthly charges, and total charges.
+    + Demographic info about customers – gender, age range, and if they have partners and dependents.
+
+```{r eval = TRUE, echo = FALSE, warning=FALSE, message = FALSE}
+library(dplyr)
+library(kableExtra)
+mytable_sub = data.frame(
+    Variable = c("Gender","SeniorCitizen","Partner","Dependents","Tenure","PhoneService","MultipleLines","InternetService","OnlineSecurity","OnlineBackup","DeviceProtection","TechSupport","StreamingTV","StreamingMovie","Contract","PaperlessBilling","PaymentMethod","MonthlyCharges","TotalCharges","Churn"),
+    Topic = c("Whether the customer is a male or a female",
+             "Whether the customer is a senior citizen or not (1, 0)",
+             "Whether the customer has a partner or not (Yes, No)",
+             "Whether the customer has dependents or not (Yes, No)",
+             "Number of months the customer has stayed with the company",
+             "Whether the customer has a phone service or not (Yes, No)",
+             "Whether the customer has multiple lines or not (Yes, No, No phone service)",
+             "Customer’s internet service provider (DSL, Fiber optic, No)",
+             "Whether the customer has online security or not (Yes, No, No internet service)",
+             "Whether the customer has online backup or not (Yes, No, No internet service)",
+             "Whether the customer has device protection or not (Yes, No, No internet service)",
+             "Whether the customer has tech support or not (Yes, No, No internet service)",
+             "Whether the customer has streaming TV or not (Yes, No, No internet service)",
+             "Whether the customer has streaming movies or not (Yes, No, No internet service)",
+             "The contract term of the customer (Month-to-month, One year, Two year)",
+             "Whether the customer has paperless billing or not (Yes, No)",
+             "The customer’s payment method (Electronic check, Mailed check, Bank transfer (automatic), Credit card (automatic))",
+             "The amount charged to the customer monthly",
+             "The total amount charged to the customer",
+             "Whether the customer churned or not (Yes or No)"
+             ))
+
+mytable_sub %>% kable(escape = T) %>%
+  kable_paper(c("hover"), full_width = F) %>%
+  footnote(general = " Information collected from https://www.kaggle.com/blastchar/telco-customer-churn",
+           general_title = "Note: ", 
+           footnote_as_chunk = T, title_format = c("italic")
+           ) 
+```
+
+Here are dimensions of our data set and first 6 rows:
+
+```{r,error=FALSE,warning=FALSE,message=FALSE,echo=FALSE}
+# Read in data
+x <- read.csv(curl("https://raw.githubusercontent.com/treselle-systems/customer_churn_analysis/master/WA_Fn-UseC_-Telco-Customer-Churn.csv"))
+head(x)
+```
+
+## Data Pre-processing
+
+First, we need to remove rows which have at least one NA as a value:
+
+```{r,error=FALSE,warning=FALSE,message=FALSE}
+# Drop Nas
+dim(x)
+x <- x %>% drop_na()
+dim(x)
+```
+
+11 are removed from the data set as they held at least one NA as a value. Next, we need to prepare our data set in terms of data types. In order to use Random Forest for churn prediction, we need to make sure that our categorical are represented in numeric manner.
+
+Therefore, all categorical variables will be converted to factors.
+
+```{r,error=FALSE,message=FALSE,warning=FALSE}
+# Categorical variables to factors
+x[c("Partner","Dependents","PhoneService","gender","MultipleLines","InternetService","OnlineSecurity","OnlineBackup","DeviceProtection","TechSupport","StreamingTV","Contract","StreamingMovies","PaperlessBilling","PaymentMethod","Churn")]<-lapply(x[c("Partner","Dependents","PhoneService","gender","MultipleLines","InternetService","OnlineSecurity","OnlineBackup","DeviceProtection","TechSupport","StreamingTV","Contract","StreamingMovies","PaperlessBilling","PaymentMethod","Churn")], as.factor)
+str(x)
+```
+
+We aim to convert our data set into matrix with only 0s and 1s. Thus, all binomial variables can be turned to 0s and 1s in the following way: 
+
+```{r}
+# Binomial categorical variables to 0 and 1
+x$PhoneService <- as.numeric(x$PhoneService)-1
+x$Partner <-as.numeric(x$Partner)-1
+x$Dependents <- as.numeric(x$Dependents)-1
+x$Churn <- as.numeric(x$Churn)-1
+x$gender <- as.numeric(x$gender)-1
+```
+
+Now it is left to convert multi-class variables 0s and 1s. Before we do it, let's inspect our data a bit:
+
+```{r,eval=TRUE}
+## Categorical variables with more than 2 categories
+par(mfrow=c(5,2))
+# Multiple lines
+ggplot(x, aes(MultipleLines,fill=MultipleLines)) + 
+  geom_bar() +
+  labs(title="Multiple lines",x="",y="Count")
+
+# Internet services
+ggplot(x, aes(InternetService,fill=InternetService)) + 
+  geom_bar() +
+  labs(title="Internet service",x="",y="Count")
+
+# OnlineSecurity
+ggplot(x, aes(OnlineSecurity,fill=OnlineSecurity)) + 
+  geom_bar() +
+  labs(title="OnlineSecurity",x="",y="Count")
+
+# OnlineBackup
+ggplot(x, aes(OnlineBackup,fill=OnlineBackup)) + 
+  geom_bar() +
+  labs(title="OnlineBackup",x="",y="Count")
+
+# DeviceProtection
+ggplot(x, aes(DeviceProtection,fill=DeviceProtection)) + 
+  geom_bar() +
+  labs(title="DeviceProtection",x="",y="Count")
+
+# TechSupport
+ggplot(x, aes(TechSupport,fill=TechSupport)) + 
+  geom_bar() +
+  labs(title="TechSupport",x="",y="Count")
+
+# StreamingTV
+ggplot(x, aes(StreamingTV,fill=StreamingTV)) + 
+  geom_bar() +
+  labs(title="StreamingTV",x="",y="Count")
+
+# StreamingMovies
+ggplot(x, aes(StreamingMovies,fill=StreamingMovies)) + 
+  geom_bar() +
+  labs(title="StreamingMovies",x="",y="Count")
+
+# Contract
+ggplot(x, aes(Contract,fill=Contract)) + 
+  geom_bar() +
+  labs(title="Contract",x="",y="Count")
+
+# PaymentMethod
+ggplot(x, aes(PaymentMethod,fill=PaymentMethod)) + 
+  geom_bar() +
+  labs(title="PaymentMethod",x="",y="Count")
+
+```
+
+
+We can apply one hot encoding to our data set by using R's base function ```model.matrix```. In the code below, ~.+0 leads to encoding of all categorical variables without producing an intercept.
+
+```{r}
+# One-hot encoding
+x.mat<- model.matrix(~MultipleLines+InternetService+OnlineSecurity+OnlineBackup+DeviceProtection+TechSupport+StreamingTV+Contract+StreamingMovies+PaperlessBilling+PaymentMethod+0,data = x)
+```
+
+Now is our data set pre-processed:
+
+```{r}
+# Creation of the final data frame with 0s and 1s
+final.df<-as.data.frame(x.mat)
+final.df<- cbind(x.mat,x$tenure,x$TotalCharges,x$MonthlyCharges,x$PhoneService,x$Partner,x$Dependents,x$gender,x$Churn)
+colnames(final.df)[24:31]<-c("tenure","TotalCharges","MonthlyCharges","PhoneService","Partner","Dependents","gender","Churn")
+```
+
+## Data partition
+
+Now we need to split our data into test and train data. The proportion is 70:30.
+
+```{r}
+# Creation of training and test data sets
+index <- caret::createDataPartition(x$Churn, p = 0.7, list = F)
+train <- final.df[index,]
+test <- final.df[-index,]
+
+# Partitioning test data
+x_test <- as.matrix(test[,-31])  
+y_test <- as.matrix(test[,31])
+
+# Partitioning train data
+x_train <- as.matrix(train[,-31])
+y_train <- as.matrix(train[,31])
+```
+
+
+To train our random forest model we use function `randomForest()`. At this point we will not aim to fine tune our model, so we will define just two parameters,`ntree` and `maxnodes`:
+
+* `ntree` defines the number of trees to build in the forest.
+* `maxnodes` defines the maximum number of terminal nodes each tree in the forest can have.
+
+## Random Forest model
+
+```{r}
+# Random Forest
+# Training
+library(randomForest)
+rfModel <- randomForest(x=x_train,
+                        y=factor(y_train),
+                        ntree=500,
+                        maxnodes=24)
+```
+
+
+Since predictions are made based on features our model was trained on, it is possible to observe importance of each feature. The more important a feature, the greater influence it exerts on predictions:
+
+```{r,error=FALSE, message=FALSE, warning=FALSE}
+importance_features <- randomForest::importance(rfModel)
+importance_features <- as.data.frame(importance_features)
+importance_features$features <- row.names(importance_features)
+importance_features <- importance_features[order(importance_features$MeanDecreaseGini ,decreasing = TRUE),]
+
+library(plotly)
+p<-ggplot(importance_features) +
+  geom_point(aes(reorder(features,MeanDecreaseGini),MeanDecreaseGini),stat = "identity")+
+  theme_minimal()+
+  coord_flip()+
+  labs(title="Important features",x="Features")
+ggplotly(p)
+```
+
+
+As we can see from this output, the `tenure` feature seems to be the most important factor in making the final prediction. Factors such as `InternetServiceFiber optic`,`TotalCharges` and `ContractTwo year` come subsequently.
+
+
+## Evaluating Model
+
+In order to evaluate our model we will take a look at accuracy, precision and recall.
+
+```{r}
+# Evaluating Models
+prediction_insample <- as.double(predict(rfModel, x_train)) - 1
+prediction_outsample <- as.double(predict(rfModel, x_test)) - 1
+```
+
+Accuracy is the percentage of correct predictions out of all predictions.
+
+```{r}
+# Accuracy
+accu_insample <- mean(y_train == prediction_insample)
+accu_outsample <- mean(y_test == prediction_outsample)
+print(sprintf('In-Sample Accuracy: %0.4f', accu_insample))
+print(sprintf('Out-Sample Accuracy: %0.4f', accu_outsample))
+```
+
+We managed to achieve pretty good out-sample accuracy even without thorough fine-tuning our parameters.
+Precision is the number of true positives divided by the total number of true positives and false positives.
+
+```{r}
+# Precision
+prec_insample <- sum(prediction_insample & y_train) / sum(prediction_insample)
+prec_outsample <- sum(prediction_outsample & y_test) / sum(prediction_outsample)
+print(sprintf('In-Sample Precision: %0.4f', prec_insample))
+print(sprintf('Out-Sample Precision: %0.4f', prec_outsample))
+```
+
+Recall is defined as the number of true positives divided by number of true positives plus false negatives. 
+
+```{r}
+# Recall 
+recall_insample <- sum(prediction_insample & y_train) / sum(y_train)
+recall_outsample <- sum(prediction_outsample & y_test) / sum(y_test)
+print(sprintf('In-Sample Recall: %0.4f', recall_insample))
+print(sprintf('Out-Sample Recall: %0.4f', recall_outsample))
+```
+
+
+Finally, in order to estimate how good our model is in comparison to the random prediction, we will inspect ROC curve and the **A**rea **U**nder the **C**urve.
+
+```{r,error=FALSE,warning=FALSE,error=FALSE}
+library(ROCR)
+
+pred_prob_insample <- as.double(predict(rfModel, x_train, type='prob')[,2])
+pred_prob_outsample <- as.double(predict(rfModel, x_test, type='prob')[,2])
+pred <- prediction(pred_prob_outsample, y_test)
+perf <- performance(pred, measure = "tpr", x.measure = "fpr") 
+auc <- performance(pred, measure='auc')@y.values[[1]]
+
+{plot(perf,main=sprintf('Random Forest (AUC: %0.2f)', auc),col='darkblue',lwd=2) + grid()
+abline(a = 0, b = 1, col='darkgray', lty=4, lwd=2)}
+```
+
+## References
+
+* Hwang, Y. H. (2019). Hands-on data science for marketing: Improve your marketing strategies with machine learning using Python and R. Birmingham: Packt Publishing.
+
+* W. Verbeke, D. Martens, C. Mues, B. Baesens. Building comprehensible customer churn prediction models with advanced rule induction techniques
+Expert Syst. Appl., 38 (3) (2011), pp. 2354-2364.
+
+* M.R. Colgate, P.J. Danaher. Implementing a customer relationship strategy: the asymmetric impact of poor versus excellent execution
+J. Acad. Mark. Sci., 28 (3) (2000), pp. 375-387.
+
+* J. Ganesh, M.J. Arnold, K.E. Reynolds. Understanding the customer base of service providers: an examination of the differences between switchers and stayers.J. Mark., 64 (3) (2000), pp. 65-87.
+
+* D.V. den Poel, B. Larivière. Customer attrition analysis for financial services using proportional hazard models. Eur. J. Oper. Res., 157 (1) (2004), pp. 196-217.
+
+<!--chapter:end:06-Random_Forest_Churn.Rmd-->
+
+---
+title: "07-Recommendation_System"
+output:
+  html_document:
+    toc: yes
+    df_print: paged
+  html_notebook: default
+  pdf_document:
+    toc: yes
+---
+
+# Recommendation system
+
+## Problem formulation
+
+The goal of our project is to develop a recommendation system trained on beauty products data from Amazon.
+Based on some studies it has been proven that personalized product recommendations drive 24% of the orders and 26% of the revenue. This explains the influence recommendation has on volume of orders and generally on sales figures. What is more, it has been proven that product recommendations lead to reoccurring visits and that purchases on recommendation mark higher average-order value. Consequently, we decided to use method called user-based collaborative filtering to build our recommendation system (*[Reference](https://www.salesforce.com/blog/2017/11/personalized-product-recommendations-drive-just-7-visits-26-revenue)*).
+
+First, we proceed with data preparation and pre-processing, then we build our recommender system, and finally draw business implications.
+
+## Data collection
+
+As we earlier mentioned, we use data on Amazon customer reviews of beauty products. The data used in this project can be accessed in this [link](http://snap.stanford.edu/data/web-Amazon-links.html). It contains the following features:
+
+* Product price: price of the product
+* Product Id: ASIN number of a product on Amazon.
+* Product title: title of the product
+* Review helpfulness: fraction of users who found the review helpful
+* Profile Name: name of the user
+* Review score: rating of the product
+* Review summary: concise summary of the review text
+* Review text	
+* Review time
+* Review userId
+
+## Data preparation and preprocessing
+
+### Packages
+
+```{r,warning=FALSE,error=FALSE,message=FALSE}
+#Packages
+library(R.utils)
+library(dplyr)
+library(tidyr)
+library(janitor)
+library(recommenderlab)
+library(tm)
+library(NLP)
+library(qdap)
+library(readr)
+library(wordcloud)
+```
+
+### Data loading and inspecting
+
+After downloading data locally we load in data by using`readLines()` function:
+
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+# Loading in data
+my_data <- readLines(gzfile("data/Beauty.txt.gz"))
+```
+
+
+Let us first have a look at the dimension of our data. Our data set is currently in a form of a single vector with 2772616 elements. Obviously, this is not the optimal form of the data we would like to work with. That is why we need to work around this data set to make it more convenient for further analysis. 
+
+What we can do first is to remove all fields with no characters:
+
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+my_data <- my_data[sapply(my_data, nchar) > 0]
+```
+
+Then we can convert it to data frame:
+
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+my_data <- as.data.frame(my_data)
+colnames(my_data) <- "product"
+```
+
+One of the critical steps is separating the column to multiple columns:
+
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+# Separate one column to two (":" separator)
+my_data <- separate(my_data,col = product, into = c("Info","Product"), sep = ":")
+```
+
+Inspecting first 10 values:
+
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+head(my_data,10)
+```
+
+The data set is loaded in .txt format, which makes it a bit challenging to work with. In the following sections we will undertake data manipulation in order to bring the data set in more suitable form. 
+
+First, we will convert it from the current long-format to the wide-format, where each column will represent a product, and each row a feature:
+
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+#Converting long format to wide
+my_data <- my_data %>%
+  group_by(Info) %>%
+  mutate(Order = seq_along(Info)) %>%
+  spread(key = Order, value = Product)
+```
+
+Since the column names are labeled with numbers, we will apply first row as a label for the corresponding column name:
+
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+my_data <- as.data.frame(t(my_data))
+my_data<-my_data%>%
+  row_to_names(row_number = 1)
+```
+
+
+Delete rows with at least 1 NAs:
+
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+my_data <- my_data[rowSums(is.na(my_data))==0,]
+```
+
+Trim white space at the beginning or ending the string:
+
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+my_data$`review/userId`<- trimws(my_data$`review/userId`)
+my_data$`product/productId`<- trimws(my_data$`product/productId`)
+my_data$`product/price`<- trimws(my_data$`product/price`)
+my_data$`product/title`<- trimws(my_data$`product/title`)
+```
+
+
+Filtering out reviews with unknown userID and productId:
+
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+my_data<-filter(my_data,`review/userId`!="unknown" & `product/productId`!="unknown" & `product/price`!="unknown")
+```
+
+Correcting column classes:
+
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+my_data$`product/productId` <- as.factor(my_data$`product/productId`)
+```
+
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+my_data$`review/score`<- as.numeric(my_data$`review/score`)
+my_data$`review/userId`<-as.factor(my_data$`review/userId`)
+my_data$`product/price`<-as.numeric(my_data$`product/price`)
+```
+
+
+### How many times users reviewed products?
+
+In order to use relevant data, we would need to define the minimum number of reviews per user. Since majority of users left only one review. Therefore, we will remove all single-review users and all other users who left less then 9 reviews.
+
+Filtering out users who left 9 or more reviews:
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+freq<-as.data.frame(table(my_data$`review/userId`))
+index<-filter(freq, freq$Freq>=9)$Var1
+```
+
+We are now left with 1316 users who reviewed certain beauty product at least 9 times.
+
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+(my_data <- subset(my_data,`review/userId` %in% index))
+```
+
+
+```{r,include=FALSE}
+#write_rds(my_data,"amazon_beauty_reviews_subset.RDS")
+my_data <- readRDS("data/amazon_beauty_reviews_subset.RDS")
+```
+
+
+### Exploratory data analysis
+
+#### Head of data
+
+```{r}
+(my_data)
+```
+
+
+#### How many unique products are reviewed?
+
+```{r, warning=FALSE, message=FALSE}
+length(unique(my_data$`product/productId`))
+```
+
+There are `r length(unique(my_data$'product/productId'))` products which were reviewed.
+
+
+#### How many reviewers do we have?
+
+```{r, warning=FALSE, message=FALSE}
+length(unique(my_data$`review/userId`))
+```
+
+There are `r length(unique(my_data$'review/userId'))` unique reviewers/customers who reviewed products.
+
+
+#### How many scores do we have?
+
+```{r}
+length(my_data$`review/score`)
+```
+There are `r length(my_data$'review/score')` ratings.
+
+#### What is the distribution of ratings?
+
+```{r}
+hist(as.numeric(my_data$`review/score`),main = "Histogramm of scores",xlab = "Score")
+```
+
+
+Products seem to be favorably rated as the distribution of scores showes that the best score is the most frequent.
+
+#### What is the average number of reviews per user?
+
+```{r,message=FALSE,warning=FALSE}
+my_data %>% 
+  group_by(`review/userId`) %>%
+  summarise(Freq=n()) %>% 
+  summary()
+```
+In the original data set It users left on average left a review only once. After filtering, we see that our average is at 3 reviews per user. 
+
+#### What is the average score per user?
+
+```{r,message=FALSE,warning=FALSE}
+(grand.mean <-my_data %>% 
+  group_by(`review/userId`) %>%
+  dplyr::summarise(Mean=mean(`review/score`)) %>%
+  mutate(Grand.mean=mean(Mean))%>%
+  head())
+```
+It seems that beauty products on Amazon are well received by users as the average score per user is quite high, at `r as.numeric(grand.mean[1,3])`.
+
+## Building a model
+
+### Final data outlook
+
+Here is a glimpse in our data before we start building the recommnder:
+
+```{r}
+head(my_data)
+```
+
+### Subsetting data
+
+In order to model a recommender system, three variables in our case are of great importance:
+
+* User ID
+* Product ID
+* Score / Rating
+
+Our model will be based on these three variables. Additionally, we will make use of the remaining features by utilizing some text mining techniques, but you will find more details at some later point.
+Now, we will make a subset of our data with 3 mentioned variables:
+
+```{r}
+subset_my_data <- subset(my_data, select = c(`review/userId`,`product/productId`,`review/score`))
+head(subset_my_data)
+```
+
+Let us inspect the dimensions:
+
+```{r}
+dim(subset_my_data)
+```
+
+### Formatting data
+
+Our data is currently in the long format, i.e. one row for one rating. However, we would want to get a matrix with ratings where the rows represent the users IDs and the columns the Product IDs.
+Thus, we will transform our data to so called rating matrix:
+
+```{r}
+ratings <- as(subset_my_data, "realRatingMatrix")
+```
+
+In order to avoid "high/low rating bias" from users who give high (or low) ratings to all the products they reviewed, we will need to normalize our data. That would prevent certain bias in the results.
+
+```{r}
+ratings <- normalize(ratings)
+```
+
+### Inspecting real rating matrix
+
+We can plot an image of the rating matrix for the first 250 users and 250 products:
+```{r}
+image(ratings[1:250,1:250])
+```
+
+From the visualisation we can see that rating matrix is very sparse, i.e. that not every user did rate/review every product in our data set. 
+
+We can inspect the data for the first 10 users and the first 4 products:
+
+```{r}
+ratings[1:10, 1:4]@data
+```
+
+As we already saw in the visualisation, the data is sparse and the first 10 users did not review first 4 products visualised in the matrix above.
+
+### Building a recommender
+
+Finally, we will now build our recommendation system based on **User-based collaborative filtering**
+User-based collaborative filtering search for similar users and gives them recommendations based on what other users with similar rating patterns appreciated:
+
+```{r,warning=FALSE, message=FALSE}
+recommender <- Recommender(ratings, method="UBCF")
+recommender
+```
+
+Additionally, in order to compare results of two methods,  we would like to apply **item-based collaborative filtering** method to build another recommender system. In contrast to user-based collaborative filtering, item-based collaborative filtering looks for similarity patterns between **items** and recommends them to users based on the computed information.
+
+```{r}
+recommenderIBCF <- Recommender(ratings, method="IBCF")
+recommenderIBCF
+```
+As reported, both recommendation systems are built using 8002 users.
+
+
+##  Interpretation and managerial implications
+
+Now we would like to interpret the output of our recommender systems. 
+First we start with UBCF-based recommender system.
+
+```{r}
+current.user <- 45
+recommendations <- predict(recommender, current.user, data = ratings, n = 5)
+```
+
+We decided to take user number `r current.user` and inspect 5 recommendations provided to him/her.
+Now we can inspect what our recommendation system provided in the end:
+
+```{r}
+str(recommendations)
+```
+
+We can see that the user ID of the user number `r current.user` is A10N19OL0CKYDV.
+Our system found 2 products to recommend to this user, and we can find product index (173, 772) as well as ratings that the system calculated from the ratings of the closest users (5,5).
+
+Let us create a prediction made by IBCF-based recommender:
+
+```{r}
+recommendationsIBCF <- predict(recommenderIBCF,current.user,data = ratings, n=5)
+str(recommendationsIBCF)
+```
+
+We will inspect potential recommended products:
+
+```{r}
+head(as(recommendationsIBCF,"list"))
+```
+
+Unfortunately, our item-based collaborative filtering system did not generate any recommendation for the user number `r current.user`.
+
+
+### Identification of the recommended products
+
+Let us now identify the products recommended by UBCF-based recommender. First we need to extract the index of the recommended products:  
+
+```{r}
+index<- as.vector(as.factor(unlist(as(recommendations, "list"))))
+```
+
+Then we find corresponding product in our initial data set:
+
+```{r}
+(recommendation_26<-my_data[match(index, my_data$`product/productId`),])  
+```
+
+Two products recommended are :
+
+* `r recommendation_26$'product/title'[1]` -  facial cleansing cream
+* `r recommendation_26$'product/title'[2]` -  color for hair
+
+
+Let us now inspect products that the user A10N19OL0CKYDV rated:
+
+```{r}
+my_data[match("A10N19OL0CKYDV",my_data$`review/userId`),]
+```
+
+### Implications
+
+As we could see, this user reviewed only one product, called "Opi Ridge Filler .5 oz.", and it is a nail-care product. We could assume that this person is a female user since the product she bought is typically associated with female beauty care. What is more, two recommended products are as well very strongly associated to being typical female beauty products. Finally, we have the name of the user (Erica), so we can be sure that the user is a female.
+From the qualitative perspective it seems that our recommendation system provides descent recommendations!.
+
+
+## Bonus analysis: Text Mining
+
+In addition to our recommender system, we will apply some basic text mining techniques to explore reviews text. Text mining helps us to mine opinions of users (in this case) about the reviewed products at scale.
+
+### Wordcloud 
+
+Here we create a wordcloud of words from product reviews of recommended products to the user `r current.user`. Beforehand we would need to pre-process the text of reviews in the following manner: 
+
+```{r,warning=FALSE,message=FALSE}
+# Split text into parts using new line character:
+text.docs <- Corpus(VectorSource(recommendation_26$`review/text`))
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+text.docs <- tm_map(text.docs, toSpace, "/")
+text.docs <- tm_map(text.docs, toSpace, "@")
+text.docs <- tm_map(text.docs, toSpace, "\\|")
+text.docs <- tm_map(text.docs, content_transformer(tolower))
+text.docs <- tm_map(text.docs, removeNumbers)
+text.docs <- tm_map(text.docs, stripWhitespace)
+text.docs <- tm_map(text.docs, removeWords, stopwords("english"))
+text.docs <- tm_map(text.docs, removePunctuation)
+dtm <- DocumentTermMatrix(text.docs, control=list(weighting=weightTf))
+m <- as.matrix(t(dtm))
+v <- sort(rowSums(m),decreasing=TRUE)
+d <- data.frame(word = names(v),freq=v)
+set.seed(1234)
+wordcloud(words = d$word, freq = d$freq, min.freq = 10,
+          max.words=200, random.order=FALSE, rot.per=0.35,
+          colors=brewer.pal(8, "Dark2"))
+```
+
+From the wordcloud we can see that words "color", "hair" and "gloves" are quite frequent in the text corpus analyzed. That could be a hint that the user was referring to the usage of the product.
+The term "cheap" could be easily spotted as well. This word is not very likable among marketers as it brings unfavorable image to the brand. Nevertheless, it seems that the user believes that the product is affordable.
+
+
+## Future work
+
+This data set provides multiple possibility for the further analysis besides recommender systems.
+Here are some ideas what can be further done:
+
+* **Sentiment analysis** - Sentiment analysis can be done and scores (typically from -3 to +3) accompanied to each review description. That would tell us more about the sentiment that users have about the products reviewed.
+
+* **Prediction of ratings** - In case that we would have enough data (ratings) about one product, regardless of customers, it would be possible to develop a machine learning model which based on current features (e.g. price) and additional features (such as sentiment or words in the review) could predict the rating that one product might have.
+
+* **Prediction of the sentiment** - in the similar manner as the previous point, it would be useful to train a machine learning model to predict a sentiment that would hypotetically emerge in a reviewer.
+
+* **Topic modeling** - topic modeling is unsupervised machine learning technique that could help us identify topics which users discuss in the text of reviews. 
+
+## Limitations
+
+Limitation related to this data set and building a recommender system is the fact that the majority of users have left only one review:
+
+```{r}
+table(as.data.frame(table(my_data$`review/userId`))$Freq)
+```
+
+Let us take a look which users left the most reviews:
+
+```{r}
+limitations <-as.data.frame(table(my_data$`review/userId`))
+limitations %>% arrange(desc(Freq))%>%rename(UserID=Var1)
+```
+
+We can see that users under IDs A3M174IC0VXOS2,A3KEZLJ59C1JVH,A3QEE0ZPMT3W6P are rare examples of users who left multiple product reviews.
+
+<!--chapter:end:07-Recommendation_system.Rmd-->
+
