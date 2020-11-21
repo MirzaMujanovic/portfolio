@@ -1,0 +1,447 @@
+---
+title: "07-Recommendation_System"
+output:
+  html_document:
+    toc: yes
+    df_print: paged
+  html_notebook: default
+  pdf_document:
+    toc: yes
+---
+
+# Recommendation system
+
+## Problem formulation
+
+The goal of our project is to develop a recommendation system trained on beauty products data from Amazon.
+Based on some studies it has been proven that personalized product recommendations drive 24% of the orders and 26% of the revenue. This explains the influence recommendation has on volume of orders and generally on sales figures. What is more, it has been proven that product recommendations lead to reoccurring visits and that purchases on recommendation mark higher average-order value. Consequently, we decided to use method called user-based collaborative filtering to build our recommendation system (*[Reference](https://www.salesforce.com/blog/2017/11/personalized-product-recommendations-drive-just-7-visits-26-revenue)*).
+
+First, we proceed with data preparation and pre-processing, then we build our recommender system, and finally draw business implications.
+
+## Data collection
+
+As we earlier mentioned, we use data on Amazon customer reviews of beauty products. The data used in this project can be accessed in this [link](http://snap.stanford.edu/data/web-Amazon-links.html). It contains the following features:
+
+* Product price: price of the product
+* Product Id: ASIN number of a product on Amazon.
+* Product title: title of the product
+* Review helpfulness: fraction of users who found the review helpful
+* Profile Name: name of the user
+* Review score: rating of the product
+* Review summary: concise summary of the review text
+* Review text	
+* Review time
+* Review userId
+
+## Data preparation and preprocessing
+
+### Packages
+
+```{r,warning=FALSE,error=FALSE,message=FALSE}
+#Packages
+library(R.utils)
+library(dplyr)
+library(tidyr)
+library(janitor)
+library(recommenderlab)
+library(tm)
+library(NLP)
+library(qdap)
+library(readr)
+library(wordcloud)
+```
+
+### Data loading and inspecting
+
+After downloading data locally we load in data by using`readLines()` function:
+
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+# Loading in data
+my_data <- readLines(gzfile("data/Beauty.txt.gz"))
+```
+
+
+Let us first have a look at the dimension of our data. Our data set is currently in a form of a single vector with 2772616 elements. Obviously, this is not the optimal form of the data we would like to work with. That is why we need to work around this data set to make it more convenient for further analysis. 
+
+What we can do first is to remove all fields with no characters:
+
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+my_data <- my_data[sapply(my_data, nchar) > 0]
+```
+
+Then we can convert it to data frame:
+
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+my_data <- as.data.frame(my_data)
+colnames(my_data) <- "product"
+```
+
+One of the critical steps is separating the column to multiple columns:
+
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+# Separate one column to two (":" separator)
+my_data <- separate(my_data,col = product, into = c("Info","Product"), sep = ":")
+```
+
+Inspecting first 10 values:
+
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+head(my_data,10)
+```
+
+The data set is loaded in .txt format, which makes it a bit challenging to work with. In the following sections we will undertake data manipulation in order to bring the data set in more suitable form. 
+
+First, we will convert it from the current long-format to the wide-format, where each column will represent a product, and each row a feature:
+
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+#Converting long format to wide
+my_data <- my_data %>%
+  group_by(Info) %>%
+  mutate(Order = seq_along(Info)) %>%
+  spread(key = Order, value = Product)
+```
+
+Since the column names are labeled with numbers, we will apply first row as a label for the corresponding column name:
+
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+my_data <- as.data.frame(t(my_data))
+my_data<-my_data%>%
+  row_to_names(row_number = 1)
+```
+
+
+Delete rows with at least 1 NAs:
+
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+my_data <- my_data[rowSums(is.na(my_data))==0,]
+```
+
+Trim white space at the beginning or ending the string:
+
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+my_data$`review/userId`<- trimws(my_data$`review/userId`)
+my_data$`product/productId`<- trimws(my_data$`product/productId`)
+my_data$`product/price`<- trimws(my_data$`product/price`)
+my_data$`product/title`<- trimws(my_data$`product/title`)
+```
+
+
+Filtering out reviews with unknown userID and productId:
+
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+my_data<-filter(my_data,`review/userId`!="unknown" & `product/productId`!="unknown" & `product/price`!="unknown")
+```
+
+Correcting column classes:
+
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+my_data$`product/productId` <- as.factor(my_data$`product/productId`)
+```
+
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+my_data$`review/score`<- as.numeric(my_data$`review/score`)
+my_data$`review/userId`<-as.factor(my_data$`review/userId`)
+my_data$`product/price`<-as.numeric(my_data$`product/price`)
+```
+
+
+### How many times users reviewed products?
+
+In order to use relevant data, we would need to define the minimum number of reviews per user. Since majority of users left only one review. Therefore, we will remove all single-review users and all other users who left less then 9 reviews.
+
+Filtering out users who left 9 or more reviews:
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+freq<-as.data.frame(table(my_data$`review/userId`))
+index<-filter(freq, freq$Freq>=9)$Var1
+```
+
+We are now left with 1316 users who reviewed certain beauty product at least 9 times.
+
+```{r, warning=FALSE, message=FALSE, eval=FALSE}
+(my_data <- subset(my_data,`review/userId` %in% index))
+```
+
+
+```{r,include=FALSE}
+my_data <- readRDS("data/amazon_beauty_reviews_subset.RDS")
+```
+
+
+### Exploratory data analysis
+
+#### Head of data
+
+```{r}
+(my_data)
+```
+
+
+#### How many unique products are reviewed?
+
+```{r, warning=FALSE, message=FALSE}
+length(unique(my_data$`product/productId`))
+```
+
+There are `r length(unique(my_data$'product/productId'))` products which were reviewed.
+
+
+#### How many reviewers do we have?
+
+```{r, warning=FALSE, message=FALSE}
+length(unique(my_data$`review/userId`))
+```
+
+There are `r length(unique(my_data$'review/userId'))` unique reviewers/customers who reviewed products.
+
+
+#### How many scores do we have?
+
+```{r}
+length(my_data$`review/score`)
+```
+There are `r length(my_data$'review/score')` ratings.
+
+#### What is the distribution of ratings?
+
+```{r}
+hist(as.numeric(my_data$`review/score`),main = "Histogramm of scores",xlab = "Score")
+```
+
+
+Products seem to be favorably rated as the distribution of scores showes that the best score is the most frequent.
+
+#### What is the average number of reviews per user?
+
+```{r,message=FALSE,warning=FALSE}
+my_data %>% 
+  group_by(`review/userId`) %>%
+  summarise(Freq=n()) %>% 
+  summary()
+```
+In the original data set It users left on average left a review only once. After filtering, we see that our average is at 3 reviews per user. 
+
+#### What is the average score per user?
+
+```{r,message=FALSE,warning=FALSE}
+(grand.mean <-my_data %>% 
+  group_by(`review/userId`) %>%
+  dplyr::summarise(Mean=mean(`review/score`)) %>%
+  mutate(Grand.mean=mean(Mean))%>%
+  head())
+```
+It seems that beauty products on Amazon are well received by users as the average score per user is quite high, at `r as.numeric(grand.mean[1,3])`.
+
+## Building a model
+
+### Final data outlook
+
+Here is a glimpse in our data before we start building the recommnder:
+
+```{r}
+head(my_data)
+```
+
+### Subsetting data
+
+In order to model a recommender system, three variables in our case are of great importance:
+
+* User ID
+* Product ID
+* Score / Rating
+
+Our model will be based on these three variables. Additionally, we will make use of the remaining features by utilizing some text mining techniques, but you will find more details at some later point.
+Now, we will make a subset of our data with 3 mentioned variables:
+
+```{r}
+subset_my_data <- subset(my_data, select = c(`review/userId`,`product/productId`,`review/score`))
+head(subset_my_data)
+```
+
+Let us inspect the dimensions:
+
+```{r}
+dim(subset_my_data)
+```
+
+### Formatting data
+
+Our data is currently in the long format, i.e. one row for one rating. However, we would want to get a matrix with ratings where the rows represent the users IDs and the columns the Product IDs.
+Thus, we will transform our data to so called rating matrix:
+
+```{r}
+ratings <- as(subset_my_data, "realRatingMatrix")
+```
+
+In order to avoid "high/low rating bias" from users who give high (or low) ratings to all the products they reviewed, we will need to normalize our data. That would prevent certain bias in the results.
+
+```{r}
+ratings <- normalize(ratings)
+```
+
+### Inspecting real rating matrix
+
+We can plot an image of the rating matrix for the first 250 users and 250 products:
+```{r}
+image(ratings[1:250,1:250])
+```
+
+From the visualisation we can see that rating matrix is very sparse, i.e. that not every user did rate/review every product in our data set. 
+
+We can inspect the data for the first 10 users and the first 4 products:
+
+```{r}
+ratings[1:10, 1:4]@data
+```
+
+As we already saw in the visualisation, the data is sparse and the first 10 users did not review first 4 products visualised in the matrix above.
+
+### Building a recommender
+
+Finally, we will now build our recommendation system based on **User-based collaborative filtering**
+User-based collaborative filtering search for similar users and gives them recommendations based on what other users with similar rating patterns appreciated:
+
+```{r,warning=FALSE, message=FALSE}
+recommender <- Recommender(ratings, method="UBCF")
+recommender
+```
+
+Additionally, in order to compare results of two methods,  we would like to apply **item-based collaborative filtering** method to build another recommender system. In contrast to user-based collaborative filtering, item-based collaborative filtering looks for similarity patterns between **items** and recommends them to users based on the computed information.
+
+```{r,eval=FALSE}
+recommenderIBCF <- Recommender(ratings, method="IBCF")
+recommenderIBCF
+```
+As reported, both recommendation systems are built using 8002 users.
+
+
+##  Interpretation and managerial implications
+
+Now we would like to interpret the output of our recommender systems. 
+First we start with UBCF-based recommender system.
+
+```{r}
+current.user <- 45
+recommendations <- predict(recommender, current.user, data = ratings, n = 5)
+```
+
+We decided to take user number `r current.user` and inspect 5 recommendations provided to him/her.
+Now we can inspect what our recommendation system provided in the end:
+
+```{r}
+str(recommendations)
+```
+
+We can see that the user ID of the user number `r current.user` is A10N19OL0CKYDV.
+Our system found 2 products to recommend to this user, and we can find product index (173, 772) as well as ratings that the system calculated from the ratings of the closest users (5,5).
+
+Let us create a prediction made by IBCF-based recommender:
+
+```{r,eval=FALSE}
+recommendationsIBCF <- predict(recommenderIBCF,current.user,data = ratings, n=5)
+str(recommendationsIBCF)
+```
+
+We will inspect potential recommended products:
+
+```{r,eval=FALSE}
+head(as(recommendationsIBCF,"list"))
+```
+
+Unfortunately, our item-based collaborative filtering system did not generate any recommendation for the user number `r current.user`.
+
+
+### Identification of the recommended products
+
+Let us now identify the products recommended by UBCF-based recommender. First we need to extract the index of the recommended products:  
+
+```{r}
+index<- as.vector(as.factor(unlist(as(recommendations, "list"))))
+```
+
+Then we find corresponding product in our initial data set:
+
+```{r}
+(recommendation_26<-my_data[match(index, my_data$`product/productId`),])  
+```
+
+Two products recommended are :
+
+* `r recommendation_26$'product/title'[1]` -  facial cleansing cream
+* `r recommendation_26$'product/title'[2]` -  color for hair
+
+
+Let us now inspect products that the user A10N19OL0CKYDV rated:
+
+```{r}
+my_data[match("A10N19OL0CKYDV",my_data$`review/userId`),]
+```
+
+### Implications
+
+As we could see, this user reviewed only one product, called "Opi Ridge Filler .5 oz.", and it is a nail-care product. We could assume that this person is a female user since the product she bought is typically associated with female beauty care. What is more, two recommended products are as well very strongly associated to being typical female beauty products. Finally, we have the name of the user (Erica), so we can be sure that the user is a female.
+From the qualitative perspective it seems that our recommendation system provides descent recommendations!.
+
+
+## Bonus analysis: Text Mining
+
+In addition to our recommender system, we will apply some basic text mining techniques to explore reviews text. Text mining helps us to mine opinions of users (in this case) about the reviewed products at scale.
+
+### Wordcloud 
+
+Here we create a wordcloud of words from product reviews of recommended products to the user `r current.user`. Beforehand we would need to pre-process the text of reviews in the following manner: 
+
+```{r,warning=FALSE,message=FALSE}
+# Split text into parts using new line character:
+text.docs <- Corpus(VectorSource(recommendation_26$`review/text`))
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+text.docs <- tm_map(text.docs, toSpace, "/")
+text.docs <- tm_map(text.docs, toSpace, "@")
+text.docs <- tm_map(text.docs, toSpace, "\\|")
+text.docs <- tm_map(text.docs, content_transformer(tolower))
+text.docs <- tm_map(text.docs, removeNumbers)
+text.docs <- tm_map(text.docs, stripWhitespace)
+text.docs <- tm_map(text.docs, removeWords, stopwords("english"))
+text.docs <- tm_map(text.docs, removePunctuation)
+dtm <- DocumentTermMatrix(text.docs, control=list(weighting=weightTf))
+m <- as.matrix(t(dtm))
+v <- sort(rowSums(m),decreasing=TRUE)
+d <- data.frame(word = names(v),freq=v)
+set.seed(1234)
+wordcloud(words = d$word, freq = d$freq, min.freq = 10,
+          max.words=200, random.order=FALSE, rot.per=0.35,
+          colors=brewer.pal(8, "Dark2"))
+```
+
+From the wordcloud we can see that words "color", "hair" and "gloves" are quite frequent in the text corpus analyzed. That could be a hint that the user was referring to the usage of the product.
+The term "cheap" could be easily spotted as well. This word is not very likable among marketers as it brings unfavorable image to the brand. Nevertheless, it seems that the user believes that the product is affordable.
+
+
+## Future work
+
+This data set provides multiple possibility for the further analysis besides recommender systems.
+Here are some ideas what can be further done:
+
+* **Sentiment analysis** - Sentiment analysis can be done and scores (typically from -3 to +3) accompanied to each review description. That would tell us more about the sentiment that users have about the products reviewed.
+
+* **Prediction of ratings** - In case that we would have enough data (ratings) about one product, regardless of customers, it would be possible to develop a machine learning model which based on current features (e.g. price) and additional features (such as sentiment or words in the review) could predict the rating that one product might have.
+
+* **Prediction of the sentiment** - in the similar manner as the previous point, it would be useful to train a machine learning model to predict a sentiment that would hypotetically emerge in a reviewer.
+
+* **Topic modeling** - topic modeling is unsupervised machine learning technique that could help us identify topics which users discuss in the text of reviews. 
+
+## Limitations
+
+Limitation related to this data set and building a recommender system is the fact that the majority of users have left only one review:
+
+```{r}
+table(as.data.frame(table(my_data$`review/userId`))$Freq)
+```
+
+Let us take a look which users left the most reviews:
+
+```{r}
+limitations <-as.data.frame(table(my_data$`review/userId`))
+limitations %>% arrange(desc(Freq))%>%rename(UserID=Var1)
+```
+
+We can see that users under IDs A3M174IC0VXOS2,A3KEZLJ59C1JVH,A3QEE0ZPMT3W6P are rare examples of users who left multiple product reviews.
