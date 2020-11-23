@@ -55,9 +55,9 @@ library(wordcloud)
 
 After downloading data locally we load in data by using`readLines()` function:
 
-```{r, warning=FALSE, message=FALSE, eval=FALSE}
+```{r, warning=FALSE, message=FALSE, eval=TRUE}
 # Loading in data
-my_data <- readLines(gzfile("data/Beauty.txt.gz"))
+my_data <- readRDS("data/amazon_beauty_full.RDS")
 ```
 
 
@@ -65,27 +65,27 @@ Let us first have a look at the dimension of our data. Our data set is currently
 
 What we can do first is to remove all fields with no characters:
 
-```{r, warning=FALSE, message=FALSE, eval=FALSE}
+```{r, warning=FALSE, message=FALSE, eval=TRUE}
 my_data <- my_data[sapply(my_data, nchar) > 0]
 ```
 
 Then we can convert it to data frame:
 
-```{r, warning=FALSE, message=FALSE, eval=FALSE}
+```{r, warning=FALSE, message=FALSE, eval=TRUE}
 my_data <- as.data.frame(my_data)
 colnames(my_data) <- "product"
 ```
 
 One of the critical steps is separating the column to multiple columns:
 
-```{r, warning=FALSE, message=FALSE, eval=FALSE}
+```{r, warning=FALSE, message=FALSE, eval=TRUE}
 # Separate one column to two (":" separator)
 my_data <- separate(my_data,col = product, into = c("Info","Product"), sep = ":")
 ```
 
 Inspecting first 10 values:
 
-```{r, warning=FALSE, message=FALSE, eval=FALSE}
+```{r, warning=FALSE, message=FALSE, eval=TRUE}
 head(my_data,10)
 ```
 
@@ -93,7 +93,7 @@ The data set is loaded in .txt format, which makes it a bit challenging to work 
 
 First, we will convert it from the current long-format to the wide-format, where each column will represent a product, and each row a feature:
 
-```{r, warning=FALSE, message=FALSE, eval=FALSE}
+```{r, warning=FALSE, message=FALSE, eval=TRUE}
 #Converting long format to wide
 my_data <- my_data %>%
   group_by(Info) %>%
@@ -103,7 +103,7 @@ my_data <- my_data %>%
 
 Since the column names are labeled with numbers, we will apply first row as a label for the corresponding column name:
 
-```{r, warning=FALSE, message=FALSE, eval=FALSE}
+```{r, warning=FALSE, message=FALSE, eval=TRUE}
 my_data <- as.data.frame(t(my_data))
 my_data<-my_data%>%
   row_to_names(row_number = 1)
@@ -112,13 +112,13 @@ my_data<-my_data%>%
 
 Delete rows with at least 1 NAs:
 
-```{r, warning=FALSE, message=FALSE, eval=FALSE}
+```{r, warning=FALSE, message=FALSE, eval=TRUE}
 my_data <- my_data[rowSums(is.na(my_data))==0,]
 ```
 
 Trim white space at the beginning or ending the string:
 
-```{r, warning=FALSE, message=FALSE, eval=FALSE}
+```{r, warning=FALSE, message=FALSE, eval=TRUE}
 my_data$`review/userId`<- trimws(my_data$`review/userId`)
 my_data$`product/productId`<- trimws(my_data$`product/productId`)
 my_data$`product/price`<- trimws(my_data$`product/price`)
@@ -128,17 +128,17 @@ my_data$`product/title`<- trimws(my_data$`product/title`)
 
 Filtering out reviews with unknown userID and productId:
 
-```{r, warning=FALSE, message=FALSE, eval=FALSE}
+```{r, warning=FALSE, message=FALSE, eval=TRUE}
 my_data<-filter(my_data,`review/userId`!="unknown" & `product/productId`!="unknown" & `product/price`!="unknown")
 ```
 
 Correcting column classes:
 
-```{r, warning=FALSE, message=FALSE, eval=FALSE}
+```{r, warning=FALSE, message=FALSE, eval=TRUE}
 my_data$`product/productId` <- as.factor(my_data$`product/productId`)
 ```
 
-```{r, warning=FALSE, message=FALSE, eval=FALSE}
+```{r, warning=FALSE, message=FALSE, eval=TRUE}
 my_data$`review/score`<- as.numeric(my_data$`review/score`)
 my_data$`review/userId`<-as.factor(my_data$`review/userId`)
 my_data$`product/price`<-as.numeric(my_data$`product/price`)
@@ -147,32 +147,26 @@ my_data$`product/price`<-as.numeric(my_data$`product/price`)
 
 ### How many times users reviewed products?
 
-In order to use relevant data, we would need to define the minimum number of reviews per user. Since majority of users left only one review. Therefore, we will remove all single-review users and all other users who left less then 9 reviews.
+In order to use relevant data, we would need to define the minimum number of reviews per user. Since majority of users left only one review. Therefore, we will remove all single-review users and all other users who left less then 2 reviews.
 
-Filtering out users who left 9 or more reviews:
-```{r, warning=FALSE, message=FALSE, eval=FALSE}
+Filtering out users who left 2 or more reviews:
+```{r, warning=FALSE, message=FALSE, eval=TRUE}
 freq<-as.data.frame(table(my_data$`review/userId`))
-index<-filter(freq, freq$Freq>=9)$Var1
+index<-filter(freq, freq$Freq>=1)$Var1
 ```
 
-We are now left with 1316 users who reviewed certain beauty product at least 9 times.
+We are now left with 1316 users who reviewed certain beauty product at least 2 times.
 
-```{r, warning=FALSE, message=FALSE, eval=FALSE}
-(my_data <- subset(my_data,`review/userId` %in% index))
+```{r, warning=FALSE, message=FALSE, eval=TRUE}
+my_data <- subset(my_data,`review/userId` %in% index)
 ```
-
-
-```{r,include=FALSE}
-my_data <- readRDS("data/amazon_beauty_reviews_subset.RDS")
-```
-
 
 ### Exploratory data analysis
 
 #### Head of data
 
 ```{r}
-(my_data)
+head(my_data)
 ```
 
 
@@ -307,7 +301,7 @@ recommender
 
 Additionally, in order to compare results of two methods,  we would like to apply **item-based collaborative filtering** method to build another recommender system. In contrast to user-based collaborative filtering, item-based collaborative filtering looks for similarity patterns between **items** and recommends them to users based on the computed information.
 
-```{r,eval=FALSE}
+```{r,eval=TRUE}
 recommenderIBCF <- Recommender(ratings, method="IBCF")
 recommenderIBCF
 ```
@@ -336,14 +330,14 @@ Our system found 2 products to recommend to this user, and we can find product i
 
 Let us create a prediction made by IBCF-based recommender:
 
-```{r,eval=FALSE}
+```{r,eval=TRUE}
 recommendationsIBCF <- predict(recommenderIBCF,current.user,data = ratings, n=5)
 str(recommendationsIBCF)
 ```
 
 We will inspect potential recommended products:
 
-```{r,eval=FALSE}
+```{r,eval=TRUE}
 head(as(recommendationsIBCF,"list"))
 ```
 
@@ -441,7 +435,7 @@ Let us take a look which users left the most reviews:
 
 ```{r}
 limitations <-as.data.frame(table(my_data$`review/userId`))
-limitations %>% arrange(desc(Freq))%>%rename(UserID=Var1)
+limitations %>% arrange(desc(Freq))%>%rename(UserID=Var1)%>% head()
 ```
 
 We can see that users under IDs A3M174IC0VXOS2,A3KEZLJ59C1JVH,A3QEE0ZPMT3W6P are rare examples of users who left multiple product reviews.
