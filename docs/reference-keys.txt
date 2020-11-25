@@ -1,3 +1,8 @@
+fig:unnamed-chunk-2
+fig:unnamed-chunk-26
+fig:unnamed-chunk-45
+fig:unnamed-chunk-48
+fig:unnamed-chunk-84
 emotions-in-online-customer-reviews
 dictionaries-for-nlp
 data-set
@@ -74,3 +79,9 @@ bonus-analysis-text-mining
 wordcloud-1
 future-work
 limitations
+covid-19-dashboard
+data-3
+curve-of-confirmed-cases
+total-cases-per-1-million-people
+deaths-vs-recovered
+active-cases-vs-new-cases

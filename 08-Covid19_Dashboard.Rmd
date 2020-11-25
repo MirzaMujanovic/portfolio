@@ -265,7 +265,7 @@ ggplotly(p)
 ```
 
 
-```{r,echo=FALSE,message=FALSE,warning=FALSE,error=FALSE,fig.show='asis';eval=FALSE}
+```{r,echo=FALSE,message=FALSE,warning=FALSE,error=FALSE,fig.show='asis',eval=FALSE}
 #Austria
 pivot_hospitalization.mean.at <- filter(pivot_hospitalization.mean.EU,Country == "Austria")
 
