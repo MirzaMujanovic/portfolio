@@ -11,7 +11,9 @@ output:
 css: style.css
 ---
 
-# COVID 19 Dashboard for Balkan countries*
+# (PART) Shiny Apps {-}
+
+# COVID 19 Dashboard
 
 ::: {.infobox .graph data-latex="{graph}"}
 [Here you go directly to the dashboard](https://mirza-mujanovic.shinyapps.io/covid-19/)
@@ -202,12 +204,8 @@ ggplotly(p, tooltip = "text")
 
 
 
-
-
-
-## Hospitalization
-
-```{r,echo=FALSE,message=FALSE,warning=FALSE,error=FALSE,fig.show='asis'}
+```{r,echo=FALSE,message=FALSE,warning=FALSE,error=FALSE,fig.show='asis',eval=FALSE}
+#Hospitalisation
 hospitalization <- read.csv("data/Hospitalization_all_locs.csv")
 hospitalization$X <- NULL
 
@@ -226,9 +224,8 @@ pivot_hospitalization.mean.EU <- filter(pivot_hospitalization.mean.EU, Value > 0
 pivot_hospitalization.mean.EU$Date <- as.Date(as.POSIXct(pivot_hospitalization.mean.EU$Date,"%Y%M%D"))
 ```
 
-### Croatia
 
-```{r,echo=FALSE,message=FALSE,warning=FALSE,error=FALSE,fig.show='asis'}
+```{r,echo=FALSE,message=FALSE,warning=FALSE,error=FALSE,fig.show='asis',eval=FALSE}
 #Croatia
 pivot_hospitalization.mean.cro <- filter(pivot_hospitalization.mean.EU,Country == "Croatia")
 
@@ -247,9 +244,8 @@ p <- ggplot(pivot_hospitalization.mean.cro,aes(x=Date,y=Value)) +
 ggplotly(p)
 ```
 
-### Slovenia 
 
-```{r,echo=FALSE,message=FALSE,warning=FALSE,error=FALSE,fig.show='asis'}
+```{r,echo=FALSE,message=FALSE,warning=FALSE,error=FALSE,fig.show='asis',eval=FALSE}
 #Slovenia
 pivot_hospitalization.mean.slo <- filter(pivot_hospitalization.mean.EU,Country == "Slovenia")
 
@@ -268,9 +264,8 @@ p <- ggplot(pivot_hospitalization.mean.slo,aes(x=Date,y=Value)) +
 ggplotly(p)
 ```
 
-### Austria
 
-```{r,echo=FALSE,message=FALSE,warning=FALSE,error=FALSE,fig.show='asis'}
+```{r,echo=FALSE,message=FALSE,warning=FALSE,error=FALSE,fig.show='asis';eval=FALSE}
 #Austria
 pivot_hospitalization.mean.at <- filter(pivot_hospitalization.mean.EU,Country == "Austria")
 
