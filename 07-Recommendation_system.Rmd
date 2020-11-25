@@ -9,7 +9,9 @@ output:
     toc: yes
 ---
 
-# Recommendation system
+# (PART) Recommendation system {-}
+
+# Beauty products recommender 
 
 ## Problem formulation
 
