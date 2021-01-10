@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>5 Recommendation system for beauty products | main.utf8</title>
+  <meta name="description" content="" />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="5 Recommendation system for beauty products | main.utf8" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="5 Recommendation system for beauty products | main.utf8" />
+  
+  
+  
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="customer-churn-prediction.html"/>
+<link rel="next" href="covid-19-dashboard.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
+
+<style type="text/css">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./"><B>Mirza Mujanovic Portfolio</B></a></li>
+
+<li class="divider"></li>
+<li class="part"><span><b>I About me</b></span></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Who I am?</a></li>
+<li class="part"><span><b>II Text Mining in Marketing</b></span></li>
+<li class="chapter" data-level="1" data-path="emotions-in-online-customer-reviews.html"><a href="emotions-in-online-customer-reviews.html"><i class="fa fa-check"></i><b>1</b> Emotions In Online Customer Reviews</a><ul>
+<li class="chapter" data-level="" data-path="emotions-in-online-customer-reviews.html"><a href="emotions-in-online-customer-reviews.html#what-to-expect-in-this-article"><i class="fa fa-check"></i>What to expect in this article?</a></li>
+<li class="chapter" data-level="1.1" data-path="emotions-in-online-customer-reviews.html"><a href="emotions-in-online-customer-reviews.html#dictionaries-for-nlp"><i class="fa fa-check"></i><b>1.1</b> Dictionaries for NLP</a></li>
+<li class="chapter" data-level="1.2" data-path="emotions-in-online-customer-reviews.html"><a href="emotions-in-online-customer-reviews.html#data-set"><i class="fa fa-check"></i><b>1.2</b> Data set</a></li>
+<li class="chapter" data-level="1.3" data-path="emotions-in-online-customer-reviews.html"><a href="emotions-in-online-customer-reviews.html#corpus-cleaning"><i class="fa fa-check"></i><b>1.3</b> Corpus cleaning</a></li>
+<li class="chapter" data-level="1.4" data-path="emotions-in-online-customer-reviews.html"><a href="emotions-in-online-customer-reviews.html#visualisations-of-terms-frequency"><i class="fa fa-check"></i><b>1.4</b> Visualisations of terms frequency</a><ul>
+<li class="chapter" data-level="1.4.1" data-path="emotions-in-online-customer-reviews.html"><a href="emotions-in-online-customer-reviews.html#bar-charts-with-the-most-frequent-terms"><i class="fa fa-check"></i><b>1.4.1</b> Bar charts with the most frequent terms</a></li>
+<li class="chapter" data-level="1.4.2" data-path="emotions-in-online-customer-reviews.html"><a href="emotions-in-online-customer-reviews.html#wordcloud-with-the-most-frequent-terms"><i class="fa fa-check"></i><b>1.4.2</b> Wordcloud with the most frequent terms</a></li>
+<li class="chapter" data-level="1.4.3" data-path="emotions-in-online-customer-reviews.html"><a href="emotions-in-online-customer-reviews.html#the-most-frequent-terms-indicating-emotions"><i class="fa fa-check"></i><b>1.4.3</b> The most frequent terms indicating emotions</a></li>
+</ul></li>
+<li class="chapter" data-level="1.5" data-path="emotions-in-online-customer-reviews.html"><a href="emotions-in-online-customer-reviews.html#sentiment-analysis"><i class="fa fa-check"></i><b>1.5</b> Sentiment analysis</a><ul>
+<li class="chapter" data-level="1.5.1" data-path="emotions-in-online-customer-reviews.html"><a href="emotions-in-online-customer-reviews.html#polarity-timeline"><i class="fa fa-check"></i><b>1.5.1</b> Polarity timeline</a></li>
+<li class="chapter" data-level="1.5.2" data-path="emotions-in-online-customer-reviews.html"><a href="emotions-in-online-customer-reviews.html#analysis-on-sentence-level"><i class="fa fa-check"></i><b>1.5.2</b> Analysis on sentence-level</a></li>
+<li class="chapter" data-level="1.5.3" data-path="emotions-in-online-customer-reviews.html"><a href="emotions-in-online-customer-reviews.html#what-are-the-most-emotional-reviews"><i class="fa fa-check"></i><b>1.5.3</b> What are the most emotional reviews?</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="text-analysis-of-novels.html"><a href="text-analysis-of-novels.html"><i class="fa fa-check"></i><b>2</b> Text Analysis of Novels</a><ul>
+<li class="chapter" data-level="2.1" data-path="text-analysis-of-novels.html"><a href="text-analysis-of-novels.html#data"><i class="fa fa-check"></i><b>2.1</b> Data</a></li>
+<li class="chapter" data-level="2.2" data-path="text-analysis-of-novels.html"><a href="text-analysis-of-novels.html#text-cleaning"><i class="fa fa-check"></i><b>2.2</b> Text cleaning</a></li>
+<li class="chapter" data-level="2.3" data-path="text-analysis-of-novels.html"><a href="text-analysis-of-novels.html#awakening"><i class="fa fa-check"></i><b>2.3</b> Awakening</a></li>
+<li class="chapter" data-level="2.4" data-path="text-analysis-of-novels.html"><a href="text-analysis-of-novels.html#commonality-cloud-and-comparison-cloud"><i class="fa fa-check"></i><b>2.4</b> Commonality cloud and Comparison cloud</a></li>
+<li class="chapter" data-level="2.5" data-path="text-analysis-of-novels.html"><a href="text-analysis-of-novels.html#sentiment-timeline"><i class="fa fa-check"></i><b>2.5</b> Sentiment timeline</a></li>
+<li class="chapter" data-level="2.6" data-path="text-analysis-of-novels.html"><a href="text-analysis-of-novels.html#topic-modelling-lda"><i class="fa fa-check"></i><b>2.6</b> Topic Modelling: LDA</a></li>
+<li class="chapter" data-level="2.7" data-path="text-analysis-of-novels.html"><a href="text-analysis-of-novels.html#main-points-of-interpretation"><i class="fa fa-check"></i><b>2.7</b> Main points of interpretation</a></li>
+</ul></li>
+<li class="part"><span><b>III Social Media Analysis</b></span></li>
+<li class="chapter" data-level="3" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html"><i class="fa fa-check"></i><b>3</b> Twitter Analysis for CO2mustGo initiative</a><ul>
+<li class="chapter" data-level="" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#what-is-co2mustgo"><i class="fa fa-check"></i>What is CO2mustGO?</a></li>
+<li class="chapter" data-level="3.1" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#sankey-diagram-energy-production-capacity"><i class="fa fa-check"></i><b>3.1</b> Sankey diagram: Energy production capacity</a></li>
+<li class="chapter" data-level="" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#twitter-data-analysis"><i class="fa fa-check"></i>Twitter data analysis</a><ul>
+<li class="chapter" data-level="3.1.1" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#data-1"><i class="fa fa-check"></i><b>3.1.1</b> Data</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#text-cleaning-and-preprocessing"><i class="fa fa-check"></i><b>3.2</b> Text cleaning and preprocessing</a></li>
+<li class="chapter" data-level="3.3" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#tweets-distribution"><i class="fa fa-check"></i><b>3.3</b> Tweets distribution</a></li>
+<li class="chapter" data-level="3.4" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#word-frequency-in-tweets"><i class="fa fa-check"></i><b>3.4</b> Word Frequency in Tweets</a></li>
+<li class="chapter" data-level="3.5" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#word-network-in-tweets"><i class="fa fa-check"></i><b>3.5</b> Word Network in Tweets</a></li>
+<li class="chapter" data-level="3.6" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#wordcloud"><i class="fa fa-check"></i><b>3.6</b> Wordcloud</a></li>
+<li class="chapter" data-level="3.7" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#word-associations"><i class="fa fa-check"></i><b>3.7</b> Word associations</a></li>
+<li class="chapter" data-level="3.8" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#lda"><i class="fa fa-check"></i><b>3.8</b> LDA</a></li>
+<li class="chapter" data-level="3.9" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#sentiment-analysis-1"><i class="fa fa-check"></i><b>3.9</b> Sentiment analysis</a></li>
+<li class="chapter" data-level="3.10" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#visualize-the-emotions"><i class="fa fa-check"></i><b>3.10</b> Visualize the emotions</a></li>
+<li class="chapter" data-level="3.11" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#top-retweeted-tweets"><i class="fa fa-check"></i><b>3.11</b> Top retweeted Tweets</a><ul>
+<li class="chapter" data-level="" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#top-retweets-with-equal-or-more-than-60-mentions"><i class="fa fa-check"></i>Top retweets (with equal or more than 60 mentions)</a></li>
+<li class="chapter" data-level="" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#interactive-graph-with-retweets-text"><i class="fa fa-check"></i>Interactive graph with retweets’ text</a></li>
+</ul></li>
+<li class="chapter" data-level="3.12" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#network-of-retweets"><i class="fa fa-check"></i><b>3.12</b> Network of retweets</a><ul>
+<li class="chapter" data-level="3.12.1" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#where-do-people-tweet-the-most"><i class="fa fa-check"></i><b>3.12.1</b> Where do people tweet the most?</a></li>
+<li class="chapter" data-level="3.12.2" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#who-are-the-users-who-retweet-the-most"><i class="fa fa-check"></i><b>3.12.2</b> Who are the users who retweet the most?</a></li>
+<li class="chapter" data-level="3.12.3" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#who-are-the-most-retweeted-users"><i class="fa fa-check"></i><b>3.12.3</b> Who are the most retweeted users?</a></li>
+<li class="chapter" data-level="3.12.4" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#who-are-users-important-for-connecting-with-others-in-network"><i class="fa fa-check"></i><b>3.12.4</b> Who are users important for connecting with others in network?</a></li>
+<li class="chapter" data-level="3.12.5" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#clustering"><i class="fa fa-check"></i><b>3.12.5</b> Clustering</a></li>
+<li class="chapter" data-level="3.12.6" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#community-detection"><i class="fa fa-check"></i><b>3.12.6</b> Community detection</a></li>
+</ul></li>
+</ul></li>
+<li class="part"><span><b>IV Customer analytics</b></span></li>
+<li class="chapter" data-level="4" data-path="customer-churn-prediction.html"><a href="customer-churn-prediction.html"><i class="fa fa-check"></i><b>4</b> Customer churn prediction</a><ul>
+<li class="chapter" data-level="4.1" data-path="customer-churn-prediction.html"><a href="customer-churn-prediction.html#why-predicting-customer-churn"><i class="fa fa-check"></i><b>4.1</b> Why predicting customer churn?</a></li>
+<li class="chapter" data-level="4.2" data-path="customer-churn-prediction.html"><a href="customer-churn-prediction.html#data-2"><i class="fa fa-check"></i><b>4.2</b> Data</a></li>
+<li class="chapter" data-level="4.3" data-path="customer-churn-prediction.html"><a href="customer-churn-prediction.html#data-pre-processing"><i class="fa fa-check"></i><b>4.3</b> Data Pre-processing</a></li>
+<li class="chapter" data-level="4.4" data-path="customer-churn-prediction.html"><a href="customer-churn-prediction.html#data-partition"><i class="fa fa-check"></i><b>4.4</b> Data partition</a></li>
+<li class="chapter" data-level="4.5" data-path="customer-churn-prediction.html"><a href="customer-churn-prediction.html#random-forest-model"><i class="fa fa-check"></i><b>4.5</b> Random Forest model</a></li>
+<li class="chapter" data-level="4.6" data-path="customer-churn-prediction.html"><a href="customer-churn-prediction.html#evaluating-model"><i class="fa fa-check"></i><b>4.6</b> Evaluating Model</a></li>
+<li class="chapter" data-level="4.7" data-path="customer-churn-prediction.html"><a href="customer-churn-prediction.html#references"><i class="fa fa-check"></i><b>4.7</b> References</a></li>
+</ul></li>
+<li class="part"><span><b>V Recommendation system</b></span></li>
+<li class="chapter" data-level="5" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html"><i class="fa fa-check"></i><b>5</b> Recommendation system for beauty products</a><ul>
+<li class="chapter" data-level="5.1" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#data-collection"><i class="fa fa-check"></i><b>5.1</b> Data collection</a></li>
+<li class="chapter" data-level="5.2" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#data-preparation-and-preprocessing"><i class="fa fa-check"></i><b>5.2</b> Data preparation and preprocessing</a><ul>
+<li class="chapter" data-level="5.2.1" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#packages"><i class="fa fa-check"></i><b>5.2.1</b> Packages</a></li>
+<li class="chapter" data-level="5.2.2" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#data-loading-and-inspecting"><i class="fa fa-check"></i><b>5.2.2</b> Data loading and inspecting</a></li>
+<li class="chapter" data-level="5.2.3" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#how-many-times-users-reviewed-products"><i class="fa fa-check"></i><b>5.2.3</b> How many times users reviewed products?</a></li>
+<li class="chapter" data-level="5.2.4" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#exploratory-data-analysis"><i class="fa fa-check"></i><b>5.2.4</b> Exploratory data analysis</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#building-a-model"><i class="fa fa-check"></i><b>5.3</b> Building a model</a><ul>
+<li class="chapter" data-level="5.3.1" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#final-data-outlook"><i class="fa fa-check"></i><b>5.3.1</b> Final data outlook</a></li>
+<li class="chapter" data-level="5.3.2" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#subsetting-data"><i class="fa fa-check"></i><b>5.3.2</b> Subsetting data</a></li>
+<li class="chapter" data-level="5.3.3" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#formatting-data"><i class="fa fa-check"></i><b>5.3.3</b> Formatting data</a></li>
+<li class="chapter" data-level="5.3.4" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#inspecting-real-rating-matrix"><i class="fa fa-check"></i><b>5.3.4</b> Inspecting real rating matrix</a></li>
+<li class="chapter" data-level="5.3.5" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#building-a-recommender"><i class="fa fa-check"></i><b>5.3.5</b> Building a recommender</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#interpretation-and-managerial-implications"><i class="fa fa-check"></i><b>5.4</b> Interpretation and managerial implications</a><ul>
+<li class="chapter" data-level="5.4.1" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#identification-of-the-recommended-products"><i class="fa fa-check"></i><b>5.4.1</b> Identification of the recommended products</a></li>
+<li class="chapter" data-level="5.4.2" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#implications"><i class="fa fa-check"></i><b>5.4.2</b> Implications</a></li>
+</ul></li>
+<li class="chapter" data-level="5.5" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#bonus-analysis-text-mining"><i class="fa fa-check"></i><b>5.5</b> Bonus analysis: Text Mining</a><ul>
+<li class="chapter" data-level="5.5.1" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#wordcloud-1"><i class="fa fa-check"></i><b>5.5.1</b> Wordcloud</a></li>
+</ul></li>
+<li class="chapter" data-level="5.6" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#future-work"><i class="fa fa-check"></i><b>5.6</b> Future work</a></li>
+<li class="chapter" data-level="5.7" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#limitations"><i class="fa fa-check"></i><b>5.7</b> Limitations</a></li>
+</ul></li>
+<li class="part"><span><b>VI Shiny Apps</b></span></li>
+<li class="chapter" data-level="6" data-path="covid-19-dashboard.html"><a href="covid-19-dashboard.html"><i class="fa fa-check"></i><b>6</b> COVID 19 Dashboard</a><ul>
+<li class="chapter" data-level="6.1" data-path="covid-19-dashboard.html"><a href="covid-19-dashboard.html#data-3"><i class="fa fa-check"></i><b>6.1</b> Data</a></li>
+<li class="chapter" data-level="6.2" data-path="covid-19-dashboard.html"><a href="covid-19-dashboard.html#curve-of-confirmed-cases"><i class="fa fa-check"></i><b>6.2</b> Curve of confirmed cases</a></li>
+<li class="chapter" data-level="6.3" data-path="covid-19-dashboard.html"><a href="covid-19-dashboard.html#total-cases-per-1-million-people"><i class="fa fa-check"></i><b>6.3</b> Total cases per 1 million people</a></li>
+<li class="chapter" data-level="6.4" data-path="covid-19-dashboard.html"><a href="covid-19-dashboard.html#deaths-vs-recovered"><i class="fa fa-check"></i><b>6.4</b> Deaths vs Recovered</a></li>
+<li class="chapter" data-level="6.5" data-path="covid-19-dashboard.html"><a href="covid-19-dashboard.html#active-cases-vs-new-cases"><i class="fa fa-check"></i><b>6.5</b> Active cases vs New cases</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://at.linkedin.com/in/mirzamujanovic?trk=profile-badge" target="blank">LinkedIn: Mirza Mujanovic</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./"></a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="recommendation-system-for-beauty-products" class="section level1">
+<h1><span class="header-section-number">5</span> Recommendation system for beauty products</h1>
+<div class="figure" style="text-align: center"><span id="fig:unnamed-chunk-1"></span>
+<img src="Graphics/beauty.jpg" alt="Foto von Andrea Piacquadio von Pexels" width="50%" />
+<p class="caption">
+Figure 5.1: Foto von Andrea Piacquadio von Pexels
+</p>
+</div>
+<div style="text-align: justify">
+
+<p>Based on some studies it has been proven that personalized product recommendations drive 24% of the orders and 26% of the revenue. This explains the influence recommendation has on volume of orders and generally on sales figures. What is more, it has been proven that product recommendations lead to reoccurring visits and that purchases on recommendation mark higher average-order value. Consequently, we decided to use method called user-based collaborative filtering to build our recommendation system (<em><a href="https://www.salesforce.com/blog/2017/11/personalized-product-recommendations-drive-just-7-visits-26-revenue">Reference</a></em>).</p>
+<p>First, we proceed with data preparation and pre-processing, then we build our recommender system, and finally draw business implications.</p>
+<div style="text-align: justify">
+
+<div id="data-collection" class="section level2">
+<h2><span class="header-section-number">5.1</span> Data collection</h2>
+<p>As we earlier mentioned, we use data on Amazon customer reviews of beauty products. The data used in this project can be accessed in this <a href="http://snap.stanford.edu/data/web-Amazon-links.html">link</a>. It contains the following features:</p>
+<table class=" lightable-paper lightable-hover" style='font-family: "Arial Narrow", arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;'>
+<thead>
+<tr>
+<th style="text-align:left;">
+Variable
+</th>
+<th style="text-align:left;">
+Topic
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Product price
+</td>
+<td style="text-align:left;">
+How much a product costs.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Product ID
+</td>
+<td style="text-align:left;">
+ASIN number of a product on Amazon.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Product title
+</td>
+<td style="text-align:left;">
+Name of a product.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Review helpfulness
+</td>
+<td style="text-align:left;">
+Fraction of users who found the review helpful.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Profile name
+</td>
+<td style="text-align:left;">
+Name of the profile on Amazon.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Review score
+</td>
+<td style="text-align:left;">
+Rating of the product.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Review summary
+</td>
+<td style="text-align:left;">
+Concise summary of the review text.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Review text
+</td>
+<td style="text-align:left;">
+Review text.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Review time
+</td>
+<td style="text-align:left;">
+Review time.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Review userId
+</td>
+<td style="text-align:left;">
+Review userId
+</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td style="padding: 0; border: 0;" colspan="100%">
+<span style="font-style: italic;">Note: </span> <sup></sup> Information collected from <a href="http://snap.stanford.edu/data/web-Amazon-links.html" class="uri">http://snap.stanford.edu/data/web-Amazon-links.html</a>
+</td>
+</tr>
+</tfoot>
+</table>
+</div>
+<div id="data-preparation-and-preprocessing" class="section level2">
+<h2><span class="header-section-number">5.2</span> Data preparation and preprocessing</h2>
+<div id="packages" class="section level3">
+<h3><span class="header-section-number">5.2.1</span> Packages</h3>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="recommendation-system-for-beauty-products.html#cb1-1"></a><span class="co">#Packages</span></span>
+<span id="cb1-2"><a href="recommendation-system-for-beauty-products.html#cb1-2"></a><span class="kw">library</span>(R.utils)</span>
+<span id="cb1-3"><a href="recommendation-system-for-beauty-products.html#cb1-3"></a><span class="kw">library</span>(dplyr)</span>
+<span id="cb1-4"><a href="recommendation-system-for-beauty-products.html#cb1-4"></a><span class="kw">library</span>(tidyr)</span>
+<span id="cb1-5"><a href="recommendation-system-for-beauty-products.html#cb1-5"></a><span class="kw">library</span>(janitor)</span>
+<span id="cb1-6"><a href="recommendation-system-for-beauty-products.html#cb1-6"></a><span class="kw">library</span>(recommenderlab)</span>
+<span id="cb1-7"><a href="recommendation-system-for-beauty-products.html#cb1-7"></a><span class="kw">library</span>(tm)</span>
+<span id="cb1-8"><a href="recommendation-system-for-beauty-products.html#cb1-8"></a><span class="kw">library</span>(NLP)</span>
+<span id="cb1-9"><a href="recommendation-system-for-beauty-products.html#cb1-9"></a><span class="kw">library</span>(qdap)</span>
+<span id="cb1-10"><a href="recommendation-system-for-beauty-products.html#cb1-10"></a><span class="kw">library</span>(readr)</span>
+<span id="cb1-11"><a href="recommendation-system-for-beauty-products.html#cb1-11"></a><span class="kw">library</span>(wordcloud)</span></code></pre></div>
+</div>
+<div id="data-loading-and-inspecting" class="section level3">
+<h3><span class="header-section-number">5.2.2</span> Data loading and inspecting</h3>
+<p>After downloading data locally we load in data by using<code>readLines()</code> function:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="recommendation-system-for-beauty-products.html#cb2-1"></a><span class="co"># Loading in data</span></span>
+<span id="cb2-2"><a href="recommendation-system-for-beauty-products.html#cb2-2"></a>my_data &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;data/amazon_beauty_full.RDS&quot;</span>)</span></code></pre></div>
+<p>Let us first have a look at the dimension of our data. Our data set is currently in a form of a single vector with 2772616 elements. Obviously, this is not the optimal form of the data we would like to work with. That is why we need to work around this data set to make it more convenient for further analysis.</p>
+<p>What we can do first is to remove all fields with no characters:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="recommendation-system-for-beauty-products.html#cb3-1"></a>my_data &lt;-<span class="st"> </span>my_data[<span class="kw">sapply</span>(my_data, nchar) <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>]</span></code></pre></div>
+<p>Then we can convert it to data frame:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="recommendation-system-for-beauty-products.html#cb4-1"></a>my_data &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(my_data)</span>
+<span id="cb4-2"><a href="recommendation-system-for-beauty-products.html#cb4-2"></a><span class="kw">colnames</span>(my_data) &lt;-<span class="st"> &quot;product&quot;</span></span></code></pre></div>
+<p>One of the critical steps is separating the column to multiple columns:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="recommendation-system-for-beauty-products.html#cb5-1"></a><span class="co"># Separate one column to two (&quot;:&quot; separator)</span></span>
+<span id="cb5-2"><a href="recommendation-system-for-beauty-products.html#cb5-2"></a>my_data &lt;-<span class="st"> </span><span class="kw">separate</span>(my_data,<span class="dt">col =</span> product, <span class="dt">into =</span> <span class="kw">c</span>(<span class="st">&quot;Info&quot;</span>,<span class="st">&quot;Product&quot;</span>), <span class="dt">sep =</span> <span class="st">&quot;:&quot;</span>)</span></code></pre></div>
+<p>Inspecting first 10 values:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="recommendation-system-for-beauty-products.html#cb6-1"></a><span class="kw">head</span>(my_data,<span class="dv">10</span>)</span></code></pre></div>
+<pre><code>##                  Info
+## 1   product/productId
+## 2       product/title
+## 3       product/price
+## 4       review/userId
+## 5  review/profileName
+## 6  review/helpfulness
+## 7        review/score
+## 8         review/time
+## 9      review/summary
+## 10        review/text
+##                                                                                                                         Product
+## 1                                                                                                                    B00064C0IU
+## 2                                                                          Oscar Eau de Toilette for Women by Oscar de La Renta
+## 3                                                                                                                         24.19
+## 4                                                                                                                A1FWT811DSZLC8
+## 5                                                                                                                       Heidi M
+## 6                                                                                                                           0/0
+## 7                                                                                                                           3.0
+## 8                                                                                                                    1360368000
+## 9                                                                                                                  doesn&#39;t last
+## 10  very light scent that doesn&#39;t last very long. pretty bottle but I was hoping for more of a freesia scent. which it was not.</code></pre>
+<p>The data set is loaded in .txt format, which makes it a bit challenging to work with. In the following sections we will undertake data manipulation in order to bring the data set in more suitable form.</p>
+<p>First, we will convert it from the current long-format to the wide-format, where each column will represent a product, and each row a feature:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="recommendation-system-for-beauty-products.html#cb8-1"></a><span class="co">#Converting long format to wide</span></span>
+<span id="cb8-2"><a href="recommendation-system-for-beauty-products.html#cb8-2"></a>my_data &lt;-<span class="st"> </span>my_data <span class="op">%&gt;%</span></span>
+<span id="cb8-3"><a href="recommendation-system-for-beauty-products.html#cb8-3"></a><span class="st">  </span><span class="kw">group_by</span>(Info) <span class="op">%&gt;%</span></span>
+<span id="cb8-4"><a href="recommendation-system-for-beauty-products.html#cb8-4"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Order =</span> <span class="kw">seq_along</span>(Info)) <span class="op">%&gt;%</span></span>
+<span id="cb8-5"><a href="recommendation-system-for-beauty-products.html#cb8-5"></a><span class="st">  </span><span class="kw">spread</span>(<span class="dt">key =</span> Order, <span class="dt">value =</span> Product)</span></code></pre></div>
+<p>Since the column names are labeled with numbers, we will apply first row as a label for the corresponding column name:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="recommendation-system-for-beauty-products.html#cb9-1"></a>my_data &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(<span class="kw">t</span>(my_data))</span>
+<span id="cb9-2"><a href="recommendation-system-for-beauty-products.html#cb9-2"></a>my_data&lt;-my_data<span class="op">%&gt;%</span></span>
+<span id="cb9-3"><a href="recommendation-system-for-beauty-products.html#cb9-3"></a><span class="st">  </span><span class="kw">row_to_names</span>(<span class="dt">row_number =</span> <span class="dv">1</span>)</span></code></pre></div>
+<p>Delete rows with at least 1 NAs:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="recommendation-system-for-beauty-products.html#cb10-1"></a>my_data &lt;-<span class="st"> </span>my_data[<span class="kw">rowSums</span>(<span class="kw">is.na</span>(my_data))<span class="op">==</span><span class="dv">0</span>,]</span></code></pre></div>
+<p>Trim white space at the beginning or ending the string:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="recommendation-system-for-beauty-products.html#cb11-1"></a>my_data<span class="op">$</span><span class="st">`</span><span class="dt">review/userId</span><span class="st">`</span>&lt;-<span class="st"> </span><span class="kw">trimws</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">review/userId</span><span class="st">`</span>)</span>
+<span id="cb11-2"><a href="recommendation-system-for-beauty-products.html#cb11-2"></a>my_data<span class="op">$</span><span class="st">`</span><span class="dt">product/productId</span><span class="st">`</span>&lt;-<span class="st"> </span><span class="kw">trimws</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">product/productId</span><span class="st">`</span>)</span>
+<span id="cb11-3"><a href="recommendation-system-for-beauty-products.html#cb11-3"></a>my_data<span class="op">$</span><span class="st">`</span><span class="dt">product/price</span><span class="st">`</span>&lt;-<span class="st"> </span><span class="kw">trimws</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">product/price</span><span class="st">`</span>)</span>
+<span id="cb11-4"><a href="recommendation-system-for-beauty-products.html#cb11-4"></a>my_data<span class="op">$</span><span class="st">`</span><span class="dt">product/title</span><span class="st">`</span>&lt;-<span class="st"> </span><span class="kw">trimws</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">product/title</span><span class="st">`</span>)</span></code></pre></div>
+<p>Filtering out reviews with unknown userID and productId:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="recommendation-system-for-beauty-products.html#cb12-1"></a>my_data&lt;-<span class="kw">filter</span>(my_data,<span class="st">`</span><span class="dt">review/userId</span><span class="st">`</span><span class="op">!=</span><span class="st">&quot;unknown&quot;</span> <span class="op">&amp;</span><span class="st"> `</span><span class="dt">product/productId</span><span class="st">`</span><span class="op">!=</span><span class="st">&quot;unknown&quot;</span> <span class="op">&amp;</span><span class="st"> `</span><span class="dt">product/price</span><span class="st">`</span><span class="op">!=</span><span class="st">&quot;unknown&quot;</span>)</span></code></pre></div>
+<p>Correcting column classes:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="recommendation-system-for-beauty-products.html#cb13-1"></a>my_data<span class="op">$</span><span class="st">`</span><span class="dt">product/productId</span><span class="st">`</span> &lt;-<span class="st"> </span><span class="kw">as.factor</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">product/productId</span><span class="st">`</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="recommendation-system-for-beauty-products.html#cb14-1"></a>my_data<span class="op">$</span><span class="st">`</span><span class="dt">review/score</span><span class="st">`</span>&lt;-<span class="st"> </span><span class="kw">as.numeric</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">review/score</span><span class="st">`</span>)</span>
+<span id="cb14-2"><a href="recommendation-system-for-beauty-products.html#cb14-2"></a>my_data<span class="op">$</span><span class="st">`</span><span class="dt">review/userId</span><span class="st">`</span>&lt;-<span class="kw">as.factor</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">review/userId</span><span class="st">`</span>)</span>
+<span id="cb14-3"><a href="recommendation-system-for-beauty-products.html#cb14-3"></a>my_data<span class="op">$</span><span class="st">`</span><span class="dt">product/price</span><span class="st">`</span>&lt;-<span class="kw">as.numeric</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">product/price</span><span class="st">`</span>)</span></code></pre></div>
+</div>
+<div id="how-many-times-users-reviewed-products" class="section level3">
+<h3><span class="header-section-number">5.2.3</span> How many times users reviewed products?</h3>
+<p>In order to use relevant data, we would need to define the minimum number of reviews per user. Since majority of users left only one review. Therefore, we will remove all single-review users and all other users who left less then 2 reviews.</p>
+<p>Filtering out users who left 2 or more reviews:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="recommendation-system-for-beauty-products.html#cb15-1"></a>freq&lt;-<span class="kw">as.data.frame</span>(<span class="kw">table</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">review/userId</span><span class="st">`</span>))</span>
+<span id="cb15-2"><a href="recommendation-system-for-beauty-products.html#cb15-2"></a>index&lt;-<span class="kw">filter</span>(freq, freq<span class="op">$</span>Freq<span class="op">&gt;=</span><span class="dv">1</span>)<span class="op">$</span>Var1</span></code></pre></div>
+<p>We are now left with 1316 users who reviewed certain beauty product at least 2 times.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="recommendation-system-for-beauty-products.html#cb16-1"></a>my_data &lt;-<span class="st"> </span><span class="kw">subset</span>(my_data,<span class="st">`</span><span class="dt">review/userId</span><span class="st">`</span> <span class="op">%in%</span><span class="st"> </span>index)</span></code></pre></div>
+</div>
+<div id="exploratory-data-analysis" class="section level3">
+<h3><span class="header-section-number">5.2.4</span> Exploratory data analysis</h3>
+<div id="head-of-data" class="section level4">
+<h4><span class="header-section-number">5.2.4.1</span> Head of data</h4>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="recommendation-system-for-beauty-products.html#cb17-1"></a><span class="kw">head</span>(my_data)</span></code></pre></div>
+<pre><code>##   product/price product/productId
+## 1         24.19        B00064C0IU
+## 2         24.19        B00064C0IU
+## 3         24.19        B00064C0IU
+## 4         24.19        B00064C0IU
+## 5          5.99        B000K5JBZU
+## 6          5.99        B000K5JBZU
+##                                                           product/title
+## 1                  Oscar Eau de Toilette for Women by Oscar de La Renta
+## 2                  Oscar Eau de Toilette for Women by Oscar de La Renta
+## 3                  Oscar Eau de Toilette for Women by Oscar de La Renta
+## 4                  Oscar Eau de Toilette for Women by Oscar de La Renta
+## 5 Optimum Care Anti-Breakage Therapy Moisture Replenish Cream Hairdress
+## 6 Optimum Care Anti-Breakage Therapy Moisture Replenish Cream Hairdress
+##   review/helpfulness            review/profileName review/score
+## 1                0/0                       Heidi M            3
+## 2                0/0  Donna Mpaulin &quot;PURPLE RAVEN&quot;            5
+## 3                0/0                      M. Avila            1
+## 4                0/0                   Kim M. Colt            5
+## 5                1/1                        PloveJ            5
+## 6                0/0                        LADY-I            5
+##                                         review/summary
+## 1                                         doesn&#39;t last
+## 2                                       Smells divine.
+## 3                                   Very disappointed!
+## 4                                            Nice gift
+## 5                             TRULY MADE A DIFFERENCE!
+## 6  Excellent Product for treatment of Breakage of ends
+##                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            review/text
+## 1                                                                                                                                                                                                                                                                                                                                                                                                                                          very light scent that doesn&#39;t last very long. pretty bottle but I was hoping for more of a freesia scent. which it was not.
+## 2                                                                                                                                                                                                                                                                                                                                                                                                                                      This is my second bottle of sheer freesia, I just love this fragrance, its a light delicate sent, beautiful, like a summer day.
+## 3                                                                                                                                                                                                                                                                                                                                                                                                                                This perfume is just AWFUL! Smells nothing like freesia.The gift recipient was not impressed. The worst is that it can&#39;t be returned!
+## 4                                                                                                                                                                                                                                                                                                                                     This was a gift for my sister. It wowed her. She has always worn Freesia but typically can only find it in body lotion or such. This product really thrilled her, a nice perfume in her favorite scent with a beautiful package.
+## 5  I have been using this product for a couple years now. I started using it because my hair had gotten so dry from all the chemical treatments and relaxers. This actualy came in the relaxer kit. I tried it and could not beleive the difference it made with one use. I could not find it in any of the stores at the time so I searched Amazon and they had it. I absolutely love it. It is the best moisturizing product I have used so far. My hair is soft with good elasticity and it is not breaking anywhere close to what it was. I am very happy with it.
+## 6                                                                                                                                                                                                                                                                                                                                    I Tried this product in the past and fell in love with it. I could not find it for some time and am now very pleased that I was abe to find it again here on amazon. It smoothes the hair and faciltate ease in removing tangles.
+##   review/time  review/userId
+## 1  1360368000 A1FWT811DSZLC8
+## 2  1358467200 A1THE6V6O8ROD4
+## 3  1357084800 A176IQ7MVD3N6T
+## 4  1326240000 A34BDX4JVMG23Y
+## 5  1351987200 A3UWJXJI7S3T05
+## 6  1360972800 A1QAXWETH56D6J</code></pre>
+</div>
+<div id="how-many-unique-products-are-reviewed" class="section level4">
+<h4><span class="header-section-number">5.2.4.2</span> How many unique products are reviewed?</h4>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="recommendation-system-for-beauty-products.html#cb19-1"></a><span class="kw">length</span>(<span class="kw">unique</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">product/productId</span><span class="st">`</span>))</span></code></pre></div>
+<pre><code>## [1] 928</code></pre>
+<p>There are 928 products which were reviewed.</p>
+</div>
+<div id="how-many-reviewers-do-we-have" class="section level4">
+<h4><span class="header-section-number">5.2.4.3</span> How many reviewers do we have?</h4>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="recommendation-system-for-beauty-products.html#cb21-1"></a><span class="kw">length</span>(<span class="kw">unique</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">review/userId</span><span class="st">`</span>))</span></code></pre></div>
+<pre><code>## [1] 8002</code></pre>
+<p>There are 8002 unique reviewers/customers who reviewed products.</p>
+</div>
+<div id="how-many-scores-do-we-have" class="section level4">
+<h4><span class="header-section-number">5.2.4.4</span> How many scores do we have?</h4>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="recommendation-system-for-beauty-products.html#cb23-1"></a><span class="kw">length</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">review/score</span><span class="st">`</span>)</span></code></pre></div>
+<pre><code>## [1] 8581</code></pre>
+<p>There are 8581 ratings.</p>
+</div>
+<div id="what-is-the-distribution-of-ratings" class="section level4">
+<h4><span class="header-section-number">5.2.4.5</span> What is the distribution of ratings?</h4>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="recommendation-system-for-beauty-products.html#cb25-1"></a><span class="kw">hist</span>(<span class="kw">as.numeric</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">review/score</span><span class="st">`</span>),<span class="dt">main =</span> <span class="st">&quot;Histogramm of scores&quot;</span>,<span class="dt">xlab =</span> <span class="st">&quot;Score&quot;</span>)</span></code></pre></div>
+<p><img src="main_files/figure-html/unnamed-chunk-22-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Products seem to be favorably rated as the distribution of scores showes that the best score is the most frequent.</p>
+</div>
+<div id="what-is-the-average-number-of-reviews-per-user" class="section level4">
+<h4><span class="header-section-number">5.2.4.6</span> What is the average number of reviews per user?</h4>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="recommendation-system-for-beauty-products.html#cb26-1"></a>my_data <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb26-2"><a href="recommendation-system-for-beauty-products.html#cb26-2"></a><span class="st">  </span><span class="kw">group_by</span>(<span class="st">`</span><span class="dt">review/userId</span><span class="st">`</span>) <span class="op">%&gt;%</span></span>
+<span id="cb26-3"><a href="recommendation-system-for-beauty-products.html#cb26-3"></a><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">Freq=</span><span class="kw">n</span>()) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb26-4"><a href="recommendation-system-for-beauty-products.html#cb26-4"></a><span class="st">  </span><span class="kw">summary</span>()</span></code></pre></div>
+<pre><code>##                review/userId       Freq       
+##  A00275441WYR3489IKNAB:   1   Min.   : 1.000  
+##  A0353671240B3B6L8WKZB:   1   1st Qu.: 1.000  
+##  A0793784FP3F6ZXZDTN6 :   1   Median : 1.000  
+##  A10013UITIMJVI       :   1   Mean   : 1.072  
+##  A1008GFLTBL76H       :   1   3rd Qu.: 1.000  
+##  A100VLYGYI6FXY       :   1   Max.   :37.000  
+##  (Other)              :7996</code></pre>
+<p>In the original data set It users left on average left a review only once. After filtering, we see that our average is at 3 reviews per user.</p>
+</div>
+<div id="what-is-the-average-score-per-user" class="section level4">
+<h4><span class="header-section-number">5.2.4.7</span> What is the average score per user?</h4>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="recommendation-system-for-beauty-products.html#cb28-1"></a>(grand.mean &lt;-my_data <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb28-2"><a href="recommendation-system-for-beauty-products.html#cb28-2"></a><span class="st">  </span><span class="kw">group_by</span>(<span class="st">`</span><span class="dt">review/userId</span><span class="st">`</span>) <span class="op">%&gt;%</span></span>
+<span id="cb28-3"><a href="recommendation-system-for-beauty-products.html#cb28-3"></a><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">summarise</span>(<span class="dt">Mean=</span><span class="kw">mean</span>(<span class="st">`</span><span class="dt">review/score</span><span class="st">`</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb28-4"><a href="recommendation-system-for-beauty-products.html#cb28-4"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Grand.mean=</span><span class="kw">mean</span>(Mean))<span class="op">%&gt;%</span></span>
+<span id="cb28-5"><a href="recommendation-system-for-beauty-products.html#cb28-5"></a><span class="st">  </span><span class="kw">head</span>())</span></code></pre></div>
+<pre><code>## # A tibble: 6 x 3
+##   `review/userId`        Mean Grand.mean
+##   &lt;fct&gt;                 &lt;dbl&gt;      &lt;dbl&gt;
+## 1 A00275441WYR3489IKNAB     5       4.19
+## 2 A0353671240B3B6L8WKZB     5       4.19
+## 3 A0793784FP3F6ZXZDTN6      5       4.19
+## 4 A10013UITIMJVI            5       4.19
+## 5 A1008GFLTBL76H            5       4.19
+## 6 A100VLYGYI6FXY            4       4.19</code></pre>
+<p>It seems that beauty products on Amazon are well received by users as the average score per user is quite high, at 4.1940927.</p>
+</div>
+</div>
+</div>
+<div id="building-a-model" class="section level2">
+<h2><span class="header-section-number">5.3</span> Building a model</h2>
+<div id="final-data-outlook" class="section level3">
+<h3><span class="header-section-number">5.3.1</span> Final data outlook</h3>
+<p>Here is a glimpse in our data before we start building the recommnder:</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="recommendation-system-for-beauty-products.html#cb30-1"></a><span class="kw">head</span>(my_data)</span></code></pre></div>
+<pre><code>##   product/price product/productId
+## 1         24.19        B00064C0IU
+## 2         24.19        B00064C0IU
+## 3         24.19        B00064C0IU
+## 4         24.19        B00064C0IU
+## 5          5.99        B000K5JBZU
+## 6          5.99        B000K5JBZU
+##                                                           product/title
+## 1                  Oscar Eau de Toilette for Women by Oscar de La Renta
+## 2                  Oscar Eau de Toilette for Women by Oscar de La Renta
+## 3                  Oscar Eau de Toilette for Women by Oscar de La Renta
+## 4                  Oscar Eau de Toilette for Women by Oscar de La Renta
+## 5 Optimum Care Anti-Breakage Therapy Moisture Replenish Cream Hairdress
+## 6 Optimum Care Anti-Breakage Therapy Moisture Replenish Cream Hairdress
+##   review/helpfulness            review/profileName review/score
+## 1                0/0                       Heidi M            3
+## 2                0/0  Donna Mpaulin &quot;PURPLE RAVEN&quot;            5
+## 3                0/0                      M. Avila            1
+## 4                0/0                   Kim M. Colt            5
+## 5                1/1                        PloveJ            5
+## 6                0/0                        LADY-I            5
+##                                         review/summary
+## 1                                         doesn&#39;t last
+## 2                                       Smells divine.
+## 3                                   Very disappointed!
+## 4                                            Nice gift
+## 5                             TRULY MADE A DIFFERENCE!
+## 6  Excellent Product for treatment of Breakage of ends
+##                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            review/text
+## 1                                                                                                                                                                                                                                                                                                                                                                                                                                          very light scent that doesn&#39;t last very long. pretty bottle but I was hoping for more of a freesia scent. which it was not.
+## 2                                                                                                                                                                                                                                                                                                                                                                                                                                      This is my second bottle of sheer freesia, I just love this fragrance, its a light delicate sent, beautiful, like a summer day.
+## 3                                                                                                                                                                                                                                                                                                                                                                                                                                This perfume is just AWFUL! Smells nothing like freesia.The gift recipient was not impressed. The worst is that it can&#39;t be returned!
+## 4                                                                                                                                                                                                                                                                                                                                     This was a gift for my sister. It wowed her. She has always worn Freesia but typically can only find it in body lotion or such. This product really thrilled her, a nice perfume in her favorite scent with a beautiful package.
+## 5  I have been using this product for a couple years now. I started using it because my hair had gotten so dry from all the chemical treatments and relaxers. This actualy came in the relaxer kit. I tried it and could not beleive the difference it made with one use. I could not find it in any of the stores at the time so I searched Amazon and they had it. I absolutely love it. It is the best moisturizing product I have used so far. My hair is soft with good elasticity and it is not breaking anywhere close to what it was. I am very happy with it.
+## 6                                                                                                                                                                                                                                                                                                                                    I Tried this product in the past and fell in love with it. I could not find it for some time and am now very pleased that I was abe to find it again here on amazon. It smoothes the hair and faciltate ease in removing tangles.
+##   review/time  review/userId
+## 1  1360368000 A1FWT811DSZLC8
+## 2  1358467200 A1THE6V6O8ROD4
+## 3  1357084800 A176IQ7MVD3N6T
+## 4  1326240000 A34BDX4JVMG23Y
+## 5  1351987200 A3UWJXJI7S3T05
+## 6  1360972800 A1QAXWETH56D6J</code></pre>
+</div>
+<div id="subsetting-data" class="section level3">
+<h3><span class="header-section-number">5.3.2</span> Subsetting data</h3>
+<p>In order to model a recommender system, three variables in our case are of great importance:</p>
+<ul>
+<li>User ID</li>
+<li>Product ID</li>
+<li>Score / Rating</li>
+</ul>
+<p>Our model will be based on these three variables. Additionally, we will make use of the remaining features by utilizing some text mining techniques, but you will find more details at some later point.
+Now, we will make a subset of our data with 3 mentioned variables:</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="recommendation-system-for-beauty-products.html#cb32-1"></a>subset_my_data &lt;-<span class="st"> </span><span class="kw">subset</span>(my_data, <span class="dt">select =</span> <span class="kw">c</span>(<span class="st">`</span><span class="dt">review/userId</span><span class="st">`</span>,<span class="st">`</span><span class="dt">product/productId</span><span class="st">`</span>,<span class="st">`</span><span class="dt">review/score</span><span class="st">`</span>))</span>
+<span id="cb32-2"><a href="recommendation-system-for-beauty-products.html#cb32-2"></a><span class="kw">head</span>(subset_my_data)</span></code></pre></div>
+<pre><code>##    review/userId product/productId review/score
+## 1 A1FWT811DSZLC8        B00064C0IU            3
+## 2 A1THE6V6O8ROD4        B00064C0IU            5
+## 3 A176IQ7MVD3N6T        B00064C0IU            1
+## 4 A34BDX4JVMG23Y        B00064C0IU            5
+## 5 A3UWJXJI7S3T05        B000K5JBZU            5
+## 6 A1QAXWETH56D6J        B000K5JBZU            5</code></pre>
+<p>Let us inspect the dimensions:</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="recommendation-system-for-beauty-products.html#cb34-1"></a><span class="kw">dim</span>(subset_my_data)</span></code></pre></div>
+<pre><code>## [1] 8581    3</code></pre>
+</div>
+<div id="formatting-data" class="section level3">
+<h3><span class="header-section-number">5.3.3</span> Formatting data</h3>
+<p>Our data is currently in the long format, i.e. one row for one rating. However, we would want to get a matrix with ratings where the rows represent the users IDs and the columns the Product IDs.
+Thus, we will transform our data to so called rating matrix:</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="recommendation-system-for-beauty-products.html#cb36-1"></a>ratings &lt;-<span class="st"> </span><span class="kw">as</span>(subset_my_data, <span class="st">&quot;realRatingMatrix&quot;</span>)</span></code></pre></div>
+<p>In order to avoid “high/low rating bias” from users who give high (or low) ratings to all the products they reviewed, we will need to normalize our data. That would prevent certain bias in the results.</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="recommendation-system-for-beauty-products.html#cb37-1"></a>ratings &lt;-<span class="st"> </span><span class="kw">normalize</span>(ratings)</span></code></pre></div>
+</div>
+<div id="inspecting-real-rating-matrix" class="section level3">
+<h3><span class="header-section-number">5.3.4</span> Inspecting real rating matrix</h3>
+<p>We can plot an image of the rating matrix for the first 250 users and 250 products:</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="recommendation-system-for-beauty-products.html#cb38-1"></a><span class="kw">image</span>(ratings[<span class="dv">1</span><span class="op">:</span><span class="dv">250</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">250</span>])</span></code></pre></div>
+<p><img src="main_files/figure-html/unnamed-chunk-30-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>From the visualisation we can see that rating matrix is very sparse, i.e. that not every user did rate/review every product in our data set.</p>
+<p>We can inspect the data for the first 10 users and the first 4 products:</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="recommendation-system-for-beauty-products.html#cb39-1"></a>ratings[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>]<span class="op">@</span>data</span></code></pre></div>
+<pre><code>## 10 x 4 sparse Matrix of class &quot;dgCMatrix&quot;
+##                       B000052Z5B B000052Z5L B000052Z5M B000052Z89
+## A00275441WYR3489IKNAB          .          .          .          .
+## A0353671240B3B6L8WKZB          .          .          .          .
+## A0793784FP3F6ZXZDTN6           .          .          .          .
+## A10013UITIMJVI                 .          .          .          .
+## A1008GFLTBL76H                 .          .          .          .
+## A100VLYGYI6FXY                 .          .          .          .
+## A100W0JWG5GB6G                 .          .          .          .
+## A1016Z89IM29SK                 .          .          .          .
+## A102NKLXRT5KEM                 .          .          .          .
+## A102U9TVYZC0DX                 .          .          .          .</code></pre>
+<p>As we already saw in the visualisation, the data is sparse and the first 10 users did not review first 4 products visualised in the matrix above.</p>
+</div>
+<div id="building-a-recommender" class="section level3">
+<h3><span class="header-section-number">5.3.5</span> Building a recommender</h3>
+<p>Finally, we will now build our recommendation system based on <strong>User-based collaborative filtering</strong>
+User-based collaborative filtering search for similar users and gives them recommendations based on what other users with similar rating patterns appreciated:</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="recommendation-system-for-beauty-products.html#cb41-1"></a>recommender &lt;-<span class="st"> </span><span class="kw">Recommender</span>(ratings, <span class="dt">method=</span><span class="st">&quot;UBCF&quot;</span>)</span>
+<span id="cb41-2"><a href="recommendation-system-for-beauty-products.html#cb41-2"></a>recommender</span></code></pre></div>
+<pre><code>## Recommender of type &#39;UBCF&#39; for &#39;realRatingMatrix&#39; 
+## learned using 8002 users.</code></pre>
+<p>Additionally, in order to compare results of two methods, we would like to apply <strong>item-based collaborative filtering</strong> method to build another recommender system. In contrast to user-based collaborative filtering, item-based collaborative filtering looks for similarity patterns between <strong>items</strong> and recommends them to users based on the computed information.</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="recommendation-system-for-beauty-products.html#cb43-1"></a>recommenderIBCF &lt;-<span class="st"> </span><span class="kw">Recommender</span>(ratings, <span class="dt">method=</span><span class="st">&quot;IBCF&quot;</span>)</span>
+<span id="cb43-2"><a href="recommendation-system-for-beauty-products.html#cb43-2"></a>recommenderIBCF</span></code></pre></div>
+<pre><code>## Recommender of type &#39;IBCF&#39; for &#39;realRatingMatrix&#39; 
+## learned using 8002 users.</code></pre>
+<p>As reported, both recommendation systems are built using 8002 users.</p>
+</div>
+</div>
+<div id="interpretation-and-managerial-implications" class="section level2">
+<h2><span class="header-section-number">5.4</span> Interpretation and managerial implications</h2>
+<p>Now we would like to interpret the output of our recommender systems.
+First we start with UBCF-based recommender system.</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="recommendation-system-for-beauty-products.html#cb45-1"></a>current.user &lt;-<span class="st"> </span><span class="dv">45</span></span>
+<span id="cb45-2"><a href="recommendation-system-for-beauty-products.html#cb45-2"></a>recommendations &lt;-<span class="st"> </span><span class="kw">predict</span>(recommender, current.user, <span class="dt">data =</span> ratings, <span class="dt">n =</span> <span class="dv">5</span>)</span></code></pre></div>
+<p>We decided to take user number 45 and inspect 5 recommendations provided to him/her.
+Now we can inspect what our recommendation system provided in the end:</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="recommendation-system-for-beauty-products.html#cb46-1"></a><span class="kw">str</span>(recommendations)</span></code></pre></div>
+<pre><code>## Formal class &#39;topNList&#39; [package &quot;recommenderlab&quot;] with 4 slots
+##   ..@ items     :List of 1
+##   .. ..$ A10N19OL0CKYDV: int [1:2] 173 772
+##   ..@ ratings   :List of 1
+##   .. ..$ A10N19OL0CKYDV: num [1:2] 5 5
+##   ..@ itemLabels: chr [1:928] &quot;B000052Z5B&quot; &quot;B000052Z5L&quot; &quot;B000052Z5M&quot; &quot;B000052Z89&quot; ...
+##   ..@ n         : int 5</code></pre>
+<p>We can see that the user ID of the user number 45 is A10N19OL0CKYDV.
+Our system found 2 products to recommend to this user, and we can find product index (173, 772) as well as ratings that the system calculated from the ratings of the closest users (5,5).</p>
+<p>Let us create a prediction made by IBCF-based recommender:</p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="recommendation-system-for-beauty-products.html#cb48-1"></a>recommendationsIBCF &lt;-<span class="st"> </span><span class="kw">predict</span>(recommenderIBCF,current.user,<span class="dt">data =</span> ratings, <span class="dt">n=</span><span class="dv">5</span>)</span>
+<span id="cb48-2"><a href="recommendation-system-for-beauty-products.html#cb48-2"></a><span class="kw">str</span>(recommendationsIBCF)</span></code></pre></div>
+<pre><code>## Formal class &#39;topNList&#39; [package &quot;recommenderlab&quot;] with 4 slots
+##   ..@ items     :List of 1
+##   .. ..$ A10N19OL0CKYDV: int(0) 
+##   ..@ ratings   :List of 1
+##   .. ..$ A10N19OL0CKYDV: num(0) 
+##   ..@ itemLabels: chr [1:928] &quot;B000052Z5B&quot; &quot;B000052Z5L&quot; &quot;B000052Z5M&quot; &quot;B000052Z89&quot; ...
+##   ..@ n         : int 5</code></pre>
+<p>We will inspect potential recommended products:</p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="recommendation-system-for-beauty-products.html#cb50-1"></a><span class="kw">head</span>(<span class="kw">as</span>(recommendationsIBCF,<span class="st">&quot;list&quot;</span>))</span></code></pre></div>
+<pre><code>## $A10N19OL0CKYDV
+## character(0)</code></pre>
+<p>Unfortunately, our item-based collaborative filtering system did not generate any recommendation for the user number 45.</p>
+<div id="identification-of-the-recommended-products" class="section level3">
+<h3><span class="header-section-number">5.4.1</span> Identification of the recommended products</h3>
+<p>Let us now identify the products recommended by UBCF-based recommender. First we need to extract the index of the recommended products:</p>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="recommendation-system-for-beauty-products.html#cb52-1"></a>index&lt;-<span class="st"> </span><span class="kw">as.vector</span>(<span class="kw">as.factor</span>(<span class="kw">unlist</span>(<span class="kw">as</span>(recommendations, <span class="st">&quot;list&quot;</span>))))</span></code></pre></div>
+<p>Then we find corresponding product in our initial data set:</p>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="recommendation-system-for-beauty-products.html#cb53-1"></a>(recommendation_<span class="dv">26</span>&lt;-my_data[<span class="kw">match</span>(index, my_data<span class="op">$</span><span class="st">`</span><span class="dt">product/productId</span><span class="st">`</span>),])  </span></code></pre></div>
+<pre><code>##      product/price product/productId
+## 6952          4.97        B00027EG9C
+## 4190          0.01        B000NCQK68
+##                                                product/title review/helpfulness
+## 6952            Neutrogena Fresh Foaming Cleanser, 6.7 Ounce                0/0
+## 4190 Revlon ColorSilk Beautiful Color Hair Coloring Products              10/11
+##      review/profileName review/score review/summary
+## 6952            armicat            4     I love it!
+## 4190           Grace M.            4    Pretty good
+##                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             review/text
+## 6952                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              Neutrogena Fresh Foaming Cleanser is really good! I am using everyday, I can recommend this item to my friends. But the problem is packaging was bad.
+## 4190  I&#39;ve had black/blue-black hair for a while now, and have become somewhat of an expert in the field of cheap-o boxed drugstore hair color. I keep coming back to this color! I was suspicious at first to be honest because its SO cheap, I figured my hair would fall out or turn an ugly color... but I tried it anyway. I have long, super thick hair but there was enough dye to get everything - no streaks. It lasts the longest out of any boxed hair color I&#39;ve tried and it looks SO good!OK, yeah, it comes with cheap crappy gloves and the world&#39;s smallest packet of conditioner, but those are minor issues. You can get 50 pairs of latex gloves at rite-aid for 2 bucks (a good idea anyway so you dont have to keep reusing the dirty color-stained gloves from the box) and if you don&#39;t already have conditioner to supplement the conditioner in the box, you shouldn&#39;t be dying your hair anyway.The only drawback I&#39;ve experienced is the color DOES run when I wash it and I have definitely stained my bath towels/pillowcase a few times. It could be something I&#39;m doing wrong though...
+##      review/time  review/userId
+## 6952  1361232000 A3HUAIQVMNXGKL
+## 4190  1308700800 A1DBAOA82KSVND</code></pre>
+<p>Two products recommended are :</p>
+<ul>
+<li>Neutrogena Fresh Foaming Cleanser, 6.7 Ounce - facial cleansing cream</li>
+<li>Revlon ColorSilk Beautiful Color Hair Coloring Products - color for hair</li>
+</ul>
+<p>Let us now inspect products that the user A10N19OL0CKYDV rated:</p>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="recommendation-system-for-beauty-products.html#cb55-1"></a>my_data[<span class="kw">match</span>(<span class="st">&quot;A10N19OL0CKYDV&quot;</span>,my_data<span class="op">$</span><span class="st">`</span><span class="dt">review/userId</span><span class="st">`</span>),]</span></code></pre></div>
+<pre><code>##      product/price product/productId           product/title review/helpfulness
+## 1913          1.89        B000NGLR62 Opi Ridge Filler .5 oz.                0/0
+##      review/profileName review/score   review/summary
+## 1913              Erica            4  Great Base Coat
+##                                                                                                                                                                                                                                                                                                                                                                                                                              review/text
+## 1913  I got this as a base coat, and for that purpose it works really well. It&#39;s easy to apply (the brush is easy to use) and dries to a matte, translucent white coat. Nail polish glides smoothly over it, just as I was expecting. It protects my nails from dark polishes and prevents my nails from chipping easily. I&#39;m unsure of how different it is than other regular base coats, but I really like and recommend this product.
+##      review/time  review/userId
+## 1913  1356912000 A10N19OL0CKYDV</code></pre>
+</div>
+<div id="implications" class="section level3">
+<h3><span class="header-section-number">5.4.2</span> Implications</h3>
+<p>As we could see, this user reviewed only one product, called “Opi Ridge Filler .5 oz.”, and it is a nail-care product. We could assume that this person is a female user since the product she bought is typically associated with female beauty care. What is more, two recommended products are as well very strongly associated to being typical female beauty products. Finally, we have the name of the user (Erica), so we can be sure that the user is a female.
+From the qualitative perspective it seems that our recommendation system provides descent recommendations!.</p>
+</div>
+</div>
+<div id="bonus-analysis-text-mining" class="section level2">
+<h2><span class="header-section-number">5.5</span> Bonus analysis: Text Mining</h2>
+<p>In addition to our recommender system, we will apply some basic text mining techniques to explore reviews text. Text mining helps us to mine opinions of users (in this case) about the reviewed products at scale.</p>
+<div id="wordcloud-1" class="section level3">
+<h3><span class="header-section-number">5.5.1</span> Wordcloud</h3>
+<p>Here we create a wordcloud of words from product reviews of recommended products to the user 45. Beforehand we would need to pre-process the text of reviews in the following manner:</p>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="recommendation-system-for-beauty-products.html#cb57-1"></a><span class="co"># Split text into parts using new line character:</span></span>
+<span id="cb57-2"><a href="recommendation-system-for-beauty-products.html#cb57-2"></a>text.docs &lt;-<span class="st"> </span><span class="kw">Corpus</span>(<span class="kw">VectorSource</span>(recommendation_<span class="dv">26</span><span class="op">$</span><span class="st">`</span><span class="dt">review/text</span><span class="st">`</span>))</span>
+<span id="cb57-3"><a href="recommendation-system-for-beauty-products.html#cb57-3"></a>toSpace &lt;-<span class="st"> </span><span class="kw">content_transformer</span>(<span class="cf">function</span> (x , pattern ) <span class="kw">gsub</span>(pattern, <span class="st">&quot; &quot;</span>, x))</span>
+<span id="cb57-4"><a href="recommendation-system-for-beauty-products.html#cb57-4"></a>text.docs &lt;-<span class="st"> </span><span class="kw">tm_map</span>(text.docs, toSpace, <span class="st">&quot;/&quot;</span>)</span>
+<span id="cb57-5"><a href="recommendation-system-for-beauty-products.html#cb57-5"></a>text.docs &lt;-<span class="st"> </span><span class="kw">tm_map</span>(text.docs, toSpace, <span class="st">&quot;@&quot;</span>)</span>
+<span id="cb57-6"><a href="recommendation-system-for-beauty-products.html#cb57-6"></a>text.docs &lt;-<span class="st"> </span><span class="kw">tm_map</span>(text.docs, toSpace, <span class="st">&quot;</span><span class="ch">\\</span><span class="st">|&quot;</span>)</span>
+<span id="cb57-7"><a href="recommendation-system-for-beauty-products.html#cb57-7"></a>text.docs &lt;-<span class="st"> </span><span class="kw">tm_map</span>(text.docs, <span class="kw">content_transformer</span>(tolower))</span>
+<span id="cb57-8"><a href="recommendation-system-for-beauty-products.html#cb57-8"></a>text.docs &lt;-<span class="st"> </span><span class="kw">tm_map</span>(text.docs, removeNumbers)</span>
+<span id="cb57-9"><a href="recommendation-system-for-beauty-products.html#cb57-9"></a>text.docs &lt;-<span class="st"> </span><span class="kw">tm_map</span>(text.docs, stripWhitespace)</span>
+<span id="cb57-10"><a href="recommendation-system-for-beauty-products.html#cb57-10"></a>text.docs &lt;-<span class="st"> </span><span class="kw">tm_map</span>(text.docs, removeWords, <span class="kw">stopwords</span>(<span class="st">&quot;english&quot;</span>))</span>
+<span id="cb57-11"><a href="recommendation-system-for-beauty-products.html#cb57-11"></a>text.docs &lt;-<span class="st"> </span><span class="kw">tm_map</span>(text.docs, removePunctuation)</span>
+<span id="cb57-12"><a href="recommendation-system-for-beauty-products.html#cb57-12"></a>dtm &lt;-<span class="st"> </span><span class="kw">DocumentTermMatrix</span>(text.docs, <span class="dt">control=</span><span class="kw">list</span>(<span class="dt">weighting=</span>weightTf))</span>
+<span id="cb57-13"><a href="recommendation-system-for-beauty-products.html#cb57-13"></a>m &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(<span class="kw">t</span>(dtm))</span>
+<span id="cb57-14"><a href="recommendation-system-for-beauty-products.html#cb57-14"></a>v &lt;-<span class="st"> </span><span class="kw">sort</span>(<span class="kw">rowSums</span>(m),<span class="dt">decreasing=</span><span class="ot">TRUE</span>)</span>
+<span id="cb57-15"><a href="recommendation-system-for-beauty-products.html#cb57-15"></a>d &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">word =</span> <span class="kw">names</span>(v),<span class="dt">freq=</span>v)</span>
+<span id="cb57-16"><a href="recommendation-system-for-beauty-products.html#cb57-16"></a><span class="kw">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb57-17"><a href="recommendation-system-for-beauty-products.html#cb57-17"></a><span class="kw">wordcloud</span>(<span class="dt">words =</span> d<span class="op">$</span>word, <span class="dt">freq =</span> d<span class="op">$</span>freq, <span class="dt">min.freq =</span> <span class="dv">10</span>,</span>
+<span id="cb57-18"><a href="recommendation-system-for-beauty-products.html#cb57-18"></a>          <span class="dt">max.words=</span><span class="dv">200</span>, <span class="dt">random.order=</span><span class="ot">FALSE</span>, <span class="dt">rot.per=</span><span class="fl">0.35</span>,</span>
+<span id="cb57-19"><a href="recommendation-system-for-beauty-products.html#cb57-19"></a>          <span class="dt">colors=</span><span class="kw">brewer.pal</span>(<span class="dv">8</span>, <span class="st">&quot;Dark2&quot;</span>))</span></code></pre></div>
+<p><img src="main_files/figure-html/unnamed-chunk-41-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>From the wordcloud we can see that words “color”, “hair” and “gloves” are quite frequent in the text corpus analyzed. That could be a hint that the user was referring to the usage of the product.
+The term “cheap” could be easily spotted as well. This word is not very likable among marketers as it brings unfavorable image to the brand. Nevertheless, it seems that the user believes that the product is affordable.</p>
+</div>
+</div>
+<div id="future-work" class="section level2">
+<h2><span class="header-section-number">5.6</span> Future work</h2>
+<p>This data set provides multiple possibility for the further analysis besides recommender systems.
+Here are some ideas what can be further done:</p>
+<ul>
+<li><p><strong>Sentiment analysis</strong> - Sentiment analysis can be done and scores (typically from -3 to +3) accompanied to each review description. That would tell us more about the sentiment that users have about the products reviewed.</p></li>
+<li><p><strong>Prediction of ratings</strong> - In case that we would have enough data (ratings) about one product, regardless of customers, it would be possible to develop a machine learning model which based on current features (e.g. price) and additional features (such as sentiment or words in the review) could predict the rating that one product might have.</p></li>
+<li><p><strong>Prediction of the sentiment</strong> - in the similar manner as the previous point, it would be useful to train a machine learning model to predict a sentiment that would hypotetically emerge in a reviewer.</p></li>
+<li><p><strong>Topic modeling</strong> - topic modeling is unsupervised machine learning technique that could help us identify topics which users discuss in the text of reviews.</p></li>
+</ul>
+</div>
+<div id="limitations" class="section level2">
+<h2><span class="header-section-number">5.7</span> Limitations</h2>
+<p>Limitation related to this data set and building a recommender system is the fact that the majority of users have left only one review:</p>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="recommendation-system-for-beauty-products.html#cb58-1"></a><span class="kw">table</span>(<span class="kw">as.data.frame</span>(<span class="kw">table</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">review/userId</span><span class="st">`</span>))<span class="op">$</span>Freq)</span></code></pre></div>
+<pre><code>## 
+##    1    2    3    4    5    6    9   10   37 
+## 7638  259   58   30    9    5    1    1    1</code></pre>
+<p>Let us take a look which users left the most reviews:</p>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="recommendation-system-for-beauty-products.html#cb60-1"></a>limitations &lt;-<span class="kw">as.data.frame</span>(<span class="kw">table</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">review/userId</span><span class="st">`</span>))</span>
+<span id="cb60-2"><a href="recommendation-system-for-beauty-products.html#cb60-2"></a>limitations <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">arrange</span>(<span class="kw">desc</span>(Freq))<span class="op">%&gt;%</span><span class="kw">rename</span>(<span class="dt">UserID=</span>Var1)<span class="op">%&gt;%</span><span class="st"> </span><span class="kw">head</span>()</span></code></pre></div>
+<pre><code>##           UserID Freq
+## 1 A3M174IC0VXOS2   37
+## 2 A3KEZLJ59C1JVH   10
+## 3 A3QEE0ZPMT3W6P    9
+## 4 A281NPSIMI1C2R    6
+## 5 A2D4GHWUW440K3    6
+## 6 A2FJZE9Y420X77    6</code></pre>
+<p>We can see that users under IDs A3M174IC0VXOS2,A3KEZLJ59C1JVH,A3QEE0ZPMT3W6P are rare examples of users who left multiple product reviews.</p>
+
+</div>
+</div>
+
+
+
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="customer-churn-prediction.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="covid-19-dashboard.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/07-Recommendation_system.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["main.pdf", "main.epub"],
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

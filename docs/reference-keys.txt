@@ -85,3 +85,5 @@ curve-of-confirmed-cases
 total-cases-per-1-million-people
 deaths-vs-recovered
 active-cases-vs-new-cases
+fig:unnamed-chunk-1
+recommendation-system-for-beauty-products

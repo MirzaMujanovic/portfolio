@@ -11,29 +11,60 @@ output:
 
 # (PART) Recommendation system {-}
 
-# Beauty products recommender 
+# Recommendation system for beauty products 
 
-## Problem formulation
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(error= FALSE, message = FALSE, warning = FALSE, fig.align = "center")
+```
 
-The goal of our project is to develop a recommendation system trained on beauty products data from Amazon.
+```{r,echo=FALSE, fig.align='center', out.width="50%",fig.cap="Foto von Andrea Piacquadio von Pexels"}
+knitr::include_graphics("Graphics/beauty.jpg")
+```
+
+<div style="text-align: justify"> 
+
 Based on some studies it has been proven that personalized product recommendations drive 24% of the orders and 26% of the revenue. This explains the influence recommendation has on volume of orders and generally on sales figures. What is more, it has been proven that product recommendations lead to reoccurring visits and that purchases on recommendation mark higher average-order value. Consequently, we decided to use method called user-based collaborative filtering to build our recommendation system (*[Reference](https://www.salesforce.com/blog/2017/11/personalized-product-recommendations-drive-just-7-visits-26-revenue)*).
 
 First, we proceed with data preparation and pre-processing, then we build our recommender system, and finally draw business implications.
+
+<div style="text-align: justify"> 
 
 ## Data collection
 
 As we earlier mentioned, we use data on Amazon customer reviews of beauty products. The data used in this project can be accessed in this [link](http://snap.stanford.edu/data/web-Amazon-links.html). It contains the following features:
 
-* Product price: price of the product
-* Product Id: ASIN number of a product on Amazon.
-* Product title: title of the product
-* Review helpfulness: fraction of users who found the review helpful
-* Profile Name: name of the user
-* Review score: rating of the product
-* Review summary: concise summary of the review text
-* Review text	
-* Review time
-* Review userId
+```{r eval = TRUE, echo = FALSE, warning=FALSE, message = FALSE}
+library(dplyr)
+library(kableExtra)
+mytable_sub = data.frame(
+    Variable = c("Product price",
+                 "Product ID",
+                 "Product title",
+                 "Review helpfulness",
+                 "Profile name",
+                 "Review score",
+                 "Review summary",
+                 "Review text",
+                 "Review time",
+                 "Review userId"),
+    Description = c("How much a product costs.",
+              "ASIN number of a product on Amazon.",
+              "Name of a product.",
+              "Fraction of users who found the review helpful.",
+              "Name of the profile on Amazon.",
+              "Rating of the product.",
+              "Concise summary of the review text.",
+              "Review text.",
+              "Review time.",
+              "Review userId"))
+
+mytable_sub %>% kable(escape = T) %>%
+  kable_paper(c("hover"), full_width = F) %>%
+  footnote(general = " Information collected from http://snap.stanford.edu/data/web-Amazon-links.html",
+           general_title = "Note: ", 
+           footnote_as_chunk = T, title_format = c("italic")
+           ) 
+```
 
 ## Data preparation and preprocessing
 
@@ -53,7 +84,7 @@ library(readr)
 library(wordcloud)
 ```
 
-### Data loading and inspecting
+### Data collection
 
 After downloading data locally we load in data by using`readLines()` function:
 
@@ -163,16 +194,16 @@ We are now left with 1316 users who reviewed certain beauty product at least 2 t
 my_data <- subset(my_data,`review/userId` %in% index)
 ```
 
-### Exploratory data analysis
+## Exploratory data analysis
 
-#### Head of data
+### Head of data
 
 ```{r}
 head(my_data)
 ```
 
 
-#### How many unique products are reviewed?
+### How many unique products are reviewed?
 
 ```{r, warning=FALSE, message=FALSE}
 length(unique(my_data$`product/productId`))
@@ -181,7 +212,7 @@ length(unique(my_data$`product/productId`))
 There are `r length(unique(my_data$'product/productId'))` products which were reviewed.
 
 
-#### How many reviewers do we have?
+### How many reviewers do we have?
 
 ```{r, warning=FALSE, message=FALSE}
 length(unique(my_data$`review/userId`))
@@ -190,14 +221,14 @@ length(unique(my_data$`review/userId`))
 There are `r length(unique(my_data$'review/userId'))` unique reviewers/customers who reviewed products.
 
 
-#### How many scores do we have?
+### How many scores do we have?
 
 ```{r}
 length(my_data$`review/score`)
 ```
 There are `r length(my_data$'review/score')` ratings.
 
-#### What is the distribution of ratings?
+### What is the distribution of ratings?
 
 ```{r}
 hist(as.numeric(my_data$`review/score`),main = "Histogramm of scores",xlab = "Score")
@@ -206,26 +237,24 @@ hist(as.numeric(my_data$`review/score`),main = "Histogramm of scores",xlab = "Sc
 
 Products seem to be favorably rated as the distribution of scores showes that the best score is the most frequent.
 
-#### What is the average number of reviews per user?
+### What is the average number of reviews per user?
 
 ```{r,message=FALSE,warning=FALSE}
 my_data %>% 
   group_by(`review/userId`) %>%
-  summarise(Freq=n()) %>% 
+  summarise(Freq=n())%>% 
+  select(Freq) %>% 
   summary()
 ```
 In the original data set It users left on average left a review only once. After filtering, we see that our average is at 3 reviews per user. 
 
-#### What is the average score per user?
+### What is the average score per user?
 
 ```{r,message=FALSE,warning=FALSE}
-(grand.mean <-my_data %>% 
-  group_by(`review/userId`) %>%
-  dplyr::summarise(Mean=mean(`review/score`)) %>%
-  mutate(Grand.mean=mean(Mean))%>%
-  head())
+(grand.mean <- my_data %>% 
+ dplyr::summarise(Grand.mean=mean(`review/score`)))
 ```
-It seems that beauty products on Amazon are well received by users as the average score per user is quite high, at `r as.numeric(grand.mean[1,3])`.
+It seems that beauty products on Amazon are well received by users as the average score per user is quite high, at `r grand.mean`. 
 
 ## Building a model
 
