@@ -87,3 +87,4 @@ deaths-vs-recovered
 active-cases-vs-new-cases
 fig:unnamed-chunk-1
 recommendation-system-for-beauty-products
+data-collection-1
