@@ -1,18 +1,18 @@
 ---
 title: "Marketing Analyst Job-Interview Task"
 output:
-  html_notebook: default
   html_document:
     keep_md: true
     toc: yes
     df_print: paged
+  html_notebook: default
   pdf_document:
     toc: yes
 ---
 
 # Sentiment on social media
 
-```{r,echo=FALSE, fig.align='center', out.width="50%",fig.cap="Foto from technologyadvice.com"}
+```{r,echo=FALSE, fig.align='center', out.width="50%",fig.cap="Foto from Google"}
 knitr::include_graphics("Graphics/zealpath.jpg")
 ```
 
@@ -34,12 +34,14 @@ This tasks is a part of a case study given as a job-exercise. Here I aim to demo
 library(XML)
 library(tibble)
 library(tidyverse)
+library(readr)
+library(kableExtra)
 ```
 
 As usual, we first load in data by using `readxl_xlsx()` function and take a glimpse at it:
 
 ```{r}
-data<-readxl::read_xlsx("Alto-Case_Study_Dataset (1).xlsx")
+data<-readxl::read_xlsx("data/Alto-Case_Study_Dataset (1).xlsx")
 glimpse(data)
 ```
 
@@ -61,9 +63,7 @@ Finally, our data has the following structure:
 glimpse(data)
 ```
 
-## Tasks to solve
-
-### How many authors have interacted in the database? 
+## How many authors have interacted in the database? 
 
 My first task is to identify the number of authors who had interaction with the database.
 In order to do so, we will use column "Autors". This column has a class "character", so none class conversion is necessary. Let us inspect number of authors asked:
@@ -81,7 +81,7 @@ Out of total `r length(data$Autors)` interactions, `r length(unique(data$Autors)
 (task1<-as.data.frame(table(data$Autors)) %>%
   rename(Authors=Var1, Count=Freq) %>%
   arrange(desc(Count))) %>% 
-  head(10)%>% kable(escape = T) %>%
+  head(10)%>% kableExtra::kable(escape = T) %>%
   kable_paper(c("hover"), full_width = F)
 ```
 Let us visualize it:
@@ -101,7 +101,7 @@ The most active authors on Twitter are:
 * "O2" as the most active by far
 * "SoldoutGigs" and "O2JobsFeed" are following.
 
-### Which one is the most used media? 
+## Which one is the most used media? 
 
 ```{r}
 library(ggplot2)
@@ -112,8 +112,8 @@ colnames(media) <- c("Media","Freq")
 
 # Top 10 media used
 media <- head(media[order(media$Freq,decreasing = T),],10)
-media%>% kable(escape = T) %>%
-  kable_paper(c("hover"), full_width = F)
+media%>% kableExtra::kable(escape = T) %>%
+  kableExtra::kable_paper(c("hover"), full_width = F)
 
 # Plot
 ggplot(media,aes(fill=Media)) +
@@ -125,7 +125,7 @@ ggplot(media,aes(fill=Media)) +
 ```
 The most used media is Twitter, followed by GiffGaff and Facebook.
 
-### What is the percentage of each used media? 
+## What is the percentage of each used media? 
 
 ```{r}
 media_perc<-as.data.frame(prop.table(table(data$`PUBLISHER-NAME`)))
@@ -135,7 +135,7 @@ head(media_perc[order(media_perc$Freq,decreasing = T),],10) %>%
   kable_paper(c("hover"), full_width = F)
 ```
 
-### What is the percentage of positive, negative and neutral comments?
+## What is the percentage of positive, negative and neutral comments?
 
 ```{r}
 as.data.frame(prop.table(table(data$SENTIMENT))*100) %>%
@@ -145,7 +145,7 @@ as.data.frame(prop.table(table(data$SENTIMENT))*100) %>%
 ```
 Based on the analysis, around 77% of comments are neutral, 12% slightly negative and 11% slightly positive. Percentage of extremely positive or extremely negative comments is in total around 0.8%.
 
-### What is the average sentiment in Twitter?
+## What is the average sentiment in Twitter?
 
 ```{r}
 mean(data$SENTIMENT)

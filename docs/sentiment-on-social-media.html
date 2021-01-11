@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>4 Sentiment on social media | main.utf8</title>
+  <meta name="description" content="" />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="4 Sentiment on social media | main.utf8" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="4 Sentiment on social media | main.utf8" />
+  
+  
+  
+
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="twitter-analysis-for-co2mustgo-initiative.html"/>
+<link rel="next" href="customer-churn-prediction.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
+
+<style type="text/css">
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./"><B>Mirza Mujanovic Portfolio</B></a></li>
+
+<li class="divider"></li>
+<li class="part"><span><b>I About me</b></span></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Who I am?</a></li>
+<li class="part"><span><b>II Text Mining in Marketing</b></span></li>
+<li class="chapter" data-level="1" data-path="emotions-in-online-customer-reviews.html"><a href="emotions-in-online-customer-reviews.html"><i class="fa fa-check"></i><b>1</b> Emotions In Online Customer Reviews</a><ul>
+<li class="chapter" data-level="" data-path="emotions-in-online-customer-reviews.html"><a href="emotions-in-online-customer-reviews.html#what-to-expect-in-this-article"><i class="fa fa-check"></i>What to expect in this article?</a></li>
+<li class="chapter" data-level="1.1" data-path="emotions-in-online-customer-reviews.html"><a href="emotions-in-online-customer-reviews.html#dictionaries-for-nlp"><i class="fa fa-check"></i><b>1.1</b> Dictionaries for NLP</a></li>
+<li class="chapter" data-level="1.2" data-path="emotions-in-online-customer-reviews.html"><a href="emotions-in-online-customer-reviews.html#data-set"><i class="fa fa-check"></i><b>1.2</b> Data set</a></li>
+<li class="chapter" data-level="1.3" data-path="emotions-in-online-customer-reviews.html"><a href="emotions-in-online-customer-reviews.html#corpus-cleaning"><i class="fa fa-check"></i><b>1.3</b> Corpus cleaning</a></li>
+<li class="chapter" data-level="1.4" data-path="emotions-in-online-customer-reviews.html"><a href="emotions-in-online-customer-reviews.html#visualisations-of-terms-frequency"><i class="fa fa-check"></i><b>1.4</b> Visualisations of terms frequency</a><ul>
+<li class="chapter" data-level="1.4.1" data-path="emotions-in-online-customer-reviews.html"><a href="emotions-in-online-customer-reviews.html#bar-charts-with-the-most-frequent-terms"><i class="fa fa-check"></i><b>1.4.1</b> Bar charts with the most frequent terms</a></li>
+<li class="chapter" data-level="1.4.2" data-path="emotions-in-online-customer-reviews.html"><a href="emotions-in-online-customer-reviews.html#wordcloud-with-the-most-frequent-terms"><i class="fa fa-check"></i><b>1.4.2</b> Wordcloud with the most frequent terms</a></li>
+<li class="chapter" data-level="1.4.3" data-path="emotions-in-online-customer-reviews.html"><a href="emotions-in-online-customer-reviews.html#the-most-frequent-terms-indicating-emotions"><i class="fa fa-check"></i><b>1.4.3</b> The most frequent terms indicating emotions</a></li>
+</ul></li>
+<li class="chapter" data-level="1.5" data-path="emotions-in-online-customer-reviews.html"><a href="emotions-in-online-customer-reviews.html#sentiment-analysis"><i class="fa fa-check"></i><b>1.5</b> Sentiment analysis</a><ul>
+<li class="chapter" data-level="1.5.1" data-path="emotions-in-online-customer-reviews.html"><a href="emotions-in-online-customer-reviews.html#polarity-timeline"><i class="fa fa-check"></i><b>1.5.1</b> Polarity timeline</a></li>
+<li class="chapter" data-level="1.5.2" data-path="emotions-in-online-customer-reviews.html"><a href="emotions-in-online-customer-reviews.html#analysis-on-sentence-level"><i class="fa fa-check"></i><b>1.5.2</b> Analysis on sentence-level</a></li>
+<li class="chapter" data-level="1.5.3" data-path="emotions-in-online-customer-reviews.html"><a href="emotions-in-online-customer-reviews.html#what-are-the-most-emotional-reviews"><i class="fa fa-check"></i><b>1.5.3</b> What are the most emotional reviews?</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="text-analysis-of-novels.html"><a href="text-analysis-of-novels.html"><i class="fa fa-check"></i><b>2</b> Text Analysis of Novels</a><ul>
+<li class="chapter" data-level="2.1" data-path="text-analysis-of-novels.html"><a href="text-analysis-of-novels.html#data"><i class="fa fa-check"></i><b>2.1</b> Data</a></li>
+<li class="chapter" data-level="2.2" data-path="text-analysis-of-novels.html"><a href="text-analysis-of-novels.html#text-cleaning"><i class="fa fa-check"></i><b>2.2</b> Text cleaning</a></li>
+<li class="chapter" data-level="2.3" data-path="text-analysis-of-novels.html"><a href="text-analysis-of-novels.html#awakening"><i class="fa fa-check"></i><b>2.3</b> Awakening</a></li>
+<li class="chapter" data-level="2.4" data-path="text-analysis-of-novels.html"><a href="text-analysis-of-novels.html#commonality-cloud-and-comparison-cloud"><i class="fa fa-check"></i><b>2.4</b> Commonality cloud and Comparison cloud</a></li>
+<li class="chapter" data-level="2.5" data-path="text-analysis-of-novels.html"><a href="text-analysis-of-novels.html#sentiment-timeline"><i class="fa fa-check"></i><b>2.5</b> Sentiment timeline</a></li>
+<li class="chapter" data-level="2.6" data-path="text-analysis-of-novels.html"><a href="text-analysis-of-novels.html#topic-modelling-lda"><i class="fa fa-check"></i><b>2.6</b> Topic Modelling: LDA</a></li>
+<li class="chapter" data-level="2.7" data-path="text-analysis-of-novels.html"><a href="text-analysis-of-novels.html#main-points-of-interpretation"><i class="fa fa-check"></i><b>2.7</b> Main points of interpretation</a></li>
+</ul></li>
+<li class="part"><span><b>III Social Media Analysis</b></span></li>
+<li class="chapter" data-level="3" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html"><i class="fa fa-check"></i><b>3</b> Twitter Analysis for CO2mustGo initiative</a><ul>
+<li class="chapter" data-level="" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#what-is-co2mustgo"><i class="fa fa-check"></i>What is CO2mustGO?</a></li>
+<li class="chapter" data-level="3.1" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#sankey-diagram-energy-production-capacity"><i class="fa fa-check"></i><b>3.1</b> Sankey diagram: Energy production capacity</a></li>
+<li class="chapter" data-level="" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#twitter-data-analysis"><i class="fa fa-check"></i>Twitter data analysis</a><ul>
+<li class="chapter" data-level="3.1.1" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#data-1"><i class="fa fa-check"></i><b>3.1.1</b> Data</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#text-cleaning-and-preprocessing"><i class="fa fa-check"></i><b>3.2</b> Text cleaning and preprocessing</a></li>
+<li class="chapter" data-level="3.3" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#tweets-distribution"><i class="fa fa-check"></i><b>3.3</b> Tweets distribution</a></li>
+<li class="chapter" data-level="3.4" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#word-frequency-in-tweets"><i class="fa fa-check"></i><b>3.4</b> Word Frequency in Tweets</a></li>
+<li class="chapter" data-level="3.5" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#word-network-in-tweets"><i class="fa fa-check"></i><b>3.5</b> Word Network in Tweets</a></li>
+<li class="chapter" data-level="3.6" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#wordcloud"><i class="fa fa-check"></i><b>3.6</b> Wordcloud</a></li>
+<li class="chapter" data-level="3.7" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#word-associations"><i class="fa fa-check"></i><b>3.7</b> Word associations</a></li>
+<li class="chapter" data-level="3.8" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#lda"><i class="fa fa-check"></i><b>3.8</b> LDA</a></li>
+<li class="chapter" data-level="3.9" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#sentiment-analysis-1"><i class="fa fa-check"></i><b>3.9</b> Sentiment analysis</a></li>
+<li class="chapter" data-level="3.10" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#visualize-the-emotions"><i class="fa fa-check"></i><b>3.10</b> Visualize the emotions</a></li>
+<li class="chapter" data-level="3.11" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#top-retweeted-tweets"><i class="fa fa-check"></i><b>3.11</b> Top retweeted Tweets</a><ul>
+<li class="chapter" data-level="" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#top-retweets-with-equal-or-more-than-60-mentions"><i class="fa fa-check"></i>Top retweets (with equal or more than 60 mentions)</a></li>
+<li class="chapter" data-level="" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#interactive-graph-with-retweets-text"><i class="fa fa-check"></i>Interactive graph with retweets’ text</a></li>
+</ul></li>
+<li class="chapter" data-level="3.12" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#network-of-retweets"><i class="fa fa-check"></i><b>3.12</b> Network of retweets</a><ul>
+<li class="chapter" data-level="3.12.1" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#where-do-people-tweet-the-most"><i class="fa fa-check"></i><b>3.12.1</b> Where do people tweet the most?</a></li>
+<li class="chapter" data-level="3.12.2" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#who-are-the-users-who-retweet-the-most"><i class="fa fa-check"></i><b>3.12.2</b> Who are the users who retweet the most?</a></li>
+<li class="chapter" data-level="3.12.3" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#who-are-the-most-retweeted-users"><i class="fa fa-check"></i><b>3.12.3</b> Who are the most retweeted users?</a></li>
+<li class="chapter" data-level="3.12.4" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#who-are-users-important-for-connecting-with-others-in-network"><i class="fa fa-check"></i><b>3.12.4</b> Who are users important for connecting with others in network?</a></li>
+<li class="chapter" data-level="3.12.5" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#clustering"><i class="fa fa-check"></i><b>3.12.5</b> Clustering</a></li>
+<li class="chapter" data-level="3.12.6" data-path="twitter-analysis-for-co2mustgo-initiative.html"><a href="twitter-analysis-for-co2mustgo-initiative.html#community-detection"><i class="fa fa-check"></i><b>3.12.6</b> Community detection</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="sentiment-on-social-media.html"><a href="sentiment-on-social-media.html"><i class="fa fa-check"></i><b>4</b> Sentiment on social media</a><ul>
+<li class="chapter" data-level="4.1" data-path="sentiment-on-social-media.html"><a href="sentiment-on-social-media.html#data-2"><i class="fa fa-check"></i><b>4.1</b> Data</a></li>
+<li class="chapter" data-level="4.2" data-path="sentiment-on-social-media.html"><a href="sentiment-on-social-media.html#how-many-authors-have-interacted-in-the-database"><i class="fa fa-check"></i><b>4.2</b> How many authors have interacted in the database?</a></li>
+<li class="chapter" data-level="4.3" data-path="sentiment-on-social-media.html"><a href="sentiment-on-social-media.html#which-one-is-the-most-used-media"><i class="fa fa-check"></i><b>4.3</b> Which one is the most used media?</a></li>
+<li class="chapter" data-level="4.4" data-path="sentiment-on-social-media.html"><a href="sentiment-on-social-media.html#what-is-the-percentage-of-each-used-media"><i class="fa fa-check"></i><b>4.4</b> What is the percentage of each used media?</a></li>
+<li class="chapter" data-level="4.5" data-path="sentiment-on-social-media.html"><a href="sentiment-on-social-media.html#what-is-the-percentage-of-positive-negative-and-neutral-comments"><i class="fa fa-check"></i><b>4.5</b> What is the percentage of positive, negative and neutral comments?</a></li>
+<li class="chapter" data-level="4.6" data-path="sentiment-on-social-media.html"><a href="sentiment-on-social-media.html#what-is-the-average-sentiment-in-twitter"><i class="fa fa-check"></i><b>4.6</b> What is the average sentiment in Twitter?</a></li>
+</ul></li>
+<li class="part"><span><b>IV Customer analytics</b></span></li>
+<li class="chapter" data-level="5" data-path="customer-churn-prediction.html"><a href="customer-churn-prediction.html"><i class="fa fa-check"></i><b>5</b> Customer churn prediction</a><ul>
+<li class="chapter" data-level="5.1" data-path="customer-churn-prediction.html"><a href="customer-churn-prediction.html#why-predicting-customer-churn"><i class="fa fa-check"></i><b>5.1</b> Why predicting customer churn?</a></li>
+<li class="chapter" data-level="5.2" data-path="customer-churn-prediction.html"><a href="customer-churn-prediction.html#data-3"><i class="fa fa-check"></i><b>5.2</b> Data</a></li>
+<li class="chapter" data-level="5.3" data-path="customer-churn-prediction.html"><a href="customer-churn-prediction.html#data-pre-processing"><i class="fa fa-check"></i><b>5.3</b> Data Pre-processing</a></li>
+<li class="chapter" data-level="5.4" data-path="customer-churn-prediction.html"><a href="customer-churn-prediction.html#data-partition"><i class="fa fa-check"></i><b>5.4</b> Data partition</a></li>
+<li class="chapter" data-level="5.5" data-path="customer-churn-prediction.html"><a href="customer-churn-prediction.html#random-forest-model"><i class="fa fa-check"></i><b>5.5</b> Random Forest model</a></li>
+<li class="chapter" data-level="5.6" data-path="customer-churn-prediction.html"><a href="customer-churn-prediction.html#evaluating-model"><i class="fa fa-check"></i><b>5.6</b> Evaluating Model</a></li>
+<li class="chapter" data-level="5.7" data-path="customer-churn-prediction.html"><a href="customer-churn-prediction.html#references"><i class="fa fa-check"></i><b>5.7</b> References</a></li>
+</ul></li>
+<li class="part"><span><b>V Recommendation system</b></span></li>
+<li class="chapter" data-level="6" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html"><i class="fa fa-check"></i><b>6</b> Recommendation system for beauty products</a><ul>
+<li class="chapter" data-level="6.1" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#data-collection"><i class="fa fa-check"></i><b>6.1</b> Data collection</a></li>
+<li class="chapter" data-level="6.2" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#data-preparation-and-preprocessing"><i class="fa fa-check"></i><b>6.2</b> Data preparation and preprocessing</a><ul>
+<li class="chapter" data-level="6.2.1" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#packages"><i class="fa fa-check"></i><b>6.2.1</b> Packages</a></li>
+<li class="chapter" data-level="6.2.2" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#data-collection-1"><i class="fa fa-check"></i><b>6.2.2</b> Data collection</a></li>
+<li class="chapter" data-level="6.2.3" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#how-many-times-users-reviewed-products"><i class="fa fa-check"></i><b>6.2.3</b> How many times users reviewed products?</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#exploratory-data-analysis"><i class="fa fa-check"></i><b>6.3</b> Exploratory data analysis</a><ul>
+<li class="chapter" data-level="6.3.1" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#head-of-data"><i class="fa fa-check"></i><b>6.3.1</b> Head of data</a></li>
+<li class="chapter" data-level="6.3.2" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#how-many-unique-products-are-reviewed"><i class="fa fa-check"></i><b>6.3.2</b> How many unique products are reviewed?</a></li>
+<li class="chapter" data-level="6.3.3" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#how-many-reviewers-do-we-have"><i class="fa fa-check"></i><b>6.3.3</b> How many reviewers do we have?</a></li>
+<li class="chapter" data-level="6.3.4" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#how-many-scores-do-we-have"><i class="fa fa-check"></i><b>6.3.4</b> How many scores do we have?</a></li>
+<li class="chapter" data-level="6.3.5" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#what-is-the-distribution-of-ratings"><i class="fa fa-check"></i><b>6.3.5</b> What is the distribution of ratings?</a></li>
+<li class="chapter" data-level="6.3.6" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#what-is-the-average-number-of-reviews-per-user"><i class="fa fa-check"></i><b>6.3.6</b> What is the average number of reviews per user?</a></li>
+<li class="chapter" data-level="6.3.7" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#what-is-the-average-score-per-user"><i class="fa fa-check"></i><b>6.3.7</b> What is the average score per user?</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#building-a-model"><i class="fa fa-check"></i><b>6.4</b> Building a model</a><ul>
+<li class="chapter" data-level="6.4.1" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#final-data-outlook"><i class="fa fa-check"></i><b>6.4.1</b> Final data outlook</a></li>
+<li class="chapter" data-level="6.4.2" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#subsetting-data"><i class="fa fa-check"></i><b>6.4.2</b> Subsetting data</a></li>
+<li class="chapter" data-level="6.4.3" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#formatting-data"><i class="fa fa-check"></i><b>6.4.3</b> Formatting data</a></li>
+<li class="chapter" data-level="6.4.4" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#inspecting-real-rating-matrix"><i class="fa fa-check"></i><b>6.4.4</b> Inspecting real rating matrix</a></li>
+<li class="chapter" data-level="6.4.5" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#building-a-recommender"><i class="fa fa-check"></i><b>6.4.5</b> Building a recommender</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#interpretation-and-managerial-implications"><i class="fa fa-check"></i><b>6.5</b> Interpretation and managerial implications</a><ul>
+<li class="chapter" data-level="6.5.1" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#identification-of-the-recommended-products"><i class="fa fa-check"></i><b>6.5.1</b> Identification of the recommended products</a></li>
+<li class="chapter" data-level="6.5.2" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#implications"><i class="fa fa-check"></i><b>6.5.2</b> Implications</a></li>
+</ul></li>
+<li class="chapter" data-level="6.6" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#bonus-analysis-text-mining"><i class="fa fa-check"></i><b>6.6</b> Bonus analysis: Text Mining</a><ul>
+<li class="chapter" data-level="6.6.1" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#wordcloud-1"><i class="fa fa-check"></i><b>6.6.1</b> Wordcloud</a></li>
+</ul></li>
+<li class="chapter" data-level="6.7" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#future-work"><i class="fa fa-check"></i><b>6.7</b> Future work</a></li>
+<li class="chapter" data-level="6.8" data-path="recommendation-system-for-beauty-products.html"><a href="recommendation-system-for-beauty-products.html#limitations"><i class="fa fa-check"></i><b>6.8</b> Limitations</a></li>
+</ul></li>
+<li class="part"><span><b>VI Shiny Apps</b></span></li>
+<li class="chapter" data-level="7" data-path="covid-19-dashboard.html"><a href="covid-19-dashboard.html"><i class="fa fa-check"></i><b>7</b> COVID 19 Dashboard</a><ul>
+<li class="chapter" data-level="7.1" data-path="covid-19-dashboard.html"><a href="covid-19-dashboard.html#data-4"><i class="fa fa-check"></i><b>7.1</b> Data</a></li>
+<li class="chapter" data-level="7.2" data-path="covid-19-dashboard.html"><a href="covid-19-dashboard.html#curve-of-confirmed-cases"><i class="fa fa-check"></i><b>7.2</b> Curve of confirmed cases</a></li>
+<li class="chapter" data-level="7.3" data-path="covid-19-dashboard.html"><a href="covid-19-dashboard.html#total-cases-per-1-million-people"><i class="fa fa-check"></i><b>7.3</b> Total cases per 1 million people</a></li>
+<li class="chapter" data-level="7.4" data-path="covid-19-dashboard.html"><a href="covid-19-dashboard.html#deaths-vs-recovered"><i class="fa fa-check"></i><b>7.4</b> Deaths vs Recovered</a></li>
+<li class="chapter" data-level="7.5" data-path="covid-19-dashboard.html"><a href="covid-19-dashboard.html#active-cases-vs-new-cases"><i class="fa fa-check"></i><b>7.5</b> Active cases vs New cases</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://at.linkedin.com/in/mirzamujanovic?trk=profile-badge" target="blank">LinkedIn: Mirza Mujanovic</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./"></a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="sentiment-on-social-media" class="section level1">
+<h1><span class="header-section-number">4</span> Sentiment on social media</h1>
+<div class="figure" style="text-align: center"><span id="fig:unnamed-chunk-1"></span>
+<img src="Graphics/zealpath.jpg" alt="Foto from Google" width="50%" />
+<p class="caption">
+Figure 4.1: Foto from Google
+</p>
+</div>
+<p>This tasks is a part of a case study given as a job-exercise. Here I aim to demonstrate how one can solve analytics task with R very efficiently. The exact task reads as follow:</p>
+<p><em>At the company we create clarity, out of the chaos of digital noise. Our big data analytics platform and services combine technology and human expertise to help organizations around the world achieve clear and actionable insights every day.</em></p>
+<p><em>In our team of data scientists, you will become part of the human layer that develops specialized expertise for organizations, we explore hypotheses and dig deeper into big data assets and uncover actionable insights.</em></p>
+<p><em>This assignment is designed to give you a glimpse of some of the challenges you will be facing in this role. Please be aware there are no perfect solutions - for us, it’s more important to see how you find solutions, process your ideas, structure your thoughts and how you make your decision paths.</em></p>
+<p><em>Be creative but realistic about what’s possible. We are thrilled to get to know a bit more about the way you solve tasks.</em></p>
+<div id="data-2" class="section level2">
+<h2><span class="header-section-number">4.1</span> Data</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="sentiment-on-social-media.html#cb1-1"></a><span class="kw">library</span>(XML)</span>
+<span id="cb1-2"><a href="sentiment-on-social-media.html#cb1-2"></a><span class="kw">library</span>(tibble)</span>
+<span id="cb1-3"><a href="sentiment-on-social-media.html#cb1-3"></a><span class="kw">library</span>(tidyverse)</span>
+<span id="cb1-4"><a href="sentiment-on-social-media.html#cb1-4"></a><span class="kw">library</span>(readr)</span>
+<span id="cb1-5"><a href="sentiment-on-social-media.html#cb1-5"></a><span class="kw">library</span>(kableExtra)</span></code></pre></div>
+<p>As usual, we first load in data by using <code>readxl_xlsx()</code> function and take a glimpse at it:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="sentiment-on-social-media.html#cb2-1"></a>data&lt;-readxl<span class="op">::</span><span class="kw">read_xlsx</span>(<span class="st">&quot;data/Alto-Case_Study_Dataset (1).xlsx&quot;</span>)</span>
+<span id="cb2-2"><a href="sentiment-on-social-media.html#cb2-2"></a><span class="kw">glimpse</span>(data)</span></code></pre></div>
+<pre><code>## Rows: 4,287
+## Columns: 12
+## $ ID                 &lt;dbl&gt; 109537653, 109556421, 109537642, 109543173, 1095...
+## $ Autors             &lt;chr&gt; &quot;josiehoulston&quot;, &quot;O2&quot;, &quot;MuccaMadness&quot;, &quot;bhups&quot;, ...
+## $ TITLE              &lt;chr&gt; &quot;@O2 no signal again. Third day of interruption&quot;...
+## $ LINK               &lt;chr&gt; &quot;http://twitter.com/josiehoulston/statuses/60394...
+## $ BODY               &lt;chr&gt; &quot;@O2 no signal again. Third day of interruption&quot;...
+## $ PUBDATE            &lt;dttm&gt; 2015-05-28 17:29:47, 2015-05-28 17:29:30, 2015-...
+## $ `PERSONAL-WEBSITE` &lt;chr&gt; &quot;http://twitter.com/josiehoulston&quot;, &quot;http://www....
+## $ COUNTRY            &lt;chr&gt; &quot;gb&quot;, &quot;gb&quot;, &quot;gb&quot;, &quot;gb&quot;, &quot;gb&quot;, &quot;gb&quot;, &quot;gb&quot;, &quot;gb&quot;, ...
+## $ `PUBLISHER-ID`     &lt;dbl&gt; 11, 11, 11, 140, 11, 11, 11, 11, 10, 11, 11, 11,...
+## $ `PUBLISHER-NAME`   &lt;chr&gt; &quot;Twitter&quot;, &quot;Twitter&quot;, &quot;Twitter&quot;, &quot;GiffGaff&quot;, &quot;Tw...
+## $ `ORIG-ID`          &lt;chr&gt; &quot;603946276951031808&quot;, &quot;603946202216955904&quot;, &quot;603...
+## $ SENTIMENT          &lt;dbl&gt; 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0,...</code></pre>
+<p>The data has 12 features and 4287 observations. Let us inspect missing values:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="sentiment-on-social-media.html#cb4-1"></a><span class="kw">apply</span>(<span class="kw">is.na</span>(data),<span class="dv">2</span>,sum)</span></code></pre></div>
+<pre><code>##               ID           Autors            TITLE             LINK 
+##                0                0                0                0 
+##             BODY          PUBDATE PERSONAL-WEBSITE          COUNTRY 
+##                5                0               15                0 
+##     PUBLISHER-ID   PUBLISHER-NAME          ORIG-ID        SENTIMENT 
+##                0                0                0                0</code></pre>
+<p>There are 5 missing entries in “BODY” column and 15 in “PERSONAL-WEBISTE”. Consequently, we will remove these entries.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="sentiment-on-social-media.html#cb6-1"></a>data&lt;-(data[<span class="kw">complete.cases</span>(data), ])</span></code></pre></div>
+<p>Finally, our data has the following structure:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="sentiment-on-social-media.html#cb7-1"></a><span class="kw">glimpse</span>(data)</span></code></pre></div>
+<pre><code>## Rows: 4,267
+## Columns: 12
+## $ ID                 &lt;dbl&gt; 109537653, 109556421, 109537642, 109543173, 1095...
+## $ Autors             &lt;chr&gt; &quot;josiehoulston&quot;, &quot;O2&quot;, &quot;MuccaMadness&quot;, &quot;bhups&quot;, ...
+## $ TITLE              &lt;chr&gt; &quot;@O2 no signal again. Third day of interruption&quot;...
+## $ LINK               &lt;chr&gt; &quot;http://twitter.com/josiehoulston/statuses/60394...
+## $ BODY               &lt;chr&gt; &quot;@O2 no signal again. Third day of interruption&quot;...
+## $ PUBDATE            &lt;dttm&gt; 2015-05-28 17:29:47, 2015-05-28 17:29:30, 2015-...
+## $ `PERSONAL-WEBSITE` &lt;chr&gt; &quot;http://twitter.com/josiehoulston&quot;, &quot;http://www....
+## $ COUNTRY            &lt;chr&gt; &quot;gb&quot;, &quot;gb&quot;, &quot;gb&quot;, &quot;gb&quot;, &quot;gb&quot;, &quot;gb&quot;, &quot;gb&quot;, &quot;gb&quot;, ...
+## $ `PUBLISHER-ID`     &lt;dbl&gt; 11, 11, 11, 140, 11, 11, 11, 11, 10, 11, 11, 11,...
+## $ `PUBLISHER-NAME`   &lt;chr&gt; &quot;Twitter&quot;, &quot;Twitter&quot;, &quot;Twitter&quot;, &quot;GiffGaff&quot;, &quot;Tw...
+## $ `ORIG-ID`          &lt;chr&gt; &quot;603946276951031808&quot;, &quot;603946202216955904&quot;, &quot;603...
+## $ SENTIMENT          &lt;dbl&gt; 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0,...</code></pre>
+</div>
+<div id="how-many-authors-have-interacted-in-the-database" class="section level2">
+<h2><span class="header-section-number">4.2</span> How many authors have interacted in the database?</h2>
+<p>My first task is to identify the number of authors who had interaction with the database.
+In order to do so, we will use column “Autors”. This column has a class “character”, so none class conversion is necessary. Let us inspect number of authors asked:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="sentiment-on-social-media.html#cb9-1"></a><span class="co"># Total number of interactions interacted</span></span>
+<span id="cb9-2"><a href="sentiment-on-social-media.html#cb9-2"></a><span class="kw">length</span>(data<span class="op">$</span>Autors)</span></code></pre></div>
+<pre><code>## [1] 4267</code></pre>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="sentiment-on-social-media.html#cb11-1"></a><span class="co"># Number of authors interacted with the data base</span></span>
+<span id="cb11-2"><a href="sentiment-on-social-media.html#cb11-2"></a><span class="kw">length</span>(<span class="kw">unique</span>(data<span class="op">$</span>Autors))</span></code></pre></div>
+<pre><code>## [1] 2672</code></pre>
+<p>Out of total 4267 interactions, 2672 are unique. Thus, we can say that the number of unique interactions is 2672.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="sentiment-on-social-media.html#cb13-1"></a><span class="co"># Authors</span></span>
+<span id="cb13-2"><a href="sentiment-on-social-media.html#cb13-2"></a>(task1&lt;-<span class="kw">as.data.frame</span>(<span class="kw">table</span>(data<span class="op">$</span>Autors)) <span class="op">%&gt;%</span></span>
+<span id="cb13-3"><a href="sentiment-on-social-media.html#cb13-3"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">Authors=</span>Var1, <span class="dt">Count=</span>Freq) <span class="op">%&gt;%</span></span>
+<span id="cb13-4"><a href="sentiment-on-social-media.html#cb13-4"></a><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(Count))) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb13-5"><a href="sentiment-on-social-media.html#cb13-5"></a><span class="st">  </span><span class="kw">head</span>(<span class="dv">10</span>)<span class="op">%&gt;%</span><span class="st"> </span>kableExtra<span class="op">::</span><span class="kw">kable</span>(<span class="dt">escape =</span> T) <span class="op">%&gt;%</span></span>
+<span id="cb13-6"><a href="sentiment-on-social-media.html#cb13-6"></a><span class="st">  </span><span class="kw">kable_paper</span>(<span class="kw">c</span>(<span class="st">&quot;hover&quot;</span>), <span class="dt">full_width =</span> F)</span></code></pre></div>
+<table class=" lightable-paper lightable-hover" style='font-family: "Arial Narrow", arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;'>
+<thead>
+<tr>
+<th style="text-align:left;">
+Authors
+</th>
+<th style="text-align:right;">
+Count
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+O2
+</td>
+<td style="text-align:right;">
+258
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SoldoutGigs
+</td>
+<td style="text-align:right;">
+33
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+O2JobsFeed
+</td>
+<td style="text-align:right;">
+25
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+yobigdawg
+</td>
+<td style="text-align:right;">
+14
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+mathew40
+</td>
+<td style="text-align:right;">
+12
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Cleoriff
+</td>
+<td style="text-align:right;">
+10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+O2AcademyOxford
+</td>
+<td style="text-align:right;">
+10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PocutDaraa
+</td>
+<td style="text-align:right;">
+10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+MI5
+</td>
+<td style="text-align:right;">
+9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+JimGilroy
+</td>
+<td style="text-align:right;">
+8
+</td>
+</tr>
+</tbody>
+</table>
+<p>Let us visualize it:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="sentiment-on-social-media.html#cb14-1"></a><span class="kw">library</span>(ggplot2)</span>
+<span id="cb14-2"><a href="sentiment-on-social-media.html#cb14-2"></a>task1 <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb14-3"><a href="sentiment-on-social-media.html#cb14-3"></a><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(Count)) <span class="op">%&gt;%</span></span>
+<span id="cb14-4"><a href="sentiment-on-social-media.html#cb14-4"></a><span class="st">  </span><span class="kw">head</span>(<span class="dv">10</span>) <span class="op">%&gt;%</span></span>
+<span id="cb14-5"><a href="sentiment-on-social-media.html#cb14-5"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x=</span><span class="kw">reorder</span>(Authors,Count),<span class="dt">y=</span>Count,<span class="dt">fill=</span>Authors)) <span class="op">+</span></span>
+<span id="cb14-6"><a href="sentiment-on-social-media.html#cb14-6"></a><span class="st">  </span><span class="kw">geom_bar</span>(<span class="dt">stat=</span><span class="st">&quot;identity&quot;</span>)<span class="op">+</span></span>
+<span id="cb14-7"><a href="sentiment-on-social-media.html#cb14-7"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&quot;Authors&quot;</span>,<span class="dt">y=</span><span class="st">&quot;Count&quot;</span>,<span class="dt">title =</span> <span class="st">&quot;Top 10 Most Active Authors on Twitter&quot;</span>)<span class="op">+</span></span>
+<span id="cb14-8"><a href="sentiment-on-social-media.html#cb14-8"></a><span class="st">  </span><span class="kw">coord_flip</span>()</span></code></pre></div>
+<p><img src="main_files/figure-html/unnamed-chunk-9-1.png" width="672" />
+The most active authors on Twitter are:</p>
+<ul>
+<li>“O2” as the most active by far</li>
+<li>“SoldoutGigs” and “O2JobsFeed” are following.</li>
+</ul>
+</div>
+<div id="which-one-is-the-most-used-media" class="section level2">
+<h2><span class="header-section-number">4.3</span> Which one is the most used media?</h2>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="sentiment-on-social-media.html#cb15-1"></a><span class="kw">library</span>(ggplot2)</span>
+<span id="cb15-2"><a href="sentiment-on-social-media.html#cb15-2"></a><span class="kw">library</span>(plotly)</span></code></pre></div>
+<pre><code>## 
+## Attaching package: &#39;plotly&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:ggplot2&#39;:
+## 
+##     last_plot</code></pre>
+<pre><code>## The following object is masked from &#39;package:stats&#39;:
+## 
+##     filter</code></pre>
+<pre><code>## The following object is masked from &#39;package:graphics&#39;:
+## 
+##     layout</code></pre>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="sentiment-on-social-media.html#cb20-1"></a>media &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(<span class="kw">table</span>(data<span class="op">$</span><span class="st">`</span><span class="dt">PUBLISHER-NAME</span><span class="st">`</span>))</span>
+<span id="cb20-2"><a href="sentiment-on-social-media.html#cb20-2"></a><span class="kw">colnames</span>(media) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Media&quot;</span>,<span class="st">&quot;Freq&quot;</span>)</span>
+<span id="cb20-3"><a href="sentiment-on-social-media.html#cb20-3"></a></span>
+<span id="cb20-4"><a href="sentiment-on-social-media.html#cb20-4"></a><span class="co"># Top 10 media used</span></span>
+<span id="cb20-5"><a href="sentiment-on-social-media.html#cb20-5"></a>media &lt;-<span class="st"> </span><span class="kw">head</span>(media[<span class="kw">order</span>(media<span class="op">$</span>Freq,<span class="dt">decreasing =</span> T),],<span class="dv">10</span>)</span>
+<span id="cb20-6"><a href="sentiment-on-social-media.html#cb20-6"></a>media<span class="op">%&gt;%</span><span class="st"> </span>kableExtra<span class="op">::</span><span class="kw">kable</span>(<span class="dt">escape =</span> T) <span class="op">%&gt;%</span></span>
+<span id="cb20-7"><a href="sentiment-on-social-media.html#cb20-7"></a><span class="st">  </span>kableExtra<span class="op">::</span><span class="kw">kable_paper</span>(<span class="kw">c</span>(<span class="st">&quot;hover&quot;</span>), <span class="dt">full_width =</span> F)</span></code></pre></div>
+<table class=" lightable-paper lightable-hover" style='font-family: "Arial Narrow", arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;'>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:left;">
+Media
+</th>
+<th style="text-align:right;">
+Freq
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+7
+</td>
+<td style="text-align:left;">
+Twitter
+</td>
+<td style="text-align:right;">
+3798
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:left;">
+GiffGaff
+</td>
+<td style="text-align:right;">
+204
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+Facebook
+</td>
+<td style="text-align:right;">
+177
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+6
+</td>
+<td style="text-align:left;">
+O2 UK
+</td>
+<td style="text-align:right;">
+59
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+9
+</td>
+<td style="text-align:left;">
+YouTube
+</td>
+<td style="text-align:right;">
+20
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:left;">
+Instagram
+</td>
+<td style="text-align:right;">
+4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+8
+</td>
+<td style="text-align:left;">
+Vodafone UK
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:left;">
+Flickr
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+4
+</td>
+<td style="text-align:left;">
+Google+
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="sentiment-on-social-media.html#cb21-1"></a><span class="co"># Plot</span></span>
+<span id="cb21-2"><a href="sentiment-on-social-media.html#cb21-2"></a><span class="kw">ggplot</span>(media,<span class="kw">aes</span>(<span class="dt">fill=</span>Media)) <span class="op">+</span></span>
+<span id="cb21-3"><a href="sentiment-on-social-media.html#cb21-3"></a><span class="st">  </span><span class="kw">geom_bar</span>(<span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>,<span class="kw">aes</span>(<span class="kw">reorder</span>(Media,Freq),Freq)) <span class="op">+</span></span>
+<span id="cb21-4"><a href="sentiment-on-social-media.html#cb21-4"></a><span class="st">  </span><span class="kw">coord_flip</span>() <span class="op">+</span></span>
+<span id="cb21-5"><a href="sentiment-on-social-media.html#cb21-5"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>)<span class="op">+</span></span>
+<span id="cb21-6"><a href="sentiment-on-social-media.html#cb21-6"></a><span class="st">  </span><span class="kw">scale_y_log10</span>()<span class="op">+</span></span>
+<span id="cb21-7"><a href="sentiment-on-social-media.html#cb21-7"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&quot;Media&quot;</span>, <span class="dt">y=</span><span class="st">&quot;Count&quot;</span>,<span class="dt">title =</span> <span class="st">&quot;Top 10 Most Used Media&quot;</span>)</span></code></pre></div>
+<p><img src="main_files/figure-html/unnamed-chunk-10-1.png" width="672" />
+The most used media is Twitter, followed by GiffGaff and Facebook.</p>
+</div>
+<div id="what-is-the-percentage-of-each-used-media" class="section level2">
+<h2><span class="header-section-number">4.4</span> What is the percentage of each used media?</h2>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="sentiment-on-social-media.html#cb22-1"></a>media_perc&lt;-<span class="kw">as.data.frame</span>(<span class="kw">prop.table</span>(<span class="kw">table</span>(data<span class="op">$</span><span class="st">`</span><span class="dt">PUBLISHER-NAME</span><span class="st">`</span>)))</span>
+<span id="cb22-2"><a href="sentiment-on-social-media.html#cb22-2"></a>media_perc<span class="op">$</span>Freq &lt;-<span class="st"> </span><span class="kw">round</span>(media_perc<span class="op">$</span>Freq<span class="op">*</span><span class="dv">100</span>,<span class="dv">4</span>)</span>
+<span id="cb22-3"><a href="sentiment-on-social-media.html#cb22-3"></a><span class="kw">head</span>(media_perc[<span class="kw">order</span>(media_perc<span class="op">$</span>Freq,<span class="dt">decreasing =</span> T),],<span class="dv">10</span>) <span class="op">%&gt;%</span></span>
+<span id="cb22-4"><a href="sentiment-on-social-media.html#cb22-4"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">Author=</span>Var1,<span class="dt">Percentage=</span>Freq)<span class="op">%&gt;%</span><span class="st"> </span><span class="kw">kable</span>(<span class="dt">escape =</span> T) <span class="op">%&gt;%</span></span>
+<span id="cb22-5"><a href="sentiment-on-social-media.html#cb22-5"></a><span class="st">  </span><span class="kw">kable_paper</span>(<span class="kw">c</span>(<span class="st">&quot;hover&quot;</span>), <span class="dt">full_width =</span> F)</span></code></pre></div>
+<table class=" lightable-paper lightable-hover" style='font-family: "Arial Narrow", arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;'>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:left;">
+Author
+</th>
+<th style="text-align:right;">
+Percentage
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+7
+</td>
+<td style="text-align:left;">
+Twitter
+</td>
+<td style="text-align:right;">
+89.0087
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:left;">
+GiffGaff
+</td>
+<td style="text-align:right;">
+4.7809
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+Facebook
+</td>
+<td style="text-align:right;">
+4.1481
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+6
+</td>
+<td style="text-align:left;">
+O2 UK
+</td>
+<td style="text-align:right;">
+1.3827
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+9
+</td>
+<td style="text-align:left;">
+YouTube
+</td>
+<td style="text-align:right;">
+0.4687
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:left;">
+Instagram
+</td>
+<td style="text-align:right;">
+0.0937
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+8
+</td>
+<td style="text-align:left;">
+Vodafone UK
+</td>
+<td style="text-align:right;">
+0.0703
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:left;">
+Flickr
+</td>
+<td style="text-align:right;">
+0.0234
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+4
+</td>
+<td style="text-align:left;">
+Google+
+</td>
+<td style="text-align:right;">
+0.0234
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="what-is-the-percentage-of-positive-negative-and-neutral-comments" class="section level2">
+<h2><span class="header-section-number">4.5</span> What is the percentage of positive, negative and neutral comments?</h2>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="sentiment-on-social-media.html#cb23-1"></a><span class="kw">as.data.frame</span>(<span class="kw">prop.table</span>(<span class="kw">table</span>(data<span class="op">$</span>SENTIMENT))<span class="op">*</span><span class="dv">100</span>) <span class="op">%&gt;%</span></span>
+<span id="cb23-2"><a href="sentiment-on-social-media.html#cb23-2"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">Sentiment=</span>Var1,<span class="dt">Percentage=</span>Freq) <span class="op">%&gt;%</span></span>
+<span id="cb23-3"><a href="sentiment-on-social-media.html#cb23-3"></a><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(Percentage))<span class="op">%&gt;%</span><span class="st"> </span><span class="kw">kable</span>(<span class="dt">escape =</span> T) <span class="op">%&gt;%</span></span>
+<span id="cb23-4"><a href="sentiment-on-social-media.html#cb23-4"></a><span class="st">  </span><span class="kw">kable_paper</span>(<span class="kw">c</span>(<span class="st">&quot;hover&quot;</span>), <span class="dt">full_width =</span> F)</span></code></pre></div>
+<table class=" lightable-paper lightable-hover" style='font-family: "Arial Narrow", arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;'>
+<thead>
+<tr>
+<th style="text-align:left;">
+Sentiment
+</th>
+<th style="text-align:right;">
+Percentage
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:right;">
+76.7518163
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+-1
+</td>
+<td style="text-align:right;">
+11.5537849
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:right;">
+10.7804078
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:right;">
+0.5390204
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+-2
+</td>
+<td style="text-align:right;">
+0.3749707
+</td>
+</tr>
+</tbody>
+</table>
+<p>Based on the analysis, around 77% of comments are neutral, 12% slightly negative and 11% slightly positive. Percentage of extremely positive or extremely negative comments is in total around 0.8%.</p>
+</div>
+<div id="what-is-the-average-sentiment-in-twitter" class="section level2">
+<h2><span class="header-section-number">4.6</span> What is the average sentiment in Twitter?</h2>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="sentiment-on-social-media.html#cb24-1"></a><span class="kw">mean</span>(data<span class="op">$</span>SENTIMENT)</span></code></pre></div>
+<pre><code>## [1] -0.004452777</code></pre>
+<ol start="2" style="list-style-type: lower-alpha">
+<li>Make a scatter plot of the database using 3 variables. Two of them are provided here.</li>
+</ol>
+<p>media: Twitter, Facebook and Instagram.</p>
+<p>visibility: total of comments and average sentiment.</p>
+<p>By combining publishers, date of publishing and sentiment we are able to create a multiple line plot to explain sentiment in each publisher in the given period of a day.</p>
+<p>First we filtered data to retain publishers such as Twitter, Facebook, Instagram, GiffGaff and O2 UK.
+Subsequently, we pivot the table so that the final sheet look like this (only first 6 rows):</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="sentiment-on-social-media.html#cb26-1"></a>plot&lt;-<span class="kw">subset</span>(data,<span class="st">`</span><span class="dt">PUBLISHER-NAME</span><span class="st">`</span><span class="op">==</span><span class="st">&quot;Twitter&quot;</span> <span class="op">|</span><span class="st"> `</span><span class="dt">PUBLISHER-NAME</span><span class="st">`</span><span class="op">==</span><span class="st">&quot;Facebook&quot;</span> <span class="op">|</span><span class="st"> `</span><span class="dt">PUBLISHER-NAME</span><span class="st">`</span><span class="op">==</span><span class="st">&quot;Instagram&quot;</span> <span class="op">|</span><span class="st"> `</span><span class="dt">PUBLISHER-NAME</span><span class="st">`</span><span class="op">==</span><span class="st">&quot;GiffGaff&quot;</span> <span class="op">|</span><span class="st"> `</span><span class="dt">PUBLISHER-NAME</span><span class="st">`</span><span class="op">==</span><span class="st">&quot;O2 UK&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb26-2"><a href="sentiment-on-social-media.html#cb26-2"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">Publisher=</span><span class="st">`</span><span class="dt">PUBLISHER-NAME</span><span class="st">`</span>,<span class="dt">Sentiment=</span>SENTIMENT) <span class="op">%&gt;%</span></span>
+<span id="cb26-3"><a href="sentiment-on-social-media.html#cb26-3"></a><span class="st">  </span><span class="kw">group_by</span>(Publisher,PUBDATE) <span class="op">%&gt;%</span></span>
+<span id="cb26-4"><a href="sentiment-on-social-media.html#cb26-4"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Date=</span>PUBDATE,</span>
+<span id="cb26-5"><a href="sentiment-on-social-media.html#cb26-5"></a>         <span class="dt">Publisher=</span><span class="kw">as.factor</span>(Publisher))<span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb26-6"><a href="sentiment-on-social-media.html#cb26-6"></a><span class="st">  </span><span class="kw">summarise</span>(Sentiment)</span>
+<span id="cb26-7"><a href="sentiment-on-social-media.html#cb26-7"></a>plot<span class="op">%&gt;%</span><span class="st"> </span><span class="kw">head</span>()<span class="op">%&gt;%</span><span class="st"> </span><span class="kw">kable</span>(<span class="dt">escape =</span> T) <span class="op">%&gt;%</span></span>
+<span id="cb26-8"><a href="sentiment-on-social-media.html#cb26-8"></a><span class="st">  </span><span class="kw">kable_paper</span>(<span class="kw">c</span>(<span class="st">&quot;hover&quot;</span>), <span class="dt">full_width =</span> F)</span></code></pre></div>
+<table class=" lightable-paper lightable-hover" style='font-family: "Arial Narrow", arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;'>
+<thead>
+<tr>
+<th style="text-align:left;">
+Publisher
+</th>
+<th style="text-align:left;">
+PUBDATE
+</th>
+<th style="text-align:right;">
+Sentiment
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Facebook
+</td>
+<td style="text-align:left;">
+2015-05-27 17:30:00
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Facebook
+</td>
+<td style="text-align:left;">
+2015-05-27 17:31:11
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Facebook
+</td>
+<td style="text-align:left;">
+2015-05-27 17:31:43
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Facebook
+</td>
+<td style="text-align:left;">
+2015-05-27 17:38:51
+</td>
+<td style="text-align:right;">
+-1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Facebook
+</td>
+<td style="text-align:left;">
+2015-05-27 17:45:00
+</td>
+<td style="text-align:right;">
+-1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Facebook
+</td>
+<td style="text-align:left;">
+2015-05-27 17:45:48
+</td>
+<td style="text-align:right;">
+-1
+</td>
+</tr>
+</tbody>
+</table>
+<p>In the first column are publishers we retained. The second column is the exact date and time of publishing the comment. Finally, the last column denotes the sentiment score associated with each comment.</p>
+<p>We are in a position to visualise sentiment scores across platforms in the given observation time.</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="sentiment-on-social-media.html#cb27-1"></a><span class="kw">ggplot</span>(plot, <span class="kw">aes</span>(<span class="dt">x =</span> PUBDATE, <span class="dt">y =</span> Sentiment)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb27-2"><a href="sentiment-on-social-media.html#cb27-2"></a><span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">color =</span> Publisher), <span class="dt">size =</span> <span class="fl">0.7</span>) <span class="op">+</span></span>
+<span id="cb27-3"><a href="sentiment-on-social-media.html#cb27-3"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;How is sentiment across platform?&quot;</span>,<span class="dt">x=</span><span class="st">&quot;&quot;</span>,<span class="dt">subtitle =</span><span class="st">&quot;Number of comments: FB=177; GiffGaff=204; IG=4; O2 UK=59; TW=3798&quot;</span>)<span class="op">+</span></span>
+<span id="cb27-4"><a href="sentiment-on-social-media.html#cb27-4"></a><span class="st">  </span><span class="kw">facet_grid</span>(Publisher<span class="op">~</span>.)<span class="op">+</span></span>
+<span id="cb27-5"><a href="sentiment-on-social-media.html#cb27-5"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
+<p><img src="main_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+
+</div>
+</div>
+
+
+
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="twitter-analysis-for-co2mustgo-initiative.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="customer-churn-prediction.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/03.1-Alto_case.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["main.pdf", "main.epub"],
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+</body>
+
+</html>
