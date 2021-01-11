@@ -186,4 +186,4 @@ ggplot(plot, aes(x = PUBDATE, y = Sentiment)) +
   facet_grid(Publisher~.)+
   theme_bw()
 ```
-
+We could see that Twitter is the most balanced publisher, as there are not many deviations. In addition, Facebook and Twitter seem to mimic each other to some extent. Some good news were published on May 27 after 18 PM as the sentiment scores for Twitter, Fabook and O2 UK in this period were extremely positive.
