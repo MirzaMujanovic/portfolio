@@ -88,3 +88,5 @@ curve-of-confirmed-cases
 total-cases-per-1-million-people
 deaths-vs-recovered
 active-cases-vs-new-cases
+visalisation-task
+job-interview-task-social-media-data

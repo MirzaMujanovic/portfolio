@@ -10,12 +10,13 @@ output:
     toc: yes
 ---
 
-# Sentiment on social media
+# Job-interview task: Social media data
 
 ```{r,echo=FALSE, fig.align='center', out.width="50%",fig.cap="Foto from Google"}
 knitr::include_graphics("Graphics/zealpath.jpg")
 ```
 
+<div style="text-align: justify"> 
 
 This tasks is a part of a case study given as a job-exercise. Here I aim to demonstrate how one can solve analytics task with R very efficiently. The exact task reads as follow:
 
@@ -28,6 +29,8 @@ This tasks is a part of a case study given as a job-exercise. Here I aim to demo
 
 *Be creative but realistic about what's possible. We are thrilled to get to know a bit more about the way you solve tasks.*
 
+</div> 
+
 ## Data
 
 ```{r,warning=FALSE,message=FALSE}
@@ -36,6 +39,8 @@ library(tibble)
 library(tidyverse)
 library(readr)
 library(kableExtra)
+library(ggplot2)
+library(plotly)
 ```
 
 As usual, we first load in data by using `readxl_xlsx()` function and take a glimpse at it:
@@ -55,6 +60,7 @@ There are 5 missing entries in "BODY" column and 15 in "PERSONAL-WEBISTE". Conse
 
 ```{r}
 data<-(data[complete.cases(data), ])
+data
 ```
 
 Finally, our data has the following structure:
@@ -74,6 +80,7 @@ length(data$Autors)
 # Number of authors interacted with the data base
 length(unique(data$Autors))
 ```
+
 Out of total `r length(data$Autors)` interactions, `r length(unique(data$Autors))` are unique. Thus, we can say that the number of unique interactions is `r length(unique(data$Autors))`. 
 
 ```{r}
@@ -84,6 +91,7 @@ Out of total `r length(data$Autors)` interactions, `r length(unique(data$Autors)
   head(10)%>% kableExtra::kable(escape = T) %>%
   kable_paper(c("hover"), full_width = F)
 ```
+
 Let us visualize it:
 
 ```{r}
@@ -96,6 +104,8 @@ task1 %>%
   labs(x="Authors",y="Count",title = "Top 10 Most Active Authors on Twitter")+
   coord_flip()
 ```
+
+
 The most active authors on Twitter are:
 
 * "O2" as the most active by far
@@ -104,9 +114,6 @@ The most active authors on Twitter are:
 ## Which one is the most used media? 
 
 ```{r}
-library(ggplot2)
-library(plotly)
-
 media <- as.data.frame(table(data$`PUBLISHER-NAME`))
 colnames(media) <- c("Media","Freq")
 
@@ -123,6 +130,8 @@ ggplot(media,aes(fill=Media)) +
   scale_y_log10()+
   labs(x="Media", y="Count",title = "Top 10 Most Used Media")
 ```
+
+
 The most used media is Twitter, followed by GiffGaff and Facebook.
 
 ## What is the percentage of each used media? 
@@ -143,6 +152,8 @@ as.data.frame(prop.table(table(data$SENTIMENT))*100) %>%
   arrange(desc(Percentage))%>% kable(escape = T) %>%
   kable_paper(c("hover"), full_width = F)
 ```
+
+
 Based on the analysis, around 77% of comments are neutral, 12% slightly negative and 11% slightly positive. Percentage of extremely positive or extremely negative comments is in total around 0.8%.
 
 ## What is the average sentiment in Twitter?
@@ -152,17 +163,23 @@ mean(data$SENTIMENT)
 ```
 
 
-b) Make a scatter plot of the database using 3 variables. Two of them are provided here.
+## Visalisation task
 
-media: Twitter, Facebook and Instagram.
+<div style="text-align: justify"> 
 
-visibility: total of comments and average sentiment.
+Make a scatter plot of the database using 3 variables. Two of them are provided here:
+
+* Media: Twitter, Facebook and Instagram.
+
+* Visibility: total of comments and average sentiment.
 
 
-By combining publishers, date of publishing and sentiment we are able to create a multiple line plot to explain sentiment in each publisher in the given period of a day.
+By combining information about publishers (Twitter, Facebook and Instagram), date of publishing, sentiment and average sentiment we are able to create a multiple line plot to explain sentiment in each publisher in the given period of a day.
 
 First we filtered data to retain publishers such as Twitter, Facebook, Instagram, GiffGaff and O2 UK.
 Subsequently, we pivot the table so that the final sheet look like this (only first 6 rows):
+
+</div> 
 
 ```{r,eval=TRUE,warning=FALSE,message=FALSE}
 plot<-subset(data,`PUBLISHER-NAME`=="Twitter" | `PUBLISHER-NAME`=="Facebook" | `PUBLISHER-NAME`=="Instagram" | `PUBLISHER-NAME`=="GiffGaff" | `PUBLISHER-NAME`=="O2 UK") %>%
@@ -170,20 +187,28 @@ plot<-subset(data,`PUBLISHER-NAME`=="Twitter" | `PUBLISHER-NAME`=="Facebook" | `
   group_by(Publisher,PUBDATE) %>%
   mutate(Date=PUBDATE,
          Publisher=as.factor(Publisher))%>% 
-  summarise(Sentiment)
+  summarise(Sentiment=mean(Sentiment))
 plot%>% head()%>% kable(escape = T) %>%
   kable_paper(c("hover"), full_width = F)
 ```
 
+
+<div style="text-align: justify"> 
+
 In the first column are publishers we retained. The second column is the exact date and time of publishing the comment. Finally, the last column denotes the sentiment score associated with each comment.
 
-We are in a position to visualise sentiment scores across platforms in the given observation time.
+We are in a position to vizualise sentiment scores across platforms in the given observation time.
 
 ```{r,eval=TRUE}
 ggplot(plot, aes(x = PUBDATE, y = Sentiment)) + 
-  geom_line(aes(color = Publisher), size = 0.7) +
+  geom_point(aes(color = Publisher), size = 1.5) +
   labs(title = "How is sentiment across platform?",x="",subtitle ="Number of comments: FB=177; GiffGaff=204; IG=4; O2 UK=59; TW=3798")+
   facet_grid(Publisher~.)+
   theme_bw()
 ```
+
+
 We could see that Twitter is the most balanced publisher, as there are not many deviations. In addition, Facebook and Twitter seem to mimic each other to some extent. Some good news were published on May 27 after 18 PM as the sentiment scores for Twitter, Fabook and O2 UK in this period were extremely positive.
+
+</div> 
+
