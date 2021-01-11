@@ -1,4 +1,10 @@
-fig:unnamed-chunk-1
+fig:unnamed-chunk-3
+fig:unnamed-chunk-27
+fig:unnamed-chunk-46
+fig:unnamed-chunk-49
+fig:unnamed-chunk-85
+fig:unnamed-chunk-100
+fig:unnamed-chunk-118
 emotions-in-online-customer-reviews
 dictionaries-for-nlp
 data-set
@@ -39,14 +45,13 @@ who-are-the-most-retweeted-users
 who-are-users-important-for-connecting-with-others-in-network
 clustering
 community-detection
-sentiment-on-social-media
+job-interview-task-social-media-data
 data-2
-tasks-to-solve
 how-many-authors-have-interacted-in-the-database
 which-one-is-the-most-used-media
-what-is-the-percentage-of-each-used-media
 what-is-the-percentage-of-positive-negative-and-neutral-comments
 what-is-the-average-sentiment-in-twitter
+visalisation-task
 customer-churn-prediction
 why-predicting-customer-churn
 data-3
@@ -88,5 +93,3 @@ curve-of-confirmed-cases
 total-cases-per-1-million-people
 deaths-vs-recovered
 active-cases-vs-new-cases
-visalisation-task
-job-interview-task-social-media-data

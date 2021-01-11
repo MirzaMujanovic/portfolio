@@ -43,7 +43,7 @@ library(ggplot2)
 library(plotly)
 ```
 
-As usual, we first load in data by using `readxl_xlsx()` function and take a glimpse at it:
+As usual, we first load in the data by using `readxl_xlsx()` function and take a glimpse at it:
 
 ```{r}
 data<-readxl::read_xlsx("data/Alto-Case_Study_Dataset (1).xlsx")
@@ -56,7 +56,7 @@ The data has `r dim(data)[2]` features and `r dim(data)[1]` observations. Let us
 apply(is.na(data),2,sum)
 ```
 
-There are 5 missing entries in "BODY" column and 15 in "PERSONAL-WEBISTE". Consequently, we will remove these entries.
+There are 5 missing entries in "BODY" column and 15 in "PERSONAL-WEBISTE". Consequently, we will remove these entries from the data set.
 
 ```{r}
 data<-(data[complete.cases(data), ])
@@ -72,7 +72,8 @@ glimpse(data)
 ## How many authors have interacted in the database? 
 
 My first task is to identify the number of authors who had interaction with the database.
-In order to do so, we will use column "Autors". This column has a class "character", so none class conversion is necessary. Let us inspect number of authors asked:
+In order to do so, we will use column "Autors". This column has a "character" class.
+Let us inspect number of authors asked:
 
 ```{r}
 # Total number of interactions interacted
@@ -92,7 +93,7 @@ Out of total `r length(data$Autors)` interactions, `r length(unique(data$Autors)
   kable_paper(c("hover"), full_width = F)
 ```
 
-Let us visualize it:
+Let us make a visualisation of the table:
 
 ```{r}
 library(ggplot2)
@@ -108,8 +109,8 @@ task1 %>%
 
 The most active authors on Twitter are:
 
-* "O2" as the most active by far
-* "SoldoutGigs" and "O2JobsFeed" are following.
+* "O2" -  as the most active by far,
+* "SoldoutGigs" and "O2JobsFeed" - follows after "O2".
 
 ## Which one is the most used media? 
 
@@ -134,8 +135,6 @@ ggplot(media,aes(fill=Media)) +
 
 The most used media is Twitter, followed by GiffGaff and Facebook.
 
-## What is the percentage of each used media? 
-
 ```{r}
 media_perc<-as.data.frame(prop.table(table(data$`PUBLISHER-NAME`)))
 media_perc$Freq <- round(media_perc$Freq*100,4)
@@ -143,6 +142,8 @@ head(media_perc[order(media_perc$Freq,decreasing = T),],10) %>%
   rename(Author=Var1,Percentage=Freq)%>% kable(escape = T) %>%
   kable_paper(c("hover"), full_width = F)
 ```
+
+Twitter was used in almost 90% of cases, while GiffGaff and Facebook in a bit below 5% each.
 
 ## What is the percentage of positive, negative and neutral comments?
 
@@ -208,7 +209,8 @@ ggplot(plot, aes(x = PUBDATE, y = Sentiment)) +
 ```
 
 
-We could see that Twitter is the most balanced publisher, as there are not many deviations. In addition, Facebook and Twitter seem to mimic each other to some extent. Some good news were published on May 27 after 18 PM as the sentiment scores for Twitter, Fabook and O2 UK in this period were extremely positive.
+We could see that Twitter is the most balanced publisher, as the sentiment scores are constant in the time observed. Some good news were published on May 27 after 18 PM as the sentiment scores for Twitter, Facebook and O2 UK in this period were extremely positive. Instagram doesn't seem to be a channel for the company. 
+GiffGaff and Facebook seem to be very similar in terms of sentiment scores. They depict very similar patterns, which could mean that user behavior on these two channel is similar. 
 
 </div> 
 
