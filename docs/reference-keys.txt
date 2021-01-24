@@ -108,3 +108,7 @@ response-rate-in-training-data
 prediction-of-response-rate-of-1-clusters
 prediction-of-response-rate-of-3-clusters
 visaul-exploration
+fig:unnamed-chunk-1
+prediction-with-rfm
+prediction-of-response-rate---single-cluster
+prediction-of-response-rate---3-clusters

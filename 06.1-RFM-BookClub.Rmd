@@ -2,12 +2,17 @@
 title: 'Predictive RFM: Charles Book Club'
 output:
   html_document:
+    keep_md: true
+    toc: yes
     df_print: paged
+  html_notebook: default
+  pdf_document:
+    toc: yes
 ---
 
 # Prediction with RFM
 
-```{r,eval=FALSE,echo=FALSE, fig.align='center', out.width="50%",fig.cap="Foto from pexels.com"}
+```{r,echo=FALSE, fig.align='center', out.width="50%",fig.cap="Foto from pexels.com"}
 knitr::include_graphics("Graphics/bookclub.jpg")
 ```
 
@@ -177,7 +182,6 @@ Before we answer the question, let us explore the data set:
 
 ```{r,echo=FALSE}
 glimpse(data)
-table(data$R)
 ```
 First, we will convert the response variable to factor class.
 
@@ -186,9 +190,9 @@ data$Yes_Florence <- factor(data$Yes_Florence, labels = c("No","Yes"),levels = c
 data$No_Florence <-factor(data$No_Florence, labels = c("No","Yes"),levels = c(0:1))
 ```
 
-
 Second, we would need to compute RFM score by merging three scores into one cell.
-```{r,}
+
+```{r,warning=FALSE,message=FALSE}
 # Calculating RFM score
 data$RFM_score<- paste(data$Rcode,data$Fcode,data$Mcode)
 data$RFM_score <- gsub(" ","",data$RFM_score)
@@ -238,7 +242,7 @@ set.seed(1)
   theme_bw())
 ```
 
-Customers who purchased more frequently generated more revenue compared to those who visited less frequently. Further, customers who spent the most are not the most recent ones: the heaviest spenders are the frequent ones, but they haven't made a purchase 3 to 6 months. Usually, the customers who visited in the recent past (0-2 months) are more likely to return compared to those who made a purchase some time ago as most of those could potentially be lost customers. As such, higher revenue would be associated with most recent visits, but wee see that is not really the case here. This could be related to the nature of books as products and the fact that they are not frequently purchased items such as daily products for instance. Nevertheless, it would definitively be worth to consider giving incentives to these customers who spent the most, but the company has not heard of them for 3-6 months.
+Unsuprisingly, customers who purchased more frequently generated more revenue compared to those who visited less frequently. However, customers who spent the most are not the most recent ones (= last purchase in 0-2): the heaviest spenders are the frequent ones, but they haven't made a purchase 3 to 6 months. Usually, the customers who visited in the recent past (0-2 months) are more likely to return compared to those who made a purchase some time ago as most of those could potentially be lost customers. As such, higher revenue would be associated with most recent visits, but we see that is not really the case here. This could be related to the nature of books as products and the fact that they are not frequently purchased items such as daily products for instance. Nevertheless, it would definitively be worth to consider giving incentives to these customers who spent the most, but the company has not heard of them for 3-6 months.
 
 A legit question for better understanding of our target group would be about the difference in recency of customers who responded to advertising of "Florence".
 
@@ -296,7 +300,7 @@ Response rate of customers from the training data is **around 9%.**
 ```
 
 
-## Prediction of response rate of 1 clusters
+## Prediction of response rate - single cluster
 
 Now we would need to inspect response rates from all 60 (possible) combinations, and compare them with the overall one.
 
@@ -354,8 +358,10 @@ sol2 %>%
   theme(legend.title = element_blank())
 ```
 
+Predicted response rate from the training data set is said to be at around 15.1%, while the true response rate taken from validation set is at 10.3%. From comparison of true response rate in the validation data set and the predicted response rate from the training data set it seems that the latter pretty much deviates from the former. In the next section we will split customers from the training set into 3 clusters, and again compare predicted with the true response rate.
 
-## Prediction of response rate of 3 clusters
+
+## Prediction of response rate - 3 clusters
 
 Let us now segment our customers in 3 different segments:
 
@@ -403,9 +409,9 @@ validation_data %>%
 ```
 
 By visual inspection we could see that predicted response rates are above the true ones in two out of 3 segments.
-Customers who had response rate at least twice the initial response rate (9%) were expected to have around 22% response rate, but the true response rate is the half at around 17% response rate. Similarly, the RFM prediction in case of customers who had response rate between 9 and 18% was slightly inaccurate as well(predicted 13% vs 9% true response rate). The only case where true response rate exceeded the predicted response rate is the segment with the response rate below 9%.
+Customers who had response rate at least twice the initial response rate (9%) were expected to have around 25% response rate, but the true response rate is at significantly lower 9.5% response rate. Similarly, the RFM prediction in case of customers who had response rate between 9 and 18% was slightly inaccurate as well(predicted 14.1 % vs 10.4% true response rate). The only case where true response rate exceeded the predicted response rate is the segment with the response rate below 9%.
 
-However, in order to find out how well is our model, we will create a gain chart. It helps us determine how effectively we can proceed with our campaign. We aim at selecting a relatively small number of customers and getting a relatively large portion of respondents. For a given number of customers expressed in percentages, the gain curve value on the y-axis will shows us how much better we are doing compared to random choice of customers.
+However, in order to find out how well our model performed, we will create a gain chart. It helps us determine how effectively we can proceed with our campaign. We aim at selecting a relatively small number of customers and getting a relatively large portion of respondents. For a given number of customers expressed in percentages, the gain curve value on the y-axis will shows us how much better we are doing compared to random choice of customers.
 
 ```{r,echo=FALSE,message=FALSE,warning=FALSE}
 set.seed(1)
