@@ -83,7 +83,7 @@ aspern.v <- aspern[aspern.begin:aspern.end]
 head(aspern.v)
 ```
 
-## Awakening
+## Text preprocessing
 
 Cutting in chapters and corpus creation:
 
@@ -142,6 +142,8 @@ aspern.docs <- tm_map(aspern.docs, removeWords, stopwords("english"))
 aspern.docs <- tm_map(aspern.docs, removePunctuation)
 aspern.docs <- tm_map(aspern.docs, stripWhitespace)
 ```
+
+## Word analysis
 
 Creation of a WordCloud:
 

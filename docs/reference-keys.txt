@@ -21,7 +21,8 @@ what-are-the-most-emotional-reviews
 text-analysis-of-novels
 data
 text-cleaning
-awakening
+text-preprocessing
+word-analysis
 commonality-cloud-and-comparison-cloud
 sentiment-timeline
 topic-modelling-lda

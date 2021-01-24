@@ -102,8 +102,11 @@ task1 %>%
   head(10) %>%
   ggplot(aes(x=reorder(Authors,Count),y=Count,fill=Authors)) +
   geom_bar(stat="identity")+
-  labs(x="Authors",y="Count",title = "Top 10 Most Active Authors on Twitter")+
-  coord_flip()
+  labs(x="Authors",y="Count",title = "Top 10 Most Active Authors on Twitter",
+       subtitle = "O2 is significantly ahead in comparison to the rest of authors.")+
+  coord_flip()+
+  theme_bw()+
+  theme(legend.position = "none")
 ```
 
 
@@ -129,7 +132,8 @@ ggplot(media,aes(fill=Media)) +
   coord_flip() +
   theme(legend.position = "none")+
   scale_y_log10()+
-  labs(x="Media", y="Count",title = "Top 10 Most Used Media")
+  labs(x="Media", y="Count",title = "Top 10 Most Used Media")+
+  theme_bw()
 ```
 
 
@@ -201,16 +205,19 @@ In the first column are publishers we retained. The second column is the exact d
 We are in a position to vizualise sentiment scores across platforms in the given observation time.
 
 ```{r,eval=TRUE}
-ggplot(plot, aes(x = PUBDATE, y = Sentiment)) + 
-  geom_point(aes(color = Publisher), size = 1.5) +
-  labs(title = "How is sentiment across platform?",x="",subtitle ="Number of comments: FB=177; GiffGaff=204; IG=4; O2 UK=59; TW=3798")+
+plot %>%
+  filter(Publisher=="Facebook"|Publisher=="Instagram"|Publisher=="Twitter")%>%
+  mutate(avg_sentiment=mean(Sentiment))%>%
+  ggplot(aes(x = PUBDATE, y = Sentiment)) + 
+  geom_line(aes(color = Publisher), size = 0.5) +
+  geom_hline(yintercept = plot$avg_sentiment)+
+  labs(title = "How is sentiment across platform?",x="",subtitle ="Number of comments: FB=177; IG=4; TW=3798")+
   facet_grid(Publisher~.)+
   theme_bw()
 ```
 
+We could see that Twitter is the most balanced publisher, as the sentiment scores are constant in the time observed. Moreover, Twitter has the biggest count of comments, 3798. Some good news were published on May 27 after 18 PM as the sentiment scores for Twitter, Facebook in this period were extremely positive. Instagram doesn't seem to be a channel for the company as there are bearly any comments.
 
-We could see that Twitter is the most balanced publisher, as the sentiment scores are constant in the time observed. Some good news were published on May 27 after 18 PM as the sentiment scores for Twitter, Facebook and O2 UK in this period were extremely positive. Instagram doesn't seem to be a channel for the company. 
-GiffGaff and Facebook seem to be very similar in terms of sentiment scores. They depict very similar patterns, which could mean that user behavior on these two channel is similar. 
 
 </div> 
 

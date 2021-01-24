@@ -1,7 +1,7 @@
 --- 
 knit: "bookdown::render_book"
 site: bookdown::bookdown_site
-title: " "
+title: "Marketing in R"
 output_dir: "docs"
 documentclass: book
 bibliography: [book.bib, packages.bib]
@@ -10,19 +10,20 @@ link-citations: yes
 css: style.css
 ---
 
-# (PART) About me {-}
+# (PART) Introduction {-}
 
-# Who I am? {-}
+# About me {-}
 
-```{r, out.width = "40%", echo = FALSE, fig.align = "center"}
-knitr::include_graphics("Graphics/my_picture.jpg")
+
+```{r, echo = FALSE, fig.align = "center"}
+knitr::include_graphics("Graphics/my_picture1.png")
 ```
 
 
 <div style="text-align: justify">  
 
 
-My name is Mirza Mujanović, I am an ever-curious, eager to learn and ready to adapt student in his third semester of Marketing master program at the Vienna University of Economics and Business. Originally, I come from Tuzla, Bosnia & Herzegovina, where I finished high school and first two semesters at the Faculty of Economics. In 2015, I moved to Vienna to study, and in 2019 completed a bachelor’s program in business administration at the Vienna University of Economics and Business (WU) in 2019. Currently, I hold a part-time position of teaching and eLearning assistant at the WU. Thinking of my future plans I see myself working in the field of data analytics or data science for marketing.
+My name is Mirza Mujanović, I am an ever-curious, eager to learn and ready to adapt student in his final semester of Marketing master program at the Vienna University of Economics and Business. Originally, I come from Tuzla, Bosnia & Herzegovina, where I finished high school and first two semesters at the Faculty of Economics. In 2015, I moved to Vienna to study, and in 2019 completed a bachelor’s program in business administration at the Vienna University of Economics and Business (WU) in 2019. Thinking of my future plans I see myself working in the field of data analytics or data science for marketing as I am an R enthusiast passionate about marketing.
 
 
 </div>
