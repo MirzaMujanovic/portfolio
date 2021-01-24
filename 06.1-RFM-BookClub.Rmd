@@ -1,0 +1,439 @@
+---
+title: 'Predictive RFM: Charles Book Club'
+output:
+  html_document:
+    df_print: paged
+---
+
+# Prediction with RFM
+
+```{r,eval=FALSE,echo=FALSE, fig.align='center', out.width="50%",fig.cap="Foto from pexels.com"}
+knitr::include_graphics("Graphics/bookclub.jpg")
+```
+
+
+*The Charles Book Club case was derived, with the assistance of Ms. Vinni Bhandari, from The Bookbinders Club, a Case Study in Database Marketing, prepared by Nissan Levin and Jacob Zahavi, Tel Aviv University* 
+
+<div style="text-align: justify"> 
+
+The Charles Book Club (CBC) was established in December 1986 on the premise that a book club could differentiate itself through a deep understanding of its customer base and by delivering uniquely tailored offerings.
+CBC focused on selling specialty books by direct marketing through a variety of channels, including media advertising (TV, magazines, newspapers) and mailing. CBC is strictly a distributor and does not publish any of the books that it sells. In line with its commitment to understanding its customer base, CBC built and maintained a detailed database about its club members. Upon enrollment, readers were required to fill out an insert and mail it to CBC. Through this process, CBC created an active database of 500,000 readers; most were acquired through advertising in specialty magazines.
+
+Historically, book clubs offered their readers different types of membership programs. Two common membership programs are the continuity and negative option programs, which are both extended contractual relationships between the club and its members. Under a continuity program, a reader signs up by accepting an offer of several books for just a few dollars (plus shipping and handling) and an agreement to receive a shipment of one or two books each month thereafter at more-standard pricing. The continuity program is most common in the children’s book market, where parents are willing to delegate the rights to the book club to make a selection, and much of the club’s prestige depends on the quality of its selections.
+
+In a negative option program, readers get to select how many and which additional books they would like to receive. However, the club’s selection of the month is delivered to them automatically unless they specifically mark “no” on their order form by a deadline date. Negative option programs sometimes result in customer dissatisfaction and always give rise to significant mailing and processing costs.
+
+In an attempt to combat these trends, some book clubs have begun to offer books on a positive option basis, but only to specific segments of their customer base that are likely to be receptive to specific offers. Rather than expanding the volume and coverage of mailings, some book clubs are beginning to use database-marketing techniques to target customers more accurately. Information contained in their databases is used to identify who is most likely to be interested in a specific offer. This information enables clubs to design special programs
+carefully tailored to meet their customer segments’ varying needs.
+
+
+## The Problem
+
+CBC sent mailings to its club members each month containing the latest offerings. On the surface, CBC appeared very successful: mailing volume was increasing, book selection was diversifying and growing,and their customer database was increasing. However, their bottom-line profits were falling. The decreasing profits led CBC to revisit their original plan of using database marketing to improve mailing yields and to stay profitable.
+
+
+## A Possible Solution
+
+CBC embraced the idea of deriving intelligence from their data to allow them to know their customers better and enable multiple targeted campaigns where each target audience would receive appropriate mailings. CBC’s management decided to focus its efforts on the most profitable customers and prospects, and to design targeted marketing strategies to best reach them. The two processes they had in place were:
+
+**1. Customer acquisition:**
+
+* New members would be acquired by advertising in specialty magazines, newspapers, and on TV.
+
+* Direct mailing and telemarketing would contact existing club
+members.
+* Every new book would be offered to club members before general
+advertising.
+
+**2. Data collection:**
+
+* All customer responses would be recorded and maintained in the
+database.
+* Any information not being collected that is critical would be requested
+from the customer.
+
+For each new title, they decided to use a two-step approach:
+
+1. Conduct a market test involving a random sample of 4000 customers from
+the database to enable analysis of customer responses. The analysis would
+create and calibrate response models for the current book offering.
+
+2. Based on the response models, compute a score for each customer in the
+database. Use this score and a cutoff value to extract a target customer
+list for direct-mail promotion.
+
+Targeting promotions was considered to be of prime importance. Other
+opportunities to create successful marketing campaigns based on customer
+behavior data (returns, inactivity, complaints, compliments, etc.) would be
+addressed by CBC at a later stage.
+
+
+## Background Information 
+
+A new title, The Art History of Florence, is ready for release. CBC sent a test mailing to a random sample of 4000 customers from its customer base. The customer responses have been collated with past purchase data. The dataset was randomly partitioned into three parts: 
+
+* Training Data (1800 customers): initial data to be used to fit models,
+* Validation Data (1400 customers): holdout data used to compare the performance of different models,
+* and Test Data (800 customers): data to be used only after a final model has been selected to estimate the probable performance of the model when it is deployed.
+
+Each row (or case) in the spreadsheet (other than the header) corresponds to one market test customer. Each column is a variable, with the header row giving the name of the variable.
+
+## Recency - Frequency - Monetary Analysis
+
+The segmentation process in database marketing aims to partition customers in a list of prospects into homogeneous groups (segments) that are similar with respect to buying behavior. The homogeneity criterion we need for segmentation is the propensity to purchase the offering. However, since we cannot measure this attribute, we use variables that are plausible indicators of this propensity.
+
+In the direct marketing business, the most commonly used variables are the RFM variables:
+
+* R = recency, time since last purchase
+* F = frequency, number of previous purchases from the company over a period
+* M = monetary, amount of money spent on the company’s products over a period
+
+The assumption is that the more recent the last purchase, the more products bought from the company in the past, and the more money spent in the past buying the company’s products, the more likely the customer is to purchase the product offered.
+
+The 1800 observations in the dataset were divided into recency, frequency,
+and monetary categories as follows:
+
+* Recency:
+
+```{r eval = TRUE, echo = FALSE, warning=FALSE, message = FALSE}
+library(dplyr)
+library(kableExtra)
+mytable_sub = data.frame(
+    Recency = c("0–2 months",
+                 "3–6 months",
+                 "7–12 months",
+                 "13 months and up"
+                 
+                 ),
+    Recode = c("Rcode = 1",
+              "Rcode = 2",
+              "Rcode = 3",
+              "Rcode = 4"
+              ))
+
+mytable_sub %>% kable(escape = T) %>%
+  kable_paper(c("hover"), full_width = F)
+```
+
+
+* Frequency:
+
+```{r eval = TRUE, echo = FALSE, warning=FALSE, message = FALSE}
+library(dplyr)
+library(kableExtra)
+mytable_sub = data.frame(
+    Frequency = c("1 book",
+                 "2 books",
+                 "3 books"),
+    Recode = c("Fcode = 1",
+              "Fcode = 2",
+              "Fcode = 3"))
+
+mytable_sub %>% kable(escape = T) %>%
+  kable_paper(c("hover"), full_width = F)
+```
+
+* Monetary:
+
+```{r eval = TRUE, echo = FALSE, warning=FALSE, message = FALSE}
+library(dplyr)
+library(kableExtra)
+mytable_sub = data.frame(
+    Monetary = c("0 – 25",
+                 "26–50",
+                 "51–100",
+                 "101–200",
+                 "201 and up"
+                 ),
+    Recode = c("Mcode = 1",
+              "Mcode = 2",
+              "Mcode = 3",
+              "Mcode = 4",
+              "Mcode = 5"))
+
+mytable_sub %>% kable(escape = T) %>%
+  kable_paper(c("hover"), full_width = F) %>% 
+  footnote(general = "Montary values are denoted in USD",
+           general_title = "Note: ", 
+           footnote_as_chunk = T, title_format = c("italic")
+           ) 
+```
+
+## Assignment
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
+library(reshape2)
+library(tidyr)
+library(ggplot2)
+data <- read.csv("data/CharlesBookClub.csv")
+```
+
+*Partition the data into training (60%) and validation (40%). Use seed = 1.*
+
+What is the response rate for the training data customers taken as a whole? What is the response rate for each of the 4×5×3 = 60 combinations of RFM categories? Which combinations have response rates in the training
+data that are above the overall response in the training data?
+
+Before we answer the question, let us explore the data set:
+
+```{r,echo=FALSE}
+glimpse(data)
+table(data$R)
+```
+First, we will convert the response variable to factor class.
+
+```{r,warning=FALSE,message=FALSE}
+data$Yes_Florence <- factor(data$Yes_Florence, labels = c("No","Yes"),levels = c(0:1))
+data$No_Florence <-factor(data$No_Florence, labels = c("No","Yes"),levels = c(0:1))
+```
+
+
+Second, we would need to compute RFM score by merging three scores into one cell.
+```{r,}
+# Calculating RFM score
+data$RFM_score<- paste(data$Rcode,data$Fcode,data$Mcode)
+data$RFM_score <- gsub(" ","",data$RFM_score)
+data$RFM_score<-as.factor(data$RFM_score)
+data[1:10,"RFM_score"]
+```
+
+Now we will proceed with data partition. For that we will use `sample()` function, where we indicate rownames and the number of randomly selected row numbers we want to separate from the remaining data set.
+In our case, out of 4000 rows (Customers), we will randomly assign 2400 to train data set, and the rest to test data.
+
+```{r}
+# Train data
+set.seed(1)
+trainIndex <- caret::createDataPartition(data$Florence, p = .6, 
+                                  list = FALSE, 
+                                  times = 1)
+train_data <- data[ trainIndex,]
+```
+
+
+The remaining part of the data set will be assigned to the validation data set.
+
+```{r}
+# Validation set
+validation_data  <- data[-trainIndex,]
+```
+
+
+## Visaul exploration 
+
+It would be beneficial to inspect relationship between recency, frequency and monetary value in the whole data set before we continue. A quite convenient way to do it is a heatmap. There we can plot all three variables at the same time and inspect the monetary value (= amount spend in the time frame observed) of each customer based on his/her frequency and recency.
+
+```{r,echo=FALSE}
+set.seed(1)
+(data %>%
+  rename(Revenue=M) %>%
+  ggplot(aes(x=as.factor(Fcode),y=as.factor(Rcode),fill=Revenue))+
+  geom_tile()+
+  labs(x="Frequency",y="Recency",title = "Which Customers Are Biggest Revenue Contributors?",
+       subtitle = "A heatmap depicting a relationship between recency,frequency and monetary values")+
+  scale_fill_gradient(low="white", high="red")+
+  scale_x_discrete(labels= c("1 book","2 books","3 books"))+
+  scale_y_discrete(labels=c("0–2 months",
+                 "3–6 months",
+                 "7–12 months",
+                 "13 months and up"))+
+  theme_bw())
+```
+
+Customers who purchased more frequently generated more revenue compared to those who visited less frequently. Further, customers who spent the most are not the most recent ones: the heaviest spenders are the frequent ones, but they haven't made a purchase 3 to 6 months. Usually, the customers who visited in the recent past (0-2 months) are more likely to return compared to those who made a purchase some time ago as most of those could potentially be lost customers. As such, higher revenue would be associated with most recent visits, but wee see that is not really the case here. This could be related to the nature of books as products and the fact that they are not frequently purchased items such as daily products for instance. Nevertheless, it would definitively be worth to consider giving incentives to these customers who spent the most, but the company has not heard of them for 3-6 months.
+
+A legit question for better understanding of our target group would be about the difference in recency of customers who responded to advertising of "Florence".
+
+```{r}
+data %>%
+  rename(Revenue=M,
+         Response=Yes_Florence) %>%
+  ggplot(aes(x=Response,y=F,fill=Response))+
+  geom_boxplot()+
+  labs(x="Response to Campaign",y="Frequency (Number of Purchases)",title = "How Frequent Are Customers Interested in 'Florence'?",
+       subtitle = "Boxplots depicting frequency of respondents and non-respondents")+
+  stat_summary(fun.y=mean, geom="point", shape=20, size=10, color="red", fill="red") +
+  theme_bw()
+```
+
+
+There seem to be difference in means of the two groups. Non-respondents are somewhat less frequent customers, while respondents belong to more frequent customers. Let us see about their recency.
+
+```{r,warning=FALSE,echo=FALSE,message=FALSE}
+data %>%
+  rename(Revenue=M,
+         Response=Yes_Florence) %>%
+  ggplot(aes(x=Response,y=R,fill=Response))+
+  geom_boxplot()+
+  labs(x="Response to Campaign",y="Recency(number of ",title = "How Recent Are Customers Interested in 'Florence'?",
+       subtitle = "Boxplots depicting recency of respondents and non-respondents")+
+  stat_summary(fun.y=mean, geom="point", shape=20, size=10, color="red", fill="red") +
+  theme_bw()
+```
+
+Customers who responded to the "Florence" campaign have on average lower recency than customers who did not respond. All in all, we can conclude that customers who responded to the campaign are, on average, slightly more frequent and recent than customers who did not respond to campaign.
+
+
+## Response rate in training data
+
+Now we can start with addressing the first question: what is the response rate for training data customers taken as whole?
+
+Let us now inspect the response rate for training data customers.
+
+```{r,warning=FALSE,echo=FALSE,message=FALSE}
+set.seed(1)
+as.data.frame(table(train_data$Yes_Florence)) %>%
+  rename(Response=Var1, Count=Freq) %>%
+  ggplot(aes(reorder(Response,-Count),Count,fill=Response)) +
+  geom_bar(stat ="identity")+
+  labs(x="",title = "Response rate to New Florence book offer",subtitle = "Customers from training data")+
+  geom_text(aes(y=(Count),label=round((Count/2400),2)))+
+  theme_bw()
+```
+
+
+Response rate of customers from the training data is **around 9%.**
+```{r,warning=FALSE,echo=FALSE,message=FALSE}
+(RR_train <- mean(train_data$Florence == 1))
+```
+
+
+## Prediction of response rate of 1 clusters
+
+Now we would need to inspect response rates from all 60 (possible) combinations, and compare them with the overall one.
+
+```{r,warning=FALSE,echo=FALSE,message=FALSE}
+set.seed(1)
+# Levels
+train_RFM_levels<-levels(as.factor(train_data$RFM_score))
+
+# RFM scores and corresponding response rates
+train_data %>%
+  group_by(RFM_score) %>%
+  summarise(Response_rate=sum(Florence)/length(Florence))
+```
+
+
+The following RFM scores indicate response rate higher than 9%:
+
+```{r,warning=FALSE,echo=FALSE,message=FALSE}
+set.seed(1)
+(RR_above_9<-train_data %>%
+  group_by(RFM_score) %>%
+  summarise(Response_rate=sum(Florence)/length(Florence),
+            n=n()) %>%
+  filter(Response_rate>RR_train))
+```
+
+
+Suppose that we decide to send promotional mail only to the “above average” RFM combinations identified in part. Now we should compute the response rate in the validation data using these "above average" combinations.
+
+
+```{r,warning=FALSE,echo=FALSE,message=FALSE}
+set.seed(1)
+# Validation data set just with RFM scores with the conversion rate above 9%
+sol2 <- validation_data %>% 
+  inner_join(RR_above_9,by="RFM_score")
+
+# Comparison of the predicted and true response rates
+sol2 %>%
+  mutate(True_RR=mean(Florence==1))%>%
+  rename(Predicted_RR=Response_rate)%>%
+  select(Predicted_RR,True_RR)%>%
+  summarise(Avg_Predicted_RR=mean(Predicted_RR),
+            Avg_True_RR=mean(True_RR))%>%
+  melt()%>%
+  ggplot(aes(reorder(variable,-value),value,fill=variable))+
+  geom_bar(stat = "identity")+
+  geom_text(aes(y=value,label=round(value,3)))+
+  labs(title = "RFM Prediction Power",
+       subtitle = "Predicted Average Response Rate Higher Than the True One",
+       x="",
+       y="Average Response Rate")+
+  scale_fill_discrete(labels = c("Predicted Response Rate", "True Response Rate"))+
+  scale_x_discrete(labels= c("Predicted Response Rate","True Response Rate"))+
+  theme_bw()+
+  theme(legend.title = element_blank())
+```
+
+
+## Prediction of response rate of 3 clusters
+
+Let us now segment our customers in 3 different segments:
+
+* Segment 1: RFM combinations that have response rates that exceed twice the overall response rate
+* Segment 2: RFM combinations that exceed the overall response rate but do not exceed twice that rate
+* Segment 3: the remaining RFM combinations
+
+```{r,warning=FALSE,echo=FALSE,message=FALSE}
+set.seed(1)
+(segments3<-train_data %>%
+  group_by(RFM_score) %>%
+  summarise(Response_rate=sum(Florence)/length(Florence))%>%
+  mutate(Cluster=ifelse(Response_rate>(2*RR_train),"RR_Twice",
+                        ifelse(Response_rate>RR_train & Response_rate<(2*RR_train),"RR_Above","RR_Below"))))
+```
+
+We classified RFM scores based on response rate into 3 segments. Now we will identify customers with those RFM scores in the validation set, and compare predicted/expected response rate from the training data set with the actual response rate.
+
+```{r,warning=FALSE,echo=FALSE,message=FALSE}
+set.seed(1)
+# Comparison of the predicted and true response rates
+validation_data %>% 
+  inner_join(segments3,by="RFM_score") %>%
+  group_by(RFM_score) %>%
+  mutate(True_RR=mean(Florence==1))%>%
+  rename(Predicted_RR=Response_rate)%>%
+  select(Cluster,Predicted_RR,True_RR)%>%
+  group_by(Cluster)%>%
+  summarise(Avg_Predicted_RR=mean(Predicted_RR),
+            Avg_True_RR=mean(True_RR)) %>%
+  mutate(Cluster=as.factor(Cluster))%>%
+  reshape2::melt(id.vars="Cluster")%>%
+  ggplot(aes(reorder(variable,-value),value,fill=variable))+
+  geom_bar(stat="identity")+
+  geom_text(aes(y=value,label=round(value,3)))+
+  labs(title = "RFM Prediction Power",
+       subtitle = "Predicted Average Response Rate Higher Than the True One",
+       x="",
+       y="Average Response Rate")+
+  scale_fill_discrete(labels = c("Predicted Response Rate", "True Response Rate"))+
+  scale_x_discrete(labels= c("Predicted Response Rate","True Response Rate"))+
+  theme_bw()+
+  theme(legend.title = element_blank())+
+  facet_grid(Cluster~.)
+```
+
+By visual inspection we could see that predicted response rates are above the true ones in two out of 3 segments.
+Customers who had response rate at least twice the initial response rate (9%) were expected to have around 22% response rate, but the true response rate is the half at around 17% response rate. Similarly, the RFM prediction in case of customers who had response rate between 9 and 18% was slightly inaccurate as well(predicted 13% vs 9% true response rate). The only case where true response rate exceeded the predicted response rate is the segment with the response rate below 9%.
+
+However, in order to find out how well is our model, we will create a gain chart. It helps us determine how effectively we can proceed with our campaign. We aim at selecting a relatively small number of customers and getting a relatively large portion of respondents. For a given number of customers expressed in percentages, the gain curve value on the y-axis will shows us how much better we are doing compared to random choice of customers.
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
+set.seed(1)
+prediction<-validation_data %>% 
+  inner_join(segments3,by="RFM_score") %>%
+  group_by(RFM_score) %>%
+  mutate(True_RR=mean(Florence==1))%>%
+  rename(Predicted_RR=Response_rate)%>%
+  arrange(desc(Predicted_RR))
+```
+
+
+```{r,echo=FALSE}
+set.seed(1)
+lift <- caret::lift(relevel(as.factor(Florence), ref="1") ~ Predicted_RR, data = prediction)
+plotly::ggplotly(ggplot(lift)+
+  labs(title = "How Many Customers Should We Target?",
+       subtitle = "Gain chart")+
+  theme_bw())
+```
+
+Based on the gain chart, prediction based on our RFM model performs a bit better than baseline, i.e. random guessing. More specifically, if we select top 20% cases based on our model, we would attract 29% of the target customers, i.e. customers who would respond to our marketing campaign.
+
+As the graph is interactive, you are able to check any other percentage you wish. Although we managed to create a model that performs better than just guessing, in the further analyses we will try out other approaches, such as logistic regression, that may provide us better results.
+
+</div> 
+
+## Reference
+
+* Shmueli, G., Bruce, P. C., Yahav, I., Patel, N. R., & Lichtendahl, K. C. (2018). Data mining for business analytics: Concepts, techniques, and applications in R.
+
