@@ -11,7 +11,7 @@ output:
 
 # (PART) Recommendation system {-}
 
-# Recommendation system for beauty products 
+# Recommender For Beauty Products 
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(error= FALSE, message = FALSE, warning = FALSE, fig.align = "center")

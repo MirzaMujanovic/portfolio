@@ -47,7 +47,7 @@ who-are-the-most-retweeted-users
 who-are-users-important-for-connecting-with-others-in-network
 clustering
 community-detection
-job-interview-task-social-media-data
+job-interview-social-media-data
 data-2
 how-many-authors-have-interacted-in-the-database
 which-one-is-the-most-used-media
@@ -73,7 +73,7 @@ response-rate-in-training-data
 prediction-of-response-rate---single-cluster
 prediction-of-response-rate---3-clusters
 reference
-recommendation-system-for-beauty-products
+recommender-for-beauty-products
 data-collection
 data-preparation-and-preprocessing
 packages

@@ -12,7 +12,7 @@ output:
 
 # (PART) Customer analytics {-}
 
-# Customer churn prediction
+# Customer Churn Prediction
 
 ```{r,echo=FALSE, fig.align='center', out.width="50%",fig.cap="Foto from technologyadvice.com"}
 knitr::include_graphics("Graphics/churn.png")

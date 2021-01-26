@@ -10,7 +10,7 @@ output:
     toc: yes
 ---
 
-# Job-interview task: Social media data
+# Job-Interview: Social Media Data
 
 ```{r,echo=FALSE, fig.align='center', out.width="50%",fig.cap="Foto from Google"}
 knitr::include_graphics("Graphics/zealpath.jpg")
