@@ -222,7 +222,7 @@ p<-ggplot(data=df.review.v[1:20,], aes(x=reorder(word,n), y=n)) +
   ggtitle("20 most frequent words in customer reviews - MacBook Pro")+
   xlab("Count")+
   ylab("Word")+
-  theme_test()
+  theme_bw()
 ggplotly(p)
 
 ```
@@ -259,7 +259,7 @@ p<-ggplot(data=review.anticipation.words[1:20,], aes(x=reorder(word,n), y=n)) +
   ggtitle("20 most frequent anticipation words in customer reviews")+
   xlab("Count")+
   ylab("Word")+
-  theme_minimal()
+  theme_bw()
 ggplotly(p)
 ```
 
@@ -295,7 +295,7 @@ p<-ggplot(data=review.joy.words[1:20,], aes(x=reorder(word,n), y=n)) +
   ggtitle("20 most frequent trust words in customer reviews")+
   xlab("Count")+
   ylab("Word")+
-  theme_minimal()
+  theme_bw()
 ggplotly(p)
 ```
 
@@ -319,7 +319,7 @@ ggplotly(p)
 
 # Smooth curve
 review.smooth <- ggplot(review.sentiment, aes(index, polarity))
-p<-review.smooth + stat_smooth() + theme_gdocs() + ggtitle("Polarity timeline - smooth")
+p<-review.smooth + stat_smooth() + theme_bw() + ggtitle("Polarity timeline - smooth")
 ggplotly(p)
 
 ```
