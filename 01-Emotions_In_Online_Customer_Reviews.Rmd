@@ -256,7 +256,7 @@ review.anticipation.words <- review.anticipation.words[order(review.anticipation
 p<-ggplot(data=review.anticipation.words[1:20,], aes(x=reorder(word,n), y=n)) +
   geom_bar(stat="identity",fill="orange") + 
   coord_flip() + 
-  ggtitle("20 most frequent anticipation words in customer reviews")+
+  ggtitle("20 Most Frequent Anticipation Words In Customer Reviews")+
   xlab("Count")+
   ylab("Word")+
   theme_bw()
@@ -274,10 +274,10 @@ review.trust.words <- review.trust.words[order(review.trust.words$n,decreasing =
 p<-ggplot(data=review.trust.words[1:20,], aes(x=reorder(word,n), y=n)) +
   geom_bar(stat="identity",fill="royalblue1") + 
   coord_flip() + 
-  ggtitle("20 most frequent trust words in customer reviews")+
+  ggtitle("20 Most Frequent Trust Words In Customer Reviews")+
   xlab("Count")+
   ylab("Word")+
-  theme_minimal()
+  theme_bw()
 ggplotly(p)
 ```
 
@@ -292,7 +292,7 @@ review.joy.words <- review.joy.words[order(review.joy.words$n,decreasing = TRUE)
 p<-ggplot(data=review.joy.words[1:20,], aes(x=reorder(word,n), y=n)) +
   geom_bar(stat="identity",fill="darkorange1") + 
   coord_flip() + 
-  ggtitle("20 most frequent trust words in customer reviews")+
+  ggtitle("20 Most Frequent Joy Words In Customer Reviews")+
   xlab("Count")+
   ylab("Word")+
   theme_bw()
@@ -314,12 +314,12 @@ review.sentiment <- count(review.sentiment, sentiment, index=document)
 review.sentiment <- spread(review.sentiment, sentiment, n, fill=0)
 review.sentiment$polarity <- review.sentiment$positive - review.sentiment$negative
 review.sentiment$pos <- ifelse(review.sentiment$polarity >=0, "Positive", "Negative")
-p<-ggplot(review.sentiment, aes(x=index, y=polarity, fill=pos))+geom_bar(stat="identity", position="identity", width=1)+theme_gdocs()+ggtitle(label="Polarity timeline")
+p<-ggplot(review.sentiment, aes(x=index, y=polarity, fill=pos))+geom_bar(stat="identity", position="identity", width=1)+theme_bw()+ggtitle(label="Polarity Timeline - With Bars")
 ggplotly(p)
 
 # Smooth curve
-review.smooth <- ggplot(review.sentiment, aes(index, polarity))
-p<-review.smooth + stat_smooth() + theme_bw() + ggtitle("Polarity timeline - smooth")
+review.smooth <- ggplot(review.sentiment, aes(index, polarity))+theme_bw()
+p<-review.smooth + stat_smooth() + theme_bw() + ggtitle("Polarity Timeline - With Smooth Line")
 ggplotly(p)
 
 ```

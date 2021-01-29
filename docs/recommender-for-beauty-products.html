@@ -416,34 +416,34 @@ Review userId
 <h2><span class="header-section-number">7.2</span> Data preparation and preprocessing</h2>
 <div id="packages" class="section level3">
 <h3><span class="header-section-number">7.2.1</span> Packages</h3>
-<div class="sourceCode" id="cb173"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb173-1"><a href="recommender-for-beauty-products.html#cb173-1"></a><span class="co">#Packages</span></span>
-<span id="cb173-2"><a href="recommender-for-beauty-products.html#cb173-2"></a><span class="kw">library</span>(R.utils)</span>
-<span id="cb173-3"><a href="recommender-for-beauty-products.html#cb173-3"></a><span class="kw">library</span>(dplyr)</span>
-<span id="cb173-4"><a href="recommender-for-beauty-products.html#cb173-4"></a><span class="kw">library</span>(tidyr)</span>
-<span id="cb173-5"><a href="recommender-for-beauty-products.html#cb173-5"></a><span class="kw">library</span>(janitor)</span>
-<span id="cb173-6"><a href="recommender-for-beauty-products.html#cb173-6"></a><span class="kw">library</span>(recommenderlab)</span>
-<span id="cb173-7"><a href="recommender-for-beauty-products.html#cb173-7"></a><span class="kw">library</span>(tm)</span>
-<span id="cb173-8"><a href="recommender-for-beauty-products.html#cb173-8"></a><span class="kw">library</span>(NLP)</span>
-<span id="cb173-9"><a href="recommender-for-beauty-products.html#cb173-9"></a><span class="kw">library</span>(qdap)</span>
-<span id="cb173-10"><a href="recommender-for-beauty-products.html#cb173-10"></a><span class="kw">library</span>(readr)</span>
-<span id="cb173-11"><a href="recommender-for-beauty-products.html#cb173-11"></a><span class="kw">library</span>(wordcloud)</span></code></pre></div>
+<div class="sourceCode" id="cb172"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb172-1"><a href="recommender-for-beauty-products.html#cb172-1"></a><span class="co">#Packages</span></span>
+<span id="cb172-2"><a href="recommender-for-beauty-products.html#cb172-2"></a><span class="kw">library</span>(R.utils)</span>
+<span id="cb172-3"><a href="recommender-for-beauty-products.html#cb172-3"></a><span class="kw">library</span>(dplyr)</span>
+<span id="cb172-4"><a href="recommender-for-beauty-products.html#cb172-4"></a><span class="kw">library</span>(tidyr)</span>
+<span id="cb172-5"><a href="recommender-for-beauty-products.html#cb172-5"></a><span class="kw">library</span>(janitor)</span>
+<span id="cb172-6"><a href="recommender-for-beauty-products.html#cb172-6"></a><span class="kw">library</span>(recommenderlab)</span>
+<span id="cb172-7"><a href="recommender-for-beauty-products.html#cb172-7"></a><span class="kw">library</span>(tm)</span>
+<span id="cb172-8"><a href="recommender-for-beauty-products.html#cb172-8"></a><span class="kw">library</span>(NLP)</span>
+<span id="cb172-9"><a href="recommender-for-beauty-products.html#cb172-9"></a><span class="kw">library</span>(qdap)</span>
+<span id="cb172-10"><a href="recommender-for-beauty-products.html#cb172-10"></a><span class="kw">library</span>(readr)</span>
+<span id="cb172-11"><a href="recommender-for-beauty-products.html#cb172-11"></a><span class="kw">library</span>(wordcloud)</span></code></pre></div>
 </div>
 <div id="data-collection-1" class="section level3">
 <h3><span class="header-section-number">7.2.2</span> Data collection</h3>
 <p>After downloading data locally we load in data by using<code>readLines()</code> function:</p>
-<div class="sourceCode" id="cb174"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb174-1"><a href="recommender-for-beauty-products.html#cb174-1"></a><span class="co"># Loading in data</span></span>
-<span id="cb174-2"><a href="recommender-for-beauty-products.html#cb174-2"></a>my_data &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;data/amazon_beauty_full.RDS&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb173"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb173-1"><a href="recommender-for-beauty-products.html#cb173-1"></a><span class="co"># Loading in data</span></span>
+<span id="cb173-2"><a href="recommender-for-beauty-products.html#cb173-2"></a>my_data &lt;-<span class="st"> </span><span class="kw">readRDS</span>(<span class="st">&quot;data/amazon_beauty_full.RDS&quot;</span>)</span></code></pre></div>
 <p>Let us first have a look at the dimension of our data. Our data set is currently in a form of a single vector with 2772616 elements. Obviously, this is not the optimal form of the data we would like to work with. That is why we need to work around this data set to make it more convenient for further analysis.</p>
 <p>What we can do first is to remove all fields with no characters:</p>
-<div class="sourceCode" id="cb175"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb175-1"><a href="recommender-for-beauty-products.html#cb175-1"></a>my_data &lt;-<span class="st"> </span>my_data[<span class="kw">sapply</span>(my_data, nchar) <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb174"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb174-1"><a href="recommender-for-beauty-products.html#cb174-1"></a>my_data &lt;-<span class="st"> </span>my_data[<span class="kw">sapply</span>(my_data, nchar) <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>]</span></code></pre></div>
 <p>Then we can convert it to data frame:</p>
-<div class="sourceCode" id="cb176"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb176-1"><a href="recommender-for-beauty-products.html#cb176-1"></a>my_data &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(my_data)</span>
-<span id="cb176-2"><a href="recommender-for-beauty-products.html#cb176-2"></a><span class="kw">colnames</span>(my_data) &lt;-<span class="st"> &quot;product&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb175"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb175-1"><a href="recommender-for-beauty-products.html#cb175-1"></a>my_data &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(my_data)</span>
+<span id="cb175-2"><a href="recommender-for-beauty-products.html#cb175-2"></a><span class="kw">colnames</span>(my_data) &lt;-<span class="st"> &quot;product&quot;</span></span></code></pre></div>
 <p>One of the critical steps is separating the column to multiple columns:</p>
-<div class="sourceCode" id="cb177"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb177-1"><a href="recommender-for-beauty-products.html#cb177-1"></a><span class="co"># Separate one column to two (&quot;:&quot; separator)</span></span>
-<span id="cb177-2"><a href="recommender-for-beauty-products.html#cb177-2"></a>my_data &lt;-<span class="st"> </span><span class="kw">separate</span>(my_data,<span class="dt">col =</span> product, <span class="dt">into =</span> <span class="kw">c</span>(<span class="st">&quot;Info&quot;</span>,<span class="st">&quot;Product&quot;</span>), <span class="dt">sep =</span> <span class="st">&quot;:&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb176"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb176-1"><a href="recommender-for-beauty-products.html#cb176-1"></a><span class="co"># Separate one column to two (&quot;:&quot; separator)</span></span>
+<span id="cb176-2"><a href="recommender-for-beauty-products.html#cb176-2"></a>my_data &lt;-<span class="st"> </span><span class="kw">separate</span>(my_data,<span class="dt">col =</span> product, <span class="dt">into =</span> <span class="kw">c</span>(<span class="st">&quot;Info&quot;</span>,<span class="st">&quot;Product&quot;</span>), <span class="dt">sep =</span> <span class="st">&quot;:&quot;</span>)</span></code></pre></div>
 <p>Inspecting first 10 values:</p>
-<div class="sourceCode" id="cb178"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb178-1"><a href="recommender-for-beauty-products.html#cb178-1"></a><span class="kw">head</span>(my_data,<span class="dv">10</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb177"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb177-1"><a href="recommender-for-beauty-products.html#cb177-1"></a><span class="kw">head</span>(my_data,<span class="dv">10</span>)</span></code></pre></div>
 <pre><code>##                  Info
 ## 1   product/productId
 ## 2       product/title
@@ -468,45 +468,45 @@ Review userId
 ## 10  very light scent that doesn&#39;t last very long. pretty bottle but I was hoping for more of a freesia scent. which it was not.</code></pre>
 <p>The data set is loaded in .txt format, which makes it a bit challenging to work with. In the following sections we will undertake data manipulation in order to bring the data set in more suitable form.</p>
 <p>First, we will convert it from the current long-format to the wide-format, where each column will represent a product, and each row a feature:</p>
-<div class="sourceCode" id="cb180"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb180-1"><a href="recommender-for-beauty-products.html#cb180-1"></a><span class="co">#Converting long format to wide</span></span>
-<span id="cb180-2"><a href="recommender-for-beauty-products.html#cb180-2"></a>my_data &lt;-<span class="st"> </span>my_data <span class="op">%&gt;%</span></span>
-<span id="cb180-3"><a href="recommender-for-beauty-products.html#cb180-3"></a><span class="st">  </span><span class="kw">group_by</span>(Info) <span class="op">%&gt;%</span></span>
-<span id="cb180-4"><a href="recommender-for-beauty-products.html#cb180-4"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Order =</span> <span class="kw">seq_along</span>(Info)) <span class="op">%&gt;%</span></span>
-<span id="cb180-5"><a href="recommender-for-beauty-products.html#cb180-5"></a><span class="st">  </span><span class="kw">spread</span>(<span class="dt">key =</span> Order, <span class="dt">value =</span> Product)</span></code></pre></div>
+<div class="sourceCode" id="cb179"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb179-1"><a href="recommender-for-beauty-products.html#cb179-1"></a><span class="co">#Converting long format to wide</span></span>
+<span id="cb179-2"><a href="recommender-for-beauty-products.html#cb179-2"></a>my_data &lt;-<span class="st"> </span>my_data <span class="op">%&gt;%</span></span>
+<span id="cb179-3"><a href="recommender-for-beauty-products.html#cb179-3"></a><span class="st">  </span><span class="kw">group_by</span>(Info) <span class="op">%&gt;%</span></span>
+<span id="cb179-4"><a href="recommender-for-beauty-products.html#cb179-4"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Order =</span> <span class="kw">seq_along</span>(Info)) <span class="op">%&gt;%</span></span>
+<span id="cb179-5"><a href="recommender-for-beauty-products.html#cb179-5"></a><span class="st">  </span><span class="kw">spread</span>(<span class="dt">key =</span> Order, <span class="dt">value =</span> Product)</span></code></pre></div>
 <p>Since the column names are labeled with numbers, we will apply first row as a label for the corresponding column name:</p>
-<div class="sourceCode" id="cb181"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb181-1"><a href="recommender-for-beauty-products.html#cb181-1"></a>my_data &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(<span class="kw">t</span>(my_data))</span>
-<span id="cb181-2"><a href="recommender-for-beauty-products.html#cb181-2"></a>my_data&lt;-my_data<span class="op">%&gt;%</span></span>
-<span id="cb181-3"><a href="recommender-for-beauty-products.html#cb181-3"></a><span class="st">  </span><span class="kw">row_to_names</span>(<span class="dt">row_number =</span> <span class="dv">1</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb180"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb180-1"><a href="recommender-for-beauty-products.html#cb180-1"></a>my_data &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(<span class="kw">t</span>(my_data))</span>
+<span id="cb180-2"><a href="recommender-for-beauty-products.html#cb180-2"></a>my_data&lt;-my_data<span class="op">%&gt;%</span></span>
+<span id="cb180-3"><a href="recommender-for-beauty-products.html#cb180-3"></a><span class="st">  </span><span class="kw">row_to_names</span>(<span class="dt">row_number =</span> <span class="dv">1</span>)</span></code></pre></div>
 <p>Delete rows with at least 1 NAs:</p>
-<div class="sourceCode" id="cb182"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb182-1"><a href="recommender-for-beauty-products.html#cb182-1"></a>my_data &lt;-<span class="st"> </span>my_data[<span class="kw">rowSums</span>(<span class="kw">is.na</span>(my_data))<span class="op">==</span><span class="dv">0</span>,]</span></code></pre></div>
+<div class="sourceCode" id="cb181"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb181-1"><a href="recommender-for-beauty-products.html#cb181-1"></a>my_data &lt;-<span class="st"> </span>my_data[<span class="kw">rowSums</span>(<span class="kw">is.na</span>(my_data))<span class="op">==</span><span class="dv">0</span>,]</span></code></pre></div>
 <p>Trim white space at the beginning or ending the string:</p>
-<div class="sourceCode" id="cb183"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb183-1"><a href="recommender-for-beauty-products.html#cb183-1"></a>my_data<span class="op">$</span><span class="st">`</span><span class="dt">review/userId</span><span class="st">`</span>&lt;-<span class="st"> </span><span class="kw">trimws</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">review/userId</span><span class="st">`</span>)</span>
-<span id="cb183-2"><a href="recommender-for-beauty-products.html#cb183-2"></a>my_data<span class="op">$</span><span class="st">`</span><span class="dt">product/productId</span><span class="st">`</span>&lt;-<span class="st"> </span><span class="kw">trimws</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">product/productId</span><span class="st">`</span>)</span>
-<span id="cb183-3"><a href="recommender-for-beauty-products.html#cb183-3"></a>my_data<span class="op">$</span><span class="st">`</span><span class="dt">product/price</span><span class="st">`</span>&lt;-<span class="st"> </span><span class="kw">trimws</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">product/price</span><span class="st">`</span>)</span>
-<span id="cb183-4"><a href="recommender-for-beauty-products.html#cb183-4"></a>my_data<span class="op">$</span><span class="st">`</span><span class="dt">product/title</span><span class="st">`</span>&lt;-<span class="st"> </span><span class="kw">trimws</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">product/title</span><span class="st">`</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb182"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb182-1"><a href="recommender-for-beauty-products.html#cb182-1"></a>my_data<span class="op">$</span><span class="st">`</span><span class="dt">review/userId</span><span class="st">`</span>&lt;-<span class="st"> </span><span class="kw">trimws</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">review/userId</span><span class="st">`</span>)</span>
+<span id="cb182-2"><a href="recommender-for-beauty-products.html#cb182-2"></a>my_data<span class="op">$</span><span class="st">`</span><span class="dt">product/productId</span><span class="st">`</span>&lt;-<span class="st"> </span><span class="kw">trimws</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">product/productId</span><span class="st">`</span>)</span>
+<span id="cb182-3"><a href="recommender-for-beauty-products.html#cb182-3"></a>my_data<span class="op">$</span><span class="st">`</span><span class="dt">product/price</span><span class="st">`</span>&lt;-<span class="st"> </span><span class="kw">trimws</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">product/price</span><span class="st">`</span>)</span>
+<span id="cb182-4"><a href="recommender-for-beauty-products.html#cb182-4"></a>my_data<span class="op">$</span><span class="st">`</span><span class="dt">product/title</span><span class="st">`</span>&lt;-<span class="st"> </span><span class="kw">trimws</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">product/title</span><span class="st">`</span>)</span></code></pre></div>
 <p>Filtering out reviews with unknown userID and productId:</p>
-<div class="sourceCode" id="cb184"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb184-1"><a href="recommender-for-beauty-products.html#cb184-1"></a>my_data&lt;-<span class="kw">filter</span>(my_data,<span class="st">`</span><span class="dt">review/userId</span><span class="st">`</span><span class="op">!=</span><span class="st">&quot;unknown&quot;</span> <span class="op">&amp;</span><span class="st"> `</span><span class="dt">product/productId</span><span class="st">`</span><span class="op">!=</span><span class="st">&quot;unknown&quot;</span> <span class="op">&amp;</span><span class="st"> `</span><span class="dt">product/price</span><span class="st">`</span><span class="op">!=</span><span class="st">&quot;unknown&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb183"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb183-1"><a href="recommender-for-beauty-products.html#cb183-1"></a>my_data&lt;-<span class="kw">filter</span>(my_data,<span class="st">`</span><span class="dt">review/userId</span><span class="st">`</span><span class="op">!=</span><span class="st">&quot;unknown&quot;</span> <span class="op">&amp;</span><span class="st"> `</span><span class="dt">product/productId</span><span class="st">`</span><span class="op">!=</span><span class="st">&quot;unknown&quot;</span> <span class="op">&amp;</span><span class="st"> `</span><span class="dt">product/price</span><span class="st">`</span><span class="op">!=</span><span class="st">&quot;unknown&quot;</span>)</span></code></pre></div>
 <p>Correcting column classes:</p>
-<div class="sourceCode" id="cb185"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb185-1"><a href="recommender-for-beauty-products.html#cb185-1"></a>my_data<span class="op">$</span><span class="st">`</span><span class="dt">product/productId</span><span class="st">`</span> &lt;-<span class="st"> </span><span class="kw">as.factor</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">product/productId</span><span class="st">`</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb186"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb186-1"><a href="recommender-for-beauty-products.html#cb186-1"></a>my_data<span class="op">$</span><span class="st">`</span><span class="dt">review/score</span><span class="st">`</span>&lt;-<span class="st"> </span><span class="kw">as.numeric</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">review/score</span><span class="st">`</span>)</span>
-<span id="cb186-2"><a href="recommender-for-beauty-products.html#cb186-2"></a>my_data<span class="op">$</span><span class="st">`</span><span class="dt">review/userId</span><span class="st">`</span>&lt;-<span class="kw">as.factor</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">review/userId</span><span class="st">`</span>)</span>
-<span id="cb186-3"><a href="recommender-for-beauty-products.html#cb186-3"></a>my_data<span class="op">$</span><span class="st">`</span><span class="dt">product/price</span><span class="st">`</span>&lt;-<span class="kw">as.numeric</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">product/price</span><span class="st">`</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb184"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb184-1"><a href="recommender-for-beauty-products.html#cb184-1"></a>my_data<span class="op">$</span><span class="st">`</span><span class="dt">product/productId</span><span class="st">`</span> &lt;-<span class="st"> </span><span class="kw">as.factor</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">product/productId</span><span class="st">`</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb185"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb185-1"><a href="recommender-for-beauty-products.html#cb185-1"></a>my_data<span class="op">$</span><span class="st">`</span><span class="dt">review/score</span><span class="st">`</span>&lt;-<span class="st"> </span><span class="kw">as.numeric</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">review/score</span><span class="st">`</span>)</span>
+<span id="cb185-2"><a href="recommender-for-beauty-products.html#cb185-2"></a>my_data<span class="op">$</span><span class="st">`</span><span class="dt">review/userId</span><span class="st">`</span>&lt;-<span class="kw">as.factor</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">review/userId</span><span class="st">`</span>)</span>
+<span id="cb185-3"><a href="recommender-for-beauty-products.html#cb185-3"></a>my_data<span class="op">$</span><span class="st">`</span><span class="dt">product/price</span><span class="st">`</span>&lt;-<span class="kw">as.numeric</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">product/price</span><span class="st">`</span>)</span></code></pre></div>
 </div>
 <div id="how-many-times-users-reviewed-products" class="section level3">
 <h3><span class="header-section-number">7.2.3</span> How many times users reviewed products?</h3>
 <p>In order to use relevant data, we would need to define the minimum number of reviews per user. Since majority of users left only one review. Therefore, we will remove all single-review users and all other users who left less then 2 reviews.</p>
 <p>Filtering out users who left 2 or more reviews:</p>
-<div class="sourceCode" id="cb187"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb187-1"><a href="recommender-for-beauty-products.html#cb187-1"></a>freq&lt;-<span class="kw">as.data.frame</span>(<span class="kw">table</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">review/userId</span><span class="st">`</span>))</span>
-<span id="cb187-2"><a href="recommender-for-beauty-products.html#cb187-2"></a>index&lt;-<span class="kw">filter</span>(freq, freq<span class="op">$</span>Freq<span class="op">&gt;=</span><span class="dv">1</span>)<span class="op">$</span>Var1</span></code></pre></div>
+<div class="sourceCode" id="cb186"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb186-1"><a href="recommender-for-beauty-products.html#cb186-1"></a>freq&lt;-<span class="kw">as.data.frame</span>(<span class="kw">table</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">review/userId</span><span class="st">`</span>))</span>
+<span id="cb186-2"><a href="recommender-for-beauty-products.html#cb186-2"></a>index&lt;-<span class="kw">filter</span>(freq, freq<span class="op">$</span>Freq<span class="op">&gt;=</span><span class="dv">1</span>)<span class="op">$</span>Var1</span></code></pre></div>
 <p>We are now left with 1316 users who reviewed certain beauty product at least 2 times.</p>
-<div class="sourceCode" id="cb188"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb188-1"><a href="recommender-for-beauty-products.html#cb188-1"></a>my_data &lt;-<span class="st"> </span><span class="kw">subset</span>(my_data,<span class="st">`</span><span class="dt">review/userId</span><span class="st">`</span> <span class="op">%in%</span><span class="st"> </span>index)</span></code></pre></div>
+<div class="sourceCode" id="cb187"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb187-1"><a href="recommender-for-beauty-products.html#cb187-1"></a>my_data &lt;-<span class="st"> </span><span class="kw">subset</span>(my_data,<span class="st">`</span><span class="dt">review/userId</span><span class="st">`</span> <span class="op">%in%</span><span class="st"> </span>index)</span></code></pre></div>
 </div>
 </div>
 <div id="exploratory-data-analysis" class="section level2">
 <h2><span class="header-section-number">7.3</span> Exploratory data analysis</h2>
 <div id="head-of-data" class="section level3">
 <h3><span class="header-section-number">7.3.1</span> Head of data</h3>
-<div class="sourceCode" id="cb189"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb189-1"><a href="recommender-for-beauty-products.html#cb189-1"></a><span class="kw">head</span>(my_data)</span></code></pre></div>
+<div class="sourceCode" id="cb188"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb188-1"><a href="recommender-for-beauty-products.html#cb188-1"></a><span class="kw">head</span>(my_data)</span></code></pre></div>
 <pre><code>##   product/price product/productId
 ## 1         24.19        B00064C0IU
 ## 2         24.19        B00064C0IU
@@ -552,35 +552,35 @@ Review userId
 </div>
 <div id="how-many-unique-products-are-reviewed" class="section level3">
 <h3><span class="header-section-number">7.3.2</span> How many unique products are reviewed?</h3>
-<div class="sourceCode" id="cb191"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb191-1"><a href="recommender-for-beauty-products.html#cb191-1"></a><span class="kw">length</span>(<span class="kw">unique</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">product/productId</span><span class="st">`</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb190"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb190-1"><a href="recommender-for-beauty-products.html#cb190-1"></a><span class="kw">length</span>(<span class="kw">unique</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">product/productId</span><span class="st">`</span>))</span></code></pre></div>
 <pre><code>## [1] 928</code></pre>
 <p>There are 928 products which were reviewed.</p>
 </div>
 <div id="how-many-reviewers-do-we-have" class="section level3">
 <h3><span class="header-section-number">7.3.3</span> How many reviewers do we have?</h3>
-<div class="sourceCode" id="cb193"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb193-1"><a href="recommender-for-beauty-products.html#cb193-1"></a><span class="kw">length</span>(<span class="kw">unique</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">review/userId</span><span class="st">`</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb192"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb192-1"><a href="recommender-for-beauty-products.html#cb192-1"></a><span class="kw">length</span>(<span class="kw">unique</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">review/userId</span><span class="st">`</span>))</span></code></pre></div>
 <pre><code>## [1] 8002</code></pre>
 <p>There are 8002 unique reviewers/customers who reviewed products.</p>
 </div>
 <div id="how-many-scores-do-we-have" class="section level3">
 <h3><span class="header-section-number">7.3.4</span> How many scores do we have?</h3>
-<div class="sourceCode" id="cb195"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb195-1"><a href="recommender-for-beauty-products.html#cb195-1"></a><span class="kw">length</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">review/score</span><span class="st">`</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb194"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb194-1"><a href="recommender-for-beauty-products.html#cb194-1"></a><span class="kw">length</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">review/score</span><span class="st">`</span>)</span></code></pre></div>
 <pre><code>## [1] 8581</code></pre>
 <p>There are 8581 ratings.</p>
 </div>
 <div id="what-is-the-distribution-of-ratings" class="section level3">
 <h3><span class="header-section-number">7.3.5</span> What is the distribution of ratings?</h3>
-<div class="sourceCode" id="cb197"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb197-1"><a href="recommender-for-beauty-products.html#cb197-1"></a><span class="kw">hist</span>(<span class="kw">as.numeric</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">review/score</span><span class="st">`</span>),<span class="dt">main =</span> <span class="st">&quot;Histogramm of scores&quot;</span>,<span class="dt">xlab =</span> <span class="st">&quot;Score&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb196"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb196-1"><a href="recommender-for-beauty-products.html#cb196-1"></a><span class="kw">hist</span>(<span class="kw">as.numeric</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">review/score</span><span class="st">`</span>),<span class="dt">main =</span> <span class="st">&quot;Histogramm of scores&quot;</span>,<span class="dt">xlab =</span> <span class="st">&quot;Score&quot;</span>)</span></code></pre></div>
 <p><img src="main_files/figure-html/unnamed-chunk-161-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Products seem to be favorably rated as the distribution of scores showes that the best score is the most frequent.</p>
 </div>
 <div id="what-is-the-average-number-of-reviews-per-user" class="section level3">
 <h3><span class="header-section-number">7.3.6</span> What is the average number of reviews per user?</h3>
-<div class="sourceCode" id="cb198"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb198-1"><a href="recommender-for-beauty-products.html#cb198-1"></a>my_data <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb198-2"><a href="recommender-for-beauty-products.html#cb198-2"></a><span class="st">  </span><span class="kw">group_by</span>(<span class="st">`</span><span class="dt">review/userId</span><span class="st">`</span>) <span class="op">%&gt;%</span></span>
-<span id="cb198-3"><a href="recommender-for-beauty-products.html#cb198-3"></a><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">Freq=</span><span class="kw">n</span>())<span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb198-4"><a href="recommender-for-beauty-products.html#cb198-4"></a><span class="st">  </span><span class="kw">select</span>(Freq) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb198-5"><a href="recommender-for-beauty-products.html#cb198-5"></a><span class="st">  </span><span class="kw">summary</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb197"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb197-1"><a href="recommender-for-beauty-products.html#cb197-1"></a>my_data <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb197-2"><a href="recommender-for-beauty-products.html#cb197-2"></a><span class="st">  </span><span class="kw">group_by</span>(<span class="st">`</span><span class="dt">review/userId</span><span class="st">`</span>) <span class="op">%&gt;%</span></span>
+<span id="cb197-3"><a href="recommender-for-beauty-products.html#cb197-3"></a><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">Freq=</span><span class="kw">n</span>())<span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb197-4"><a href="recommender-for-beauty-products.html#cb197-4"></a><span class="st">  </span><span class="kw">select</span>(Freq) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb197-5"><a href="recommender-for-beauty-products.html#cb197-5"></a><span class="st">  </span><span class="kw">summary</span>()</span></code></pre></div>
 <pre><code>##       Freq       
 ##  Min.   : 1.000  
 ##  1st Qu.: 1.000  
@@ -592,8 +592,8 @@ Review userId
 </div>
 <div id="what-is-the-average-score-per-user" class="section level3">
 <h3><span class="header-section-number">7.3.7</span> What is the average score per user?</h3>
-<div class="sourceCode" id="cb200"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb200-1"><a href="recommender-for-beauty-products.html#cb200-1"></a>(grand.mean &lt;-<span class="st"> </span>my_data <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb200-2"><a href="recommender-for-beauty-products.html#cb200-2"></a><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">summarise</span>(<span class="dt">Grand.mean=</span><span class="kw">mean</span>(<span class="st">`</span><span class="dt">review/score</span><span class="st">`</span>)))</span></code></pre></div>
+<div class="sourceCode" id="cb199"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb199-1"><a href="recommender-for-beauty-products.html#cb199-1"></a>(grand.mean &lt;-<span class="st"> </span>my_data <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb199-2"><a href="recommender-for-beauty-products.html#cb199-2"></a><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">summarise</span>(<span class="dt">Grand.mean=</span><span class="kw">mean</span>(<span class="st">`</span><span class="dt">review/score</span><span class="st">`</span>)))</span></code></pre></div>
 <pre><code>##   Grand.mean
 ## 1   4.196248</code></pre>
 <p>It seems that beauty products on Amazon are well received by users as the average score per user is quite high, at 4.1962475.</p>
@@ -604,7 +604,7 @@ Review userId
 <div id="final-data-outlook" class="section level3">
 <h3><span class="header-section-number">7.4.1</span> Final data outlook</h3>
 <p>Here is a glimpse in our data before we start building the recommnder:</p>
-<div class="sourceCode" id="cb202"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb202-1"><a href="recommender-for-beauty-products.html#cb202-1"></a><span class="kw">head</span>(my_data)</span></code></pre></div>
+<div class="sourceCode" id="cb201"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb201-1"><a href="recommender-for-beauty-products.html#cb201-1"></a><span class="kw">head</span>(my_data)</span></code></pre></div>
 <pre><code>##   product/price product/productId
 ## 1         24.19        B00064C0IU
 ## 2         24.19        B00064C0IU
@@ -658,8 +658,8 @@ Review userId
 </ul>
 <p>Our model will be based on these three variables. Additionally, we will make use of the remaining features by utilizing some text mining techniques, but you will find more details at some later point.
 Now, we will make a subset of our data with 3 mentioned variables:</p>
-<div class="sourceCode" id="cb204"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb204-1"><a href="recommender-for-beauty-products.html#cb204-1"></a>subset_my_data &lt;-<span class="st"> </span><span class="kw">subset</span>(my_data, <span class="dt">select =</span> <span class="kw">c</span>(<span class="st">`</span><span class="dt">review/userId</span><span class="st">`</span>,<span class="st">`</span><span class="dt">product/productId</span><span class="st">`</span>,<span class="st">`</span><span class="dt">review/score</span><span class="st">`</span>))</span>
-<span id="cb204-2"><a href="recommender-for-beauty-products.html#cb204-2"></a><span class="kw">head</span>(subset_my_data)</span></code></pre></div>
+<div class="sourceCode" id="cb203"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb203-1"><a href="recommender-for-beauty-products.html#cb203-1"></a>subset_my_data &lt;-<span class="st"> </span><span class="kw">subset</span>(my_data, <span class="dt">select =</span> <span class="kw">c</span>(<span class="st">`</span><span class="dt">review/userId</span><span class="st">`</span>,<span class="st">`</span><span class="dt">product/productId</span><span class="st">`</span>,<span class="st">`</span><span class="dt">review/score</span><span class="st">`</span>))</span>
+<span id="cb203-2"><a href="recommender-for-beauty-products.html#cb203-2"></a><span class="kw">head</span>(subset_my_data)</span></code></pre></div>
 <pre><code>##    review/userId product/productId review/score
 ## 1 A1FWT811DSZLC8        B00064C0IU            3
 ## 2 A1THE6V6O8ROD4        B00064C0IU            5
@@ -668,25 +668,25 @@ Now, we will make a subset of our data with 3 mentioned variables:</p>
 ## 5 A3UWJXJI7S3T05        B000K5JBZU            5
 ## 6 A1QAXWETH56D6J        B000K5JBZU            5</code></pre>
 <p>Let us inspect the dimensions:</p>
-<div class="sourceCode" id="cb206"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb206-1"><a href="recommender-for-beauty-products.html#cb206-1"></a><span class="kw">dim</span>(subset_my_data)</span></code></pre></div>
+<div class="sourceCode" id="cb205"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb205-1"><a href="recommender-for-beauty-products.html#cb205-1"></a><span class="kw">dim</span>(subset_my_data)</span></code></pre></div>
 <pre><code>## [1] 8581    3</code></pre>
 </div>
 <div id="formatting-data" class="section level3">
 <h3><span class="header-section-number">7.4.3</span> Formatting data</h3>
 <p>Our data is currently in the long format, i.e. one row for one rating. However, we would want to get a matrix with ratings where the rows represent the users IDs and the columns the Product IDs.
 Thus, we will transform our data to so called rating matrix:</p>
-<div class="sourceCode" id="cb208"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb208-1"><a href="recommender-for-beauty-products.html#cb208-1"></a>ratings &lt;-<span class="st"> </span><span class="kw">as</span>(subset_my_data, <span class="st">&quot;realRatingMatrix&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb207"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb207-1"><a href="recommender-for-beauty-products.html#cb207-1"></a>ratings &lt;-<span class="st"> </span><span class="kw">as</span>(subset_my_data, <span class="st">&quot;realRatingMatrix&quot;</span>)</span></code></pre></div>
 <p>In order to avoid “high/low rating bias” from users who give high (or low) ratings to all the products they reviewed, we will need to normalize our data. That would prevent certain bias in the results.</p>
-<div class="sourceCode" id="cb209"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb209-1"><a href="recommender-for-beauty-products.html#cb209-1"></a>ratings &lt;-<span class="st"> </span><span class="kw">normalize</span>(ratings)</span></code></pre></div>
+<div class="sourceCode" id="cb208"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb208-1"><a href="recommender-for-beauty-products.html#cb208-1"></a>ratings &lt;-<span class="st"> </span><span class="kw">normalize</span>(ratings)</span></code></pre></div>
 </div>
 <div id="inspecting-real-rating-matrix" class="section level3">
 <h3><span class="header-section-number">7.4.4</span> Inspecting real rating matrix</h3>
 <p>We can plot an image of the rating matrix for the first 250 users and 250 products:</p>
-<div class="sourceCode" id="cb210"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb210-1"><a href="recommender-for-beauty-products.html#cb210-1"></a><span class="kw">image</span>(ratings[<span class="dv">1</span><span class="op">:</span><span class="dv">250</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">250</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb209"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb209-1"><a href="recommender-for-beauty-products.html#cb209-1"></a><span class="kw">image</span>(ratings[<span class="dv">1</span><span class="op">:</span><span class="dv">250</span>,<span class="dv">1</span><span class="op">:</span><span class="dv">250</span>])</span></code></pre></div>
 <p><img src="main_files/figure-html/unnamed-chunk-169-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>From the visualisation we can see that rating matrix is very sparse, i.e. that not every user did rate/review every product in our data set.</p>
 <p>We can inspect the data for the first 10 users and the first 4 products:</p>
-<div class="sourceCode" id="cb211"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb211-1"><a href="recommender-for-beauty-products.html#cb211-1"></a>ratings[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>]<span class="op">@</span>data</span></code></pre></div>
+<div class="sourceCode" id="cb210"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb210-1"><a href="recommender-for-beauty-products.html#cb210-1"></a>ratings[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>]<span class="op">@</span>data</span></code></pre></div>
 <pre><code>## 10 x 4 sparse Matrix of class &quot;dgCMatrix&quot;
 ##                       B000052Z5B B000052Z5L B000052Z5M B000052Z89
 ## A00275441WYR3489IKNAB          .          .          .          .
@@ -705,13 +705,13 @@ Thus, we will transform our data to so called rating matrix:</p>
 <h3><span class="header-section-number">7.4.5</span> Building a recommender</h3>
 <p>Finally, we will now build our recommendation system based on <strong>User-based collaborative filtering</strong>
 User-based collaborative filtering search for similar users and gives them recommendations based on what other users with similar rating patterns appreciated:</p>
-<div class="sourceCode" id="cb213"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb213-1"><a href="recommender-for-beauty-products.html#cb213-1"></a>recommender &lt;-<span class="st"> </span><span class="kw">Recommender</span>(ratings, <span class="dt">method=</span><span class="st">&quot;UBCF&quot;</span>)</span>
-<span id="cb213-2"><a href="recommender-for-beauty-products.html#cb213-2"></a>recommender</span></code></pre></div>
+<div class="sourceCode" id="cb212"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb212-1"><a href="recommender-for-beauty-products.html#cb212-1"></a>recommender &lt;-<span class="st"> </span><span class="kw">Recommender</span>(ratings, <span class="dt">method=</span><span class="st">&quot;UBCF&quot;</span>)</span>
+<span id="cb212-2"><a href="recommender-for-beauty-products.html#cb212-2"></a>recommender</span></code></pre></div>
 <pre><code>## Recommender of type &#39;UBCF&#39; for &#39;realRatingMatrix&#39; 
 ## learned using 8002 users.</code></pre>
 <p>Additionally, in order to compare results of two methods, we would like to apply <strong>item-based collaborative filtering</strong> method to build another recommender system. In contrast to user-based collaborative filtering, item-based collaborative filtering looks for similarity patterns between <strong>items</strong> and recommends them to users based on the computed information.</p>
-<div class="sourceCode" id="cb215"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb215-1"><a href="recommender-for-beauty-products.html#cb215-1"></a>recommenderIBCF &lt;-<span class="st"> </span><span class="kw">Recommender</span>(ratings, <span class="dt">method=</span><span class="st">&quot;IBCF&quot;</span>)</span>
-<span id="cb215-2"><a href="recommender-for-beauty-products.html#cb215-2"></a>recommenderIBCF</span></code></pre></div>
+<div class="sourceCode" id="cb214"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb214-1"><a href="recommender-for-beauty-products.html#cb214-1"></a>recommenderIBCF &lt;-<span class="st"> </span><span class="kw">Recommender</span>(ratings, <span class="dt">method=</span><span class="st">&quot;IBCF&quot;</span>)</span>
+<span id="cb214-2"><a href="recommender-for-beauty-products.html#cb214-2"></a>recommenderIBCF</span></code></pre></div>
 <pre><code>## Recommender of type &#39;IBCF&#39; for &#39;realRatingMatrix&#39; 
 ## learned using 8002 users.</code></pre>
 <p>As reported, both recommendation systems are built using 8002 users.</p>
@@ -721,11 +721,11 @@ User-based collaborative filtering search for similar users and gives them recom
 <h2><span class="header-section-number">7.5</span> Interpretation and managerial implications</h2>
 <p>Now we would like to interpret the output of our recommender systems.
 First we start with UBCF-based recommender system.</p>
-<div class="sourceCode" id="cb217"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb217-1"><a href="recommender-for-beauty-products.html#cb217-1"></a>current.user &lt;-<span class="st"> </span><span class="dv">45</span></span>
-<span id="cb217-2"><a href="recommender-for-beauty-products.html#cb217-2"></a>recommendations &lt;-<span class="st"> </span><span class="kw">predict</span>(recommender, current.user, <span class="dt">data =</span> ratings, <span class="dt">n =</span> <span class="dv">5</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb216"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb216-1"><a href="recommender-for-beauty-products.html#cb216-1"></a>current.user &lt;-<span class="st"> </span><span class="dv">45</span></span>
+<span id="cb216-2"><a href="recommender-for-beauty-products.html#cb216-2"></a>recommendations &lt;-<span class="st"> </span><span class="kw">predict</span>(recommender, current.user, <span class="dt">data =</span> ratings, <span class="dt">n =</span> <span class="dv">5</span>)</span></code></pre></div>
 <p>We decided to take user number 45 and inspect 5 recommendations provided to him/her.
 Now we can inspect what our recommendation system provided in the end:</p>
-<div class="sourceCode" id="cb218"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb218-1"><a href="recommender-for-beauty-products.html#cb218-1"></a><span class="kw">str</span>(recommendations)</span></code></pre></div>
+<div class="sourceCode" id="cb217"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb217-1"><a href="recommender-for-beauty-products.html#cb217-1"></a><span class="kw">str</span>(recommendations)</span></code></pre></div>
 <pre><code>## Formal class &#39;topNList&#39; [package &quot;recommenderlab&quot;] with 4 slots
 ##   ..@ items     :List of 1
 ##   .. ..$ A10N19OL0CKYDV: int [1:2] 173 772
@@ -736,8 +736,8 @@ Now we can inspect what our recommendation system provided in the end:</p>
 <p>We can see that the user ID of the user number 45 is A10N19OL0CKYDV.
 Our system found 2 products to recommend to this user, and we can find product index (173, 772) as well as ratings that the system calculated from the ratings of the closest users (5,5).</p>
 <p>Let us create a prediction made by IBCF-based recommender:</p>
-<div class="sourceCode" id="cb220"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb220-1"><a href="recommender-for-beauty-products.html#cb220-1"></a>recommendationsIBCF &lt;-<span class="st"> </span><span class="kw">predict</span>(recommenderIBCF,current.user,<span class="dt">data =</span> ratings, <span class="dt">n=</span><span class="dv">5</span>)</span>
-<span id="cb220-2"><a href="recommender-for-beauty-products.html#cb220-2"></a><span class="kw">str</span>(recommendationsIBCF)</span></code></pre></div>
+<div class="sourceCode" id="cb219"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb219-1"><a href="recommender-for-beauty-products.html#cb219-1"></a>recommendationsIBCF &lt;-<span class="st"> </span><span class="kw">predict</span>(recommenderIBCF,current.user,<span class="dt">data =</span> ratings, <span class="dt">n=</span><span class="dv">5</span>)</span>
+<span id="cb219-2"><a href="recommender-for-beauty-products.html#cb219-2"></a><span class="kw">str</span>(recommendationsIBCF)</span></code></pre></div>
 <pre><code>## Formal class &#39;topNList&#39; [package &quot;recommenderlab&quot;] with 4 slots
 ##   ..@ items     :List of 1
 ##   .. ..$ A10N19OL0CKYDV: int(0) 
@@ -746,16 +746,16 @@ Our system found 2 products to recommend to this user, and we can find product i
 ##   ..@ itemLabels: chr [1:928] &quot;B000052Z5B&quot; &quot;B000052Z5L&quot; &quot;B000052Z5M&quot; &quot;B000052Z89&quot; ...
 ##   ..@ n         : int 5</code></pre>
 <p>We will inspect potential recommended products:</p>
-<div class="sourceCode" id="cb222"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb222-1"><a href="recommender-for-beauty-products.html#cb222-1"></a><span class="kw">head</span>(<span class="kw">as</span>(recommendationsIBCF,<span class="st">&quot;list&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb221"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb221-1"><a href="recommender-for-beauty-products.html#cb221-1"></a><span class="kw">head</span>(<span class="kw">as</span>(recommendationsIBCF,<span class="st">&quot;list&quot;</span>))</span></code></pre></div>
 <pre><code>## $A10N19OL0CKYDV
 ## character(0)</code></pre>
 <p>Unfortunately, our item-based collaborative filtering system did not generate any recommendation for the user number 45.</p>
 <div id="identification-of-the-recommended-products" class="section level3">
 <h3><span class="header-section-number">7.5.1</span> Identification of the recommended products</h3>
 <p>Let us now identify the products recommended by UBCF-based recommender. First we need to extract the index of the recommended products:</p>
-<div class="sourceCode" id="cb224"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb224-1"><a href="recommender-for-beauty-products.html#cb224-1"></a>index&lt;-<span class="st"> </span><span class="kw">as.vector</span>(<span class="kw">as.factor</span>(<span class="kw">unlist</span>(<span class="kw">as</span>(recommendations, <span class="st">&quot;list&quot;</span>))))</span></code></pre></div>
+<div class="sourceCode" id="cb223"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb223-1"><a href="recommender-for-beauty-products.html#cb223-1"></a>index&lt;-<span class="st"> </span><span class="kw">as.vector</span>(<span class="kw">as.factor</span>(<span class="kw">unlist</span>(<span class="kw">as</span>(recommendations, <span class="st">&quot;list&quot;</span>))))</span></code></pre></div>
 <p>Then we find corresponding product in our initial data set:</p>
-<div class="sourceCode" id="cb225"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb225-1"><a href="recommender-for-beauty-products.html#cb225-1"></a>(recommendation_<span class="dv">26</span>&lt;-my_data[<span class="kw">match</span>(index, my_data<span class="op">$</span><span class="st">`</span><span class="dt">product/productId</span><span class="st">`</span>),])  </span></code></pre></div>
+<div class="sourceCode" id="cb224"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb224-1"><a href="recommender-for-beauty-products.html#cb224-1"></a>(recommendation_<span class="dv">26</span>&lt;-my_data[<span class="kw">match</span>(index, my_data<span class="op">$</span><span class="st">`</span><span class="dt">product/productId</span><span class="st">`</span>),])  </span></code></pre></div>
 <pre><code>##      product/price product/productId
 ## 6952          4.97        B00027EG9C
 ## 4190          0.01        B000NCQK68
@@ -777,7 +777,7 @@ Our system found 2 products to recommend to this user, and we can find product i
 <li>Revlon ColorSilk Beautiful Color Hair Coloring Products - color for hair</li>
 </ul>
 <p>Let us now inspect products that the user A10N19OL0CKYDV rated:</p>
-<div class="sourceCode" id="cb227"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb227-1"><a href="recommender-for-beauty-products.html#cb227-1"></a>my_data[<span class="kw">match</span>(<span class="st">&quot;A10N19OL0CKYDV&quot;</span>,my_data<span class="op">$</span><span class="st">`</span><span class="dt">review/userId</span><span class="st">`</span>),]</span></code></pre></div>
+<div class="sourceCode" id="cb226"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb226-1"><a href="recommender-for-beauty-products.html#cb226-1"></a>my_data[<span class="kw">match</span>(<span class="st">&quot;A10N19OL0CKYDV&quot;</span>,my_data<span class="op">$</span><span class="st">`</span><span class="dt">review/userId</span><span class="st">`</span>),]</span></code></pre></div>
 <pre><code>##      product/price product/productId           product/title review/helpfulness
 ## 1913          1.89        B000NGLR62 Opi Ridge Filler .5 oz.                0/0
 ##      review/profileName review/score   review/summary
@@ -799,25 +799,25 @@ From the qualitative perspective it seems that our recommendation system provide
 <div id="wordcloud-1" class="section level3">
 <h3><span class="header-section-number">7.6.1</span> Wordcloud</h3>
 <p>Here we create a wordcloud of words from product reviews of recommended products to the user 45. Beforehand we would need to pre-process the text of reviews in the following manner:</p>
-<div class="sourceCode" id="cb229"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb229-1"><a href="recommender-for-beauty-products.html#cb229-1"></a><span class="co"># Split text into parts using new line character:</span></span>
-<span id="cb229-2"><a href="recommender-for-beauty-products.html#cb229-2"></a>text.docs &lt;-<span class="st"> </span><span class="kw">Corpus</span>(<span class="kw">VectorSource</span>(recommendation_<span class="dv">26</span><span class="op">$</span><span class="st">`</span><span class="dt">review/text</span><span class="st">`</span>))</span>
-<span id="cb229-3"><a href="recommender-for-beauty-products.html#cb229-3"></a>toSpace &lt;-<span class="st"> </span><span class="kw">content_transformer</span>(<span class="cf">function</span> (x , pattern ) <span class="kw">gsub</span>(pattern, <span class="st">&quot; &quot;</span>, x))</span>
-<span id="cb229-4"><a href="recommender-for-beauty-products.html#cb229-4"></a>text.docs &lt;-<span class="st"> </span><span class="kw">tm_map</span>(text.docs, toSpace, <span class="st">&quot;/&quot;</span>)</span>
-<span id="cb229-5"><a href="recommender-for-beauty-products.html#cb229-5"></a>text.docs &lt;-<span class="st"> </span><span class="kw">tm_map</span>(text.docs, toSpace, <span class="st">&quot;@&quot;</span>)</span>
-<span id="cb229-6"><a href="recommender-for-beauty-products.html#cb229-6"></a>text.docs &lt;-<span class="st"> </span><span class="kw">tm_map</span>(text.docs, toSpace, <span class="st">&quot;</span><span class="ch">\\</span><span class="st">|&quot;</span>)</span>
-<span id="cb229-7"><a href="recommender-for-beauty-products.html#cb229-7"></a>text.docs &lt;-<span class="st"> </span><span class="kw">tm_map</span>(text.docs, <span class="kw">content_transformer</span>(tolower))</span>
-<span id="cb229-8"><a href="recommender-for-beauty-products.html#cb229-8"></a>text.docs &lt;-<span class="st"> </span><span class="kw">tm_map</span>(text.docs, removeNumbers)</span>
-<span id="cb229-9"><a href="recommender-for-beauty-products.html#cb229-9"></a>text.docs &lt;-<span class="st"> </span><span class="kw">tm_map</span>(text.docs, stripWhitespace)</span>
-<span id="cb229-10"><a href="recommender-for-beauty-products.html#cb229-10"></a>text.docs &lt;-<span class="st"> </span><span class="kw">tm_map</span>(text.docs, removeWords, <span class="kw">stopwords</span>(<span class="st">&quot;english&quot;</span>))</span>
-<span id="cb229-11"><a href="recommender-for-beauty-products.html#cb229-11"></a>text.docs &lt;-<span class="st"> </span><span class="kw">tm_map</span>(text.docs, removePunctuation)</span>
-<span id="cb229-12"><a href="recommender-for-beauty-products.html#cb229-12"></a>dtm &lt;-<span class="st"> </span><span class="kw">DocumentTermMatrix</span>(text.docs, <span class="dt">control=</span><span class="kw">list</span>(<span class="dt">weighting=</span>weightTf))</span>
-<span id="cb229-13"><a href="recommender-for-beauty-products.html#cb229-13"></a>m &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(<span class="kw">t</span>(dtm))</span>
-<span id="cb229-14"><a href="recommender-for-beauty-products.html#cb229-14"></a>v &lt;-<span class="st"> </span><span class="kw">sort</span>(<span class="kw">rowSums</span>(m),<span class="dt">decreasing=</span><span class="ot">TRUE</span>)</span>
-<span id="cb229-15"><a href="recommender-for-beauty-products.html#cb229-15"></a>d &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">word =</span> <span class="kw">names</span>(v),<span class="dt">freq=</span>v)</span>
-<span id="cb229-16"><a href="recommender-for-beauty-products.html#cb229-16"></a><span class="kw">set.seed</span>(<span class="dv">1234</span>)</span>
-<span id="cb229-17"><a href="recommender-for-beauty-products.html#cb229-17"></a><span class="kw">wordcloud</span>(<span class="dt">words =</span> d<span class="op">$</span>word, <span class="dt">freq =</span> d<span class="op">$</span>freq, <span class="dt">min.freq =</span> <span class="dv">10</span>,</span>
-<span id="cb229-18"><a href="recommender-for-beauty-products.html#cb229-18"></a>          <span class="dt">max.words=</span><span class="dv">200</span>, <span class="dt">random.order=</span><span class="ot">FALSE</span>, <span class="dt">rot.per=</span><span class="fl">0.35</span>,</span>
-<span id="cb229-19"><a href="recommender-for-beauty-products.html#cb229-19"></a>          <span class="dt">colors=</span><span class="kw">brewer.pal</span>(<span class="dv">8</span>, <span class="st">&quot;Dark2&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb228"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb228-1"><a href="recommender-for-beauty-products.html#cb228-1"></a><span class="co"># Split text into parts using new line character:</span></span>
+<span id="cb228-2"><a href="recommender-for-beauty-products.html#cb228-2"></a>text.docs &lt;-<span class="st"> </span><span class="kw">Corpus</span>(<span class="kw">VectorSource</span>(recommendation_<span class="dv">26</span><span class="op">$</span><span class="st">`</span><span class="dt">review/text</span><span class="st">`</span>))</span>
+<span id="cb228-3"><a href="recommender-for-beauty-products.html#cb228-3"></a>toSpace &lt;-<span class="st"> </span><span class="kw">content_transformer</span>(<span class="cf">function</span> (x , pattern ) <span class="kw">gsub</span>(pattern, <span class="st">&quot; &quot;</span>, x))</span>
+<span id="cb228-4"><a href="recommender-for-beauty-products.html#cb228-4"></a>text.docs &lt;-<span class="st"> </span><span class="kw">tm_map</span>(text.docs, toSpace, <span class="st">&quot;/&quot;</span>)</span>
+<span id="cb228-5"><a href="recommender-for-beauty-products.html#cb228-5"></a>text.docs &lt;-<span class="st"> </span><span class="kw">tm_map</span>(text.docs, toSpace, <span class="st">&quot;@&quot;</span>)</span>
+<span id="cb228-6"><a href="recommender-for-beauty-products.html#cb228-6"></a>text.docs &lt;-<span class="st"> </span><span class="kw">tm_map</span>(text.docs, toSpace, <span class="st">&quot;</span><span class="ch">\\</span><span class="st">|&quot;</span>)</span>
+<span id="cb228-7"><a href="recommender-for-beauty-products.html#cb228-7"></a>text.docs &lt;-<span class="st"> </span><span class="kw">tm_map</span>(text.docs, <span class="kw">content_transformer</span>(tolower))</span>
+<span id="cb228-8"><a href="recommender-for-beauty-products.html#cb228-8"></a>text.docs &lt;-<span class="st"> </span><span class="kw">tm_map</span>(text.docs, removeNumbers)</span>
+<span id="cb228-9"><a href="recommender-for-beauty-products.html#cb228-9"></a>text.docs &lt;-<span class="st"> </span><span class="kw">tm_map</span>(text.docs, stripWhitespace)</span>
+<span id="cb228-10"><a href="recommender-for-beauty-products.html#cb228-10"></a>text.docs &lt;-<span class="st"> </span><span class="kw">tm_map</span>(text.docs, removeWords, <span class="kw">stopwords</span>(<span class="st">&quot;english&quot;</span>))</span>
+<span id="cb228-11"><a href="recommender-for-beauty-products.html#cb228-11"></a>text.docs &lt;-<span class="st"> </span><span class="kw">tm_map</span>(text.docs, removePunctuation)</span>
+<span id="cb228-12"><a href="recommender-for-beauty-products.html#cb228-12"></a>dtm &lt;-<span class="st"> </span><span class="kw">DocumentTermMatrix</span>(text.docs, <span class="dt">control=</span><span class="kw">list</span>(<span class="dt">weighting=</span>weightTf))</span>
+<span id="cb228-13"><a href="recommender-for-beauty-products.html#cb228-13"></a>m &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(<span class="kw">t</span>(dtm))</span>
+<span id="cb228-14"><a href="recommender-for-beauty-products.html#cb228-14"></a>v &lt;-<span class="st"> </span><span class="kw">sort</span>(<span class="kw">rowSums</span>(m),<span class="dt">decreasing=</span><span class="ot">TRUE</span>)</span>
+<span id="cb228-15"><a href="recommender-for-beauty-products.html#cb228-15"></a>d &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">word =</span> <span class="kw">names</span>(v),<span class="dt">freq=</span>v)</span>
+<span id="cb228-16"><a href="recommender-for-beauty-products.html#cb228-16"></a><span class="kw">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb228-17"><a href="recommender-for-beauty-products.html#cb228-17"></a><span class="kw">wordcloud</span>(<span class="dt">words =</span> d<span class="op">$</span>word, <span class="dt">freq =</span> d<span class="op">$</span>freq, <span class="dt">min.freq =</span> <span class="dv">10</span>,</span>
+<span id="cb228-18"><a href="recommender-for-beauty-products.html#cb228-18"></a>          <span class="dt">max.words=</span><span class="dv">200</span>, <span class="dt">random.order=</span><span class="ot">FALSE</span>, <span class="dt">rot.per=</span><span class="fl">0.35</span>,</span>
+<span id="cb228-19"><a href="recommender-for-beauty-products.html#cb228-19"></a>          <span class="dt">colors=</span><span class="kw">brewer.pal</span>(<span class="dv">8</span>, <span class="st">&quot;Dark2&quot;</span>))</span></code></pre></div>
 <p><img src="main_files/figure-html/unnamed-chunk-180-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>From the wordcloud we can see that words “color”, “hair” and “gloves” are quite frequent in the text corpus analyzed. That could be a hint that the user was referring to the usage of the product.
 The term “cheap” could be easily spotted as well. This word is not very likable among marketers as it brings unfavorable image to the brand. Nevertheless, it seems that the user believes that the product is affordable.</p>
@@ -837,13 +837,13 @@ Here are some ideas what can be further done:</p>
 <div id="limitations" class="section level2">
 <h2><span class="header-section-number">7.8</span> Limitations</h2>
 <p>Limitation related to this data set and building a recommender system is the fact that the majority of users have left only one review:</p>
-<div class="sourceCode" id="cb230"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb230-1"><a href="recommender-for-beauty-products.html#cb230-1"></a><span class="kw">table</span>(<span class="kw">as.data.frame</span>(<span class="kw">table</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">review/userId</span><span class="st">`</span>))<span class="op">$</span>Freq)</span></code></pre></div>
+<div class="sourceCode" id="cb229"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb229-1"><a href="recommender-for-beauty-products.html#cb229-1"></a><span class="kw">table</span>(<span class="kw">as.data.frame</span>(<span class="kw">table</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">review/userId</span><span class="st">`</span>))<span class="op">$</span>Freq)</span></code></pre></div>
 <pre><code>## 
 ##    1    2    3    4    5    6    9   10   37 
 ## 7638  259   58   30    9    5    1    1    1</code></pre>
 <p>Let us take a look which users left the most reviews:</p>
-<div class="sourceCode" id="cb232"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb232-1"><a href="recommender-for-beauty-products.html#cb232-1"></a>limitations &lt;-<span class="kw">as.data.frame</span>(<span class="kw">table</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">review/userId</span><span class="st">`</span>))</span>
-<span id="cb232-2"><a href="recommender-for-beauty-products.html#cb232-2"></a>limitations <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">arrange</span>(<span class="kw">desc</span>(Freq))<span class="op">%&gt;%</span><span class="kw">rename</span>(<span class="dt">UserID=</span>Var1)<span class="op">%&gt;%</span><span class="st"> </span><span class="kw">head</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb231"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb231-1"><a href="recommender-for-beauty-products.html#cb231-1"></a>limitations &lt;-<span class="kw">as.data.frame</span>(<span class="kw">table</span>(my_data<span class="op">$</span><span class="st">`</span><span class="dt">review/userId</span><span class="st">`</span>))</span>
+<span id="cb231-2"><a href="recommender-for-beauty-products.html#cb231-2"></a>limitations <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">arrange</span>(<span class="kw">desc</span>(Freq))<span class="op">%&gt;%</span><span class="kw">rename</span>(<span class="dt">UserID=</span>Var1)<span class="op">%&gt;%</span><span class="st"> </span><span class="kw">head</span>()</span></code></pre></div>
 <pre><code>##           UserID Freq
 ## 1 A3M174IC0VXOS2   37
 ## 2 A3KEZLJ59C1JVH   10

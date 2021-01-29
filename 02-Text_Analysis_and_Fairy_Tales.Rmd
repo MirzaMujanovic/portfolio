@@ -204,7 +204,7 @@ par(mar = rep(0, 4))
 comparison.cloud(cc.m,max.words = 100,min.frrandom.order=FALSE)
 # Commonality cloud
 par(mar = rep(0, 4))
-commonality.cloud(cc.m,max.words = 100,colors = "steelblue1",min.frrandom.order=FALSE)
+commonality.cloud(cc.m,max.words = 100,colors = brewer.pal(8, "Dark2"),min.frrandom.order=FALSE)
 ```
 
 
@@ -254,12 +254,11 @@ awakening.sentiment <- count(awakening.sentiment, sentiment, index=document)
 awakening.sentiment <- spread(awakening.sentiment, sentiment, n, fill=0)
 awakening.sentiment$polarity <- awakening.sentiment$positive - awakening.sentiment$negative
 awakening.sentiment$pos <- ifelse(awakening.sentiment$polarity >=0, "pos", "neg")
-ggplot(awakening.sentiment, aes(x=index, y=polarity, fill=pos))+geom_bar(stat="identity", position="identity", width=1)
-awakening.smooth <- ggplot(awakening.sentiment, aes(index, polarity))
-
+ggplot(awakening.sentiment, aes(x=index, y=polarity, fill=pos))+geom_bar(stat="identity", position="identity", width=1)+
+  theme_bw()
+awakening.smooth <- ggplot(awakening.sentiment, aes(index, polarity))+
+  theme_bw()
 (p2<-awakening.smooth + stat_smooth())
-
-
 ```
 
 Polarity timeline of Aspern:
@@ -288,9 +287,9 @@ aspern.sentiment <- count(aspern.sentiment, sentiment, index=document)
 aspern.sentiment <- spread(aspern.sentiment, sentiment, n, fill=0)
 aspern.sentiment$polarity <- aspern.sentiment$positive - aspern.sentiment$negative
 aspern.sentiment$pos <- ifelse(aspern.sentiment$polarity >=0, "pos", "neg")
-ggplot(aspern.sentiment, aes(x=index, y=polarity, fill=pos))+geom_bar(stat="identity", position="identity", width=1)
-aspern.smooth <- ggplot(aspern.sentiment, aes(index, polarity))
-
+ggplot(aspern.sentiment, aes(x=index, y=polarity, fill=pos))+geom_bar(stat="identity", position="identity", width=1)+theme_bw()
+aspern.smooth <- ggplot(aspern.sentiment, aes(index, polarity))+
+  theme_bw()
 (p3<-aspern.smooth + stat_smooth())
 ```
 

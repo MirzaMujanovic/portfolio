@@ -288,7 +288,10 @@ Since our data set contains information about the time Tweets are posted, I was 
 
 search_term <- '#carbonfootprint OR #co2'
 by <- 'hour'
-p <- ts_plot(carbon_tweets, by = by, trim = 2) + geom_point(col = "#00acee") + theme_minimal() + labs(title = paste0("Tweets with ",search_term," by ",by),x = 'Date', y = 'Count')
+p <- ts_plot(carbon_tweets, by = by, trim = 2) +
+  geom_point(col = "#00acee") +
+  theme_bw() + 
+  labs(title = paste0("Tweets with ",search_term," by ",by),x = 'Date', y = 'Count')
 ggplotly(p)
 ```
 
@@ -306,12 +309,12 @@ p <- carbon_tweets_words %>%
   mutate(word = reorder(word, n)) %>%
   ggplot(aes(x = word, y = n)) +
   geom_col(fill="deepskyblue") +
-  theme_minimal()+
+  theme_bw()+
   xlab(NULL) +
   coord_flip() +
   labs(x = "Count",
        y = "Unique words",
-       title = "Count of unique words found in tweets")
+       title = "Count of Unique Words Found in Tweets")
 ggplotly(p)
 ```
 
@@ -402,7 +405,7 @@ wordcloud(words = review.d$word, freq = review.d$freq,
                max.words = 200,
                min.freq = 10,
                random.order=FALSE, rot.per=0.15,
-               colors=brewer.pal(8, "Dark2"), scale=c(8,.3), vfont=c("sans serif","plain"))
+               colors=brewer.pal(8, "Dark2"))
 ```
 
 ```{r,echo=FALSE, out.width="90%",fig.align='center',eval=FALSE}
@@ -426,15 +429,14 @@ library(wordcloud)
 library(reshape2)
 par(mar = rep(0, 4))
 set.seed(1234)
-p<-carbon_tweets_words%>%
+(p<-carbon_tweets_words%>%
   inner_join(get_sentiments("bing")) %>%
   count(word, sentiment,sort = TRUE) %>%
   acast(word ~ sentiment, value.var = "n", fill = 0) %>%
   comparison.cloud(colors = c("darkred","darkgreen"),
                    max.words = 400,
                    min.freq= 10,
-                   scale = c(4.0,0.25))
-p
+                   scale = c(4.0,0.25)))
 ```
 
 ```{r,echo=FALSE, out.width="80%",fig.align='center',eval=FALSE}
@@ -470,12 +472,12 @@ associations <- as.data.frame(associations)
 associations$terms <- row.names(associations)
 associations$terms <- factor(associations$terms, levels=associations$terms)
 
-assoc_globalwarming <- ggplot(associations, aes(y=terms)) + geom_point (aes(x=globalwarming), data=associations, size=0.01)+
-  theme_gdocs()+ geom_text(aes(x=globalwarming, label=globalwarming),
-                           colour="red", hjust=-.5, size=3)+
+assoc_globalwarming <- ggplot(associations, aes(y=terms)) + 
+  geom_point(aes(x=globalwarming), data=associations, size=0.01)+
+  geom_text(aes(x=globalwarming, label=globalwarming),colour="red", hjust=-.5, size=3)+
   labs(title = "Terms correlated with the term 'globalwarming' (corr > 0.6)")+
-  theme(text=element_text(size=8), 
-        axis.title.y=element_blank())
+  theme(text=element_text(size=8),axis.title.y=element_blank())+
+  theme_bw()
 ggplotly(assoc_globalwarming)
 ```
 
@@ -486,12 +488,12 @@ associations <- as.data.frame(associations)
 associations$terms <- row.names(associations)
 associations$terms <- factor(associations$terms, levels=associations$terms)
 
-assoc_lose <- ggplot(associations, aes(y=terms)) + geom_point (aes(x=lose), data=associations, size=0.01)+
-  theme_gdocs()+ geom_text(aes(x=lose, label=lose),
-                           colour="red", hjust=-.5, size=3)+
+assoc_lose <- ggplot(associations, aes(y=terms)) + 
+  geom_point (aes(x=lose), data=associations, size=0.01)+
+  geom_text(aes(x=lose, label=lose),colour="red", hjust=-.5, size=3)+
   labs(title = "Terms correlated with the term 'lose' (corr > 0.6)")+
-  theme(text=element_text(size=8), 
-        axis.title.y=element_blank())
+  theme(text=element_text(size=8),axis.title.y=element_blank())+
+  theme_bw()
 ggplotly(assoc_lose)
 ```
 
@@ -560,7 +562,11 @@ pivot <- sentiment %>%
 
 
 #Plot
-p <- ggplot(pivot[-1,], aes(x = hour, y = sentiment)) + geom_line(group = 1, color="deepskyblue") + geom_point() + theme_minimal() + labs(title = paste0('Average sentiment of tweetings mentioning "',search_term,'"'),x = 'Date', y = 'Sentiment', caption = 'Source: Twitter API')
+p <- ggplot(pivot[-1,], aes(x = hour, y = sentiment)) + 
+  geom_line(group = 1, color="deepskyblue") + 
+  geom_point() + 
+  theme_bw() + 
+  labs(title = paste0('Average sentiment of tweetings mentioning "',search_term,'"'),x = 'Date', y = 'Sentiment', caption = 'Source: Twitter API')
 
 ggplotly(p)
 ```
@@ -674,7 +680,12 @@ In this interactive graph I manage to identify Tweets with their text that were 
 ```{r,error=FALSE, message=FALSE, warning=FALSE}
 # Plotly
 carbon_tweets$created_at <-as.POSIXct(strptime(carbon_tweets$created_at, format="%Y-%m-%d"))
-p<-ggplot(carbon_tweets, aes(x=created_at, y=retweet_count, col=retweet_count, size=retweet_count, retweet_text=retweet_text, created_at=created_at, retweet_name=retweet_name))+geom_point() +xlab(label="Date")+ylab(label="Retweet count")+ggtitle(label="Top retweeted tweets")
+p<-ggplot(carbon_tweets, aes(x=created_at, y=retweet_count, col=retweet_count, size=retweet_count, retweet_text=retweet_text, created_at=created_at, retweet_name=retweet_name))+
+  geom_point()+
+  xlab(label="Date")+
+  ylab(label="Retweet count")+
+  ggtitle(label="Top Retweeted Tweets - Hover Over to See Text")+
+  theme_bw()
 
 ggplotly(p,tooltip = c("retweet_text","retweet_name"))
 ```
