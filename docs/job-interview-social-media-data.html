@@ -51,13 +51,6 @@
 <script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
 <link href="libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.0/anchor-sections.js"></script>
-<script src="libs/htmlwidgets-1.5.2/htmlwidgets.js"></script>
-<script src="libs/plotly-binding-4.9.2.1/plotly.js"></script>
-<script src="libs/typedarray-0.1/typedarray.min.js"></script>
-<link href="libs/crosstalk-1.1.0.1/css/crosstalk.css" rel="stylesheet" />
-<script src="libs/crosstalk-1.1.0.1/js/crosstalk.min.js"></script>
-<link href="libs/plotly-htmlwidgets-css-1.52.2/plotly-htmlwidgets.css" rel="stylesheet" />
-<script src="libs/plotly-main-1.52.2/plotly-latest.min.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -295,7 +288,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="job-interview-social-media-data" class="section level1">
 <h1><span class="header-section-number">4</span> Job-Interview: Social Media Data</h1>
-<div class="figure" style="text-align: center"><span id="fig:unnamed-chunk-85"></span>
+<div class="figure" style="text-align: center"><span id="fig:unnamed-chunk-1"></span>
 <img src="Graphics/zealpath.jpg" alt="Foto from Google" width="50%" />
 <p class="caption">
 Figure 4.1: Foto from Google
@@ -307,19 +300,42 @@ Figure 4.1: Foto from Google
 <p><em>In our team of data scientists, you will become part of the human layer that develops specialized expertise for organizations, we explore hypotheses and dig deeper into big data assets and uncover actionable insights.</em></p>
 <p><em>This assignment is designed to give you a glimpse of some of the challenges you will be facing in this role. Please be aware there are no perfect solutions - for us, it’s more important to see how you find solutions, process your ideas, structure your thoughts and how you make your decision paths.</em></p>
 <p><em>Be creative but realistic about what’s possible. We are thrilled to get to know a bit more about the way you solve tasks.</em></p>
+<p><strong>Task</strong></p>
+<p>Using the file provided in the resources section the objective of this task is to analyze an Excel dataset and answer some questions.</p>
+<ol style="list-style-type: lower-alpha">
+<li>Questions:</li>
+</ol>
+<ul>
+<li>How many authors have interacted in the database?<br />
+</li>
+<li>Which one is the most used media?<br />
+</li>
+<li>What is the percentage of each used media?<br />
+</li>
+<li>What is the percentage of positive, negative and neutral comments?<br />
+</li>
+<li>What is the average sentiment in Twitter?</li>
+</ul>
+<ol start="2" style="list-style-type: lower-alpha">
+<li>Make a plot of the database using 3 variables. Two of them are provided here.</li>
+</ol>
+<ul>
+<li>Media: Twitter, Facebook and Instagram.</li>
+<li>Visibility: total of comments and average sentiment.</li>
+</ul>
 </div>
 <div id="data-2" class="section level2">
 <h2><span class="header-section-number">4.1</span> Data</h2>
-<div class="sourceCode" id="cb100"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb100-1"><a href="job-interview-social-media-data.html#cb100-1"></a><span class="kw">library</span>(XML)</span>
-<span id="cb100-2"><a href="job-interview-social-media-data.html#cb100-2"></a><span class="kw">library</span>(tibble)</span>
-<span id="cb100-3"><a href="job-interview-social-media-data.html#cb100-3"></a><span class="kw">library</span>(tidyverse)</span>
-<span id="cb100-4"><a href="job-interview-social-media-data.html#cb100-4"></a><span class="kw">library</span>(readr)</span>
-<span id="cb100-5"><a href="job-interview-social-media-data.html#cb100-5"></a><span class="kw">library</span>(kableExtra)</span>
-<span id="cb100-6"><a href="job-interview-social-media-data.html#cb100-6"></a><span class="kw">library</span>(ggplot2)</span>
-<span id="cb100-7"><a href="job-interview-social-media-data.html#cb100-7"></a><span class="kw">library</span>(plotly)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="job-interview-social-media-data.html#cb1-1"></a><span class="kw">library</span>(XML)</span>
+<span id="cb1-2"><a href="job-interview-social-media-data.html#cb1-2"></a><span class="kw">library</span>(tibble)</span>
+<span id="cb1-3"><a href="job-interview-social-media-data.html#cb1-3"></a><span class="kw">library</span>(tidyverse)</span>
+<span id="cb1-4"><a href="job-interview-social-media-data.html#cb1-4"></a><span class="kw">library</span>(readr)</span>
+<span id="cb1-5"><a href="job-interview-social-media-data.html#cb1-5"></a><span class="kw">library</span>(kableExtra)</span>
+<span id="cb1-6"><a href="job-interview-social-media-data.html#cb1-6"></a><span class="kw">library</span>(ggplot2)</span>
+<span id="cb1-7"><a href="job-interview-social-media-data.html#cb1-7"></a><span class="kw">library</span>(plotly)</span></code></pre></div>
 <p>As usual, we first load in the data by using <code>readxl_xlsx()</code> function and take a glimpse at it:</p>
-<div class="sourceCode" id="cb101"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb101-1"><a href="job-interview-social-media-data.html#cb101-1"></a>data&lt;-readxl<span class="op">::</span><span class="kw">read_xlsx</span>(<span class="st">&quot;data/Alto-Case_Study_Dataset (1).xlsx&quot;</span>)</span>
-<span id="cb101-2"><a href="job-interview-social-media-data.html#cb101-2"></a><span class="kw">glimpse</span>(data)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="job-interview-social-media-data.html#cb2-1"></a>data&lt;-readxl<span class="op">::</span><span class="kw">read_xlsx</span>(<span class="st">&quot;data/Alto-Case_Study_Dataset (1).xlsx&quot;</span>)</span>
+<span id="cb2-2"><a href="job-interview-social-media-data.html#cb2-2"></a><span class="kw">glimpse</span>(data)</span></code></pre></div>
 <pre><code>## Rows: 4,287
 ## Columns: 12
 ## $ ID                 &lt;dbl&gt; 109537653, 109556421, 109537642, 109543173, 1095...
@@ -335,7 +351,7 @@ Figure 4.1: Foto from Google
 ## $ `ORIG-ID`          &lt;chr&gt; &quot;603946276951031808&quot;, &quot;603946202216955904&quot;, &quot;603...
 ## $ SENTIMENT          &lt;dbl&gt; 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0,...</code></pre>
 <p>The data has 12 features and 4287 observations. Let us inspect missing values:</p>
-<div class="sourceCode" id="cb103"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb103-1"><a href="job-interview-social-media-data.html#cb103-1"></a><span class="kw">apply</span>(<span class="kw">is.na</span>(data),<span class="dv">2</span>,sum)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="job-interview-social-media-data.html#cb4-1"></a><span class="kw">apply</span>(<span class="kw">is.na</span>(data),<span class="dv">2</span>,sum)</span></code></pre></div>
 <pre><code>##               ID           Autors            TITLE             LINK 
 ##                0                0                0                0 
 ##             BODY          PUBDATE PERSONAL-WEBSITE          COUNTRY 
@@ -343,8 +359,15 @@ Figure 4.1: Foto from Google
 ##     PUBLISHER-ID   PUBLISHER-NAME          ORIG-ID        SENTIMENT 
 ##                0                0                0                0</code></pre>
 <p>There are 5 missing entries in “BODY” column and 15 in “PERSONAL-WEBISTE”. Consequently, we will remove these entries from the data set.</p>
-<div class="sourceCode" id="cb105"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb105-1"><a href="job-interview-social-media-data.html#cb105-1"></a>data&lt;-(data[<span class="kw">complete.cases</span>(data), ])</span>
-<span id="cb105-2"><a href="job-interview-social-media-data.html#cb105-2"></a>data</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="job-interview-social-media-data.html#cb6-1"></a>data&lt;-(data[<span class="kw">complete.cases</span>(data), ])</span>
+<span id="cb6-2"><a href="job-interview-social-media-data.html#cb6-2"></a>data</span></code></pre></div>
+<pre><code>## Warning: `...` is not empty.
+## 
+## We detected these problematic arguments:
+## * `needs_dots`
+## 
+## These dots only exist to allow future extensions and should be empty.
+## Did you misspecify an argument?</code></pre>
 <pre><code>## # A tibble: 4,267 x 12
 ##        ID Autors TITLE LINK  BODY  PUBDATE             `PERSONAL-WEBSI~ COUNTRY
 ##     &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;dttm&gt;              &lt;chr&gt;            &lt;chr&gt;  
@@ -361,7 +384,7 @@ Figure 4.1: Foto from Google
 ## # ... with 4,257 more rows, and 4 more variables: `PUBLISHER-ID` &lt;dbl&gt;,
 ## #   `PUBLISHER-NAME` &lt;chr&gt;, `ORIG-ID` &lt;chr&gt;, SENTIMENT &lt;dbl&gt;</code></pre>
 <p>Finally, our data has the following structure:</p>
-<div class="sourceCode" id="cb107"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb107-1"><a href="job-interview-social-media-data.html#cb107-1"></a><span class="kw">glimpse</span>(data)</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="job-interview-social-media-data.html#cb9-1"></a><span class="kw">glimpse</span>(data)</span></code></pre></div>
 <pre><code>## Rows: 4,267
 ## Columns: 12
 ## $ ID                 &lt;dbl&gt; 109537653, 109556421, 109537642, 109543173, 1095...
@@ -382,19 +405,19 @@ Figure 4.1: Foto from Google
 <p>My first task is to identify the number of authors who had interaction with the database.
 In order to do so, we will use column “Autors”. This column has a “character” class.
 Let us inspect number of authors asked:</p>
-<div class="sourceCode" id="cb109"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb109-1"><a href="job-interview-social-media-data.html#cb109-1"></a><span class="co"># Total number of interactions interacted</span></span>
-<span id="cb109-2"><a href="job-interview-social-media-data.html#cb109-2"></a><span class="kw">length</span>(data<span class="op">$</span>Autors)</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="job-interview-social-media-data.html#cb11-1"></a><span class="co"># Total number of interactions interacted</span></span>
+<span id="cb11-2"><a href="job-interview-social-media-data.html#cb11-2"></a><span class="kw">length</span>(data<span class="op">$</span>Autors)</span></code></pre></div>
 <pre><code>## [1] 4267</code></pre>
-<div class="sourceCode" id="cb111"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb111-1"><a href="job-interview-social-media-data.html#cb111-1"></a><span class="co"># Number of authors interacted with the data base</span></span>
-<span id="cb111-2"><a href="job-interview-social-media-data.html#cb111-2"></a><span class="kw">length</span>(<span class="kw">unique</span>(data<span class="op">$</span>Autors))</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="job-interview-social-media-data.html#cb13-1"></a><span class="co"># Number of authors interacted with the data base</span></span>
+<span id="cb13-2"><a href="job-interview-social-media-data.html#cb13-2"></a><span class="kw">length</span>(<span class="kw">unique</span>(data<span class="op">$</span>Autors))</span></code></pre></div>
 <pre><code>## [1] 2672</code></pre>
 <p>Out of total 4267 interactions, 2672 are unique. Thus, we can say that the number of unique interactions is 2672.</p>
-<div class="sourceCode" id="cb113"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb113-1"><a href="job-interview-social-media-data.html#cb113-1"></a><span class="co"># Authors</span></span>
-<span id="cb113-2"><a href="job-interview-social-media-data.html#cb113-2"></a>(task1&lt;-<span class="kw">as.data.frame</span>(<span class="kw">table</span>(data<span class="op">$</span>Autors)) <span class="op">%&gt;%</span></span>
-<span id="cb113-3"><a href="job-interview-social-media-data.html#cb113-3"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">Authors=</span>Var1, <span class="dt">Count=</span>Freq) <span class="op">%&gt;%</span></span>
-<span id="cb113-4"><a href="job-interview-social-media-data.html#cb113-4"></a><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(Count))) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb113-5"><a href="job-interview-social-media-data.html#cb113-5"></a><span class="st">  </span><span class="kw">head</span>(<span class="dv">10</span>)<span class="op">%&gt;%</span><span class="st"> </span>kableExtra<span class="op">::</span><span class="kw">kable</span>(<span class="dt">escape =</span> T) <span class="op">%&gt;%</span></span>
-<span id="cb113-6"><a href="job-interview-social-media-data.html#cb113-6"></a><span class="st">  </span><span class="kw">kable_paper</span>(<span class="kw">c</span>(<span class="st">&quot;hover&quot;</span>), <span class="dt">full_width =</span> F)</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="job-interview-social-media-data.html#cb15-1"></a><span class="co"># Authors</span></span>
+<span id="cb15-2"><a href="job-interview-social-media-data.html#cb15-2"></a>(task1&lt;-<span class="kw">as.data.frame</span>(<span class="kw">table</span>(data<span class="op">$</span>Autors)) <span class="op">%&gt;%</span></span>
+<span id="cb15-3"><a href="job-interview-social-media-data.html#cb15-3"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">Authors=</span>Var1, <span class="dt">Count=</span>Freq) <span class="op">%&gt;%</span></span>
+<span id="cb15-4"><a href="job-interview-social-media-data.html#cb15-4"></a><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(Count))) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb15-5"><a href="job-interview-social-media-data.html#cb15-5"></a><span class="st">  </span><span class="kw">head</span>(<span class="dv">10</span>)<span class="op">%&gt;%</span><span class="st"> </span>kableExtra<span class="op">::</span><span class="kw">kable</span>(<span class="dt">escape =</span> T) <span class="op">%&gt;%</span></span>
+<span id="cb15-6"><a href="job-interview-social-media-data.html#cb15-6"></a><span class="st">  </span><span class="kw">kable_paper</span>(<span class="kw">c</span>(<span class="st">&quot;hover&quot;</span>), <span class="dt">full_width =</span> F)</span></code></pre></div>
 <table class=" lightable-paper lightable-hover" style='font-family: "Arial Narrow", arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;'>
 <thead>
 <tr>
@@ -489,20 +512,20 @@ JimGilroy
 </tr>
 </tbody>
 </table>
-<p>Let us make a visualisation of the table:</p>
-<div class="sourceCode" id="cb114"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb114-1"><a href="job-interview-social-media-data.html#cb114-1"></a><span class="kw">library</span>(ggplot2)</span>
-<span id="cb114-2"><a href="job-interview-social-media-data.html#cb114-2"></a>task1 <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb114-3"><a href="job-interview-social-media-data.html#cb114-3"></a><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(Count)) <span class="op">%&gt;%</span></span>
-<span id="cb114-4"><a href="job-interview-social-media-data.html#cb114-4"></a><span class="st">  </span><span class="kw">head</span>(<span class="dv">10</span>) <span class="op">%&gt;%</span></span>
-<span id="cb114-5"><a href="job-interview-social-media-data.html#cb114-5"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x=</span><span class="kw">reorder</span>(Authors,Count),<span class="dt">y=</span>Count,<span class="dt">fill=</span>Authors)) <span class="op">+</span></span>
-<span id="cb114-6"><a href="job-interview-social-media-data.html#cb114-6"></a><span class="st">  </span><span class="kw">geom_bar</span>(<span class="dt">stat=</span><span class="st">&quot;identity&quot;</span>)<span class="op">+</span></span>
-<span id="cb114-7"><a href="job-interview-social-media-data.html#cb114-7"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&quot;Authors&quot;</span>,<span class="dt">y=</span><span class="st">&quot;Count&quot;</span>,<span class="dt">title =</span> <span class="st">&quot;Top 10 Most Active Authors on Twitter&quot;</span>,</span>
-<span id="cb114-8"><a href="job-interview-social-media-data.html#cb114-8"></a>       <span class="dt">subtitle =</span> <span class="st">&quot;O2 is significantly ahead in comparison to the rest of authors.&quot;</span>)<span class="op">+</span></span>
-<span id="cb114-9"><a href="job-interview-social-media-data.html#cb114-9"></a><span class="st">  </span><span class="kw">coord_flip</span>()<span class="op">+</span></span>
-<span id="cb114-10"><a href="job-interview-social-media-data.html#cb114-10"></a><span class="st">  </span><span class="kw">theme_bw</span>()<span class="op">+</span></span>
-<span id="cb114-11"><a href="job-interview-social-media-data.html#cb114-11"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>)</span></code></pre></div>
-<p><img src="main_files/figure-html/unnamed-chunk-93-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>The most active authors on Twitter are:</p>
+<p>As an extra effort, let us identify the most active authors:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="job-interview-social-media-data.html#cb16-1"></a><span class="kw">library</span>(ggplot2)</span>
+<span id="cb16-2"><a href="job-interview-social-media-data.html#cb16-2"></a>task1 <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb16-3"><a href="job-interview-social-media-data.html#cb16-3"></a><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(Count)) <span class="op">%&gt;%</span></span>
+<span id="cb16-4"><a href="job-interview-social-media-data.html#cb16-4"></a><span class="st">  </span><span class="kw">head</span>(<span class="dv">10</span>) <span class="op">%&gt;%</span></span>
+<span id="cb16-5"><a href="job-interview-social-media-data.html#cb16-5"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x=</span><span class="kw">reorder</span>(Authors,Count),<span class="dt">y=</span>Count,<span class="dt">fill=</span>Authors)) <span class="op">+</span></span>
+<span id="cb16-6"><a href="job-interview-social-media-data.html#cb16-6"></a><span class="st">  </span><span class="kw">geom_bar</span>(<span class="dt">stat=</span><span class="st">&quot;identity&quot;</span>)<span class="op">+</span></span>
+<span id="cb16-7"><a href="job-interview-social-media-data.html#cb16-7"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&quot;Authors&quot;</span>,<span class="dt">y=</span><span class="st">&quot;Count&quot;</span>,<span class="dt">title =</span> <span class="st">&quot;Top 10 Most Active Authors&quot;</span>,</span>
+<span id="cb16-8"><a href="job-interview-social-media-data.html#cb16-8"></a>       <span class="dt">subtitle =</span> <span class="st">&quot;O2 is significantly ahead in comparison to the rest of authors.&quot;</span>)<span class="op">+</span></span>
+<span id="cb16-9"><a href="job-interview-social-media-data.html#cb16-9"></a><span class="st">  </span><span class="kw">coord_flip</span>()<span class="op">+</span></span>
+<span id="cb16-10"><a href="job-interview-social-media-data.html#cb16-10"></a><span class="st">  </span><span class="kw">theme_bw</span>()<span class="op">+</span></span>
+<span id="cb16-11"><a href="job-interview-social-media-data.html#cb16-11"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>)</span></code></pre></div>
+<p><img src="main_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>The most active authors are:</p>
 <ul>
 <li>“O2” - as the most active by far,</li>
 <li>“SoldoutGigs” and “O2JobsFeed” - follows after “O2”.</li>
@@ -510,13 +533,14 @@ JimGilroy
 </div>
 <div id="which-one-is-the-most-used-media" class="section level2">
 <h2><span class="header-section-number">4.3</span> Which one is the most used media?</h2>
-<div class="sourceCode" id="cb115"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb115-1"><a href="job-interview-social-media-data.html#cb115-1"></a>media &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(<span class="kw">table</span>(data<span class="op">$</span><span class="st">`</span><span class="dt">PUBLISHER-NAME</span><span class="st">`</span>))</span>
-<span id="cb115-2"><a href="job-interview-social-media-data.html#cb115-2"></a><span class="kw">colnames</span>(media) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Media&quot;</span>,<span class="st">&quot;Freq&quot;</span>)</span>
-<span id="cb115-3"><a href="job-interview-social-media-data.html#cb115-3"></a></span>
-<span id="cb115-4"><a href="job-interview-social-media-data.html#cb115-4"></a><span class="co"># Top 10 media used</span></span>
-<span id="cb115-5"><a href="job-interview-social-media-data.html#cb115-5"></a>media &lt;-<span class="st"> </span><span class="kw">head</span>(media[<span class="kw">order</span>(media<span class="op">$</span>Freq,<span class="dt">decreasing =</span> T),],<span class="dv">10</span>)</span>
-<span id="cb115-6"><a href="job-interview-social-media-data.html#cb115-6"></a>media<span class="op">%&gt;%</span><span class="st"> </span>kableExtra<span class="op">::</span><span class="kw">kable</span>(<span class="dt">escape =</span> T) <span class="op">%&gt;%</span></span>
-<span id="cb115-7"><a href="job-interview-social-media-data.html#cb115-7"></a><span class="st">  </span>kableExtra<span class="op">::</span><span class="kw">kable_paper</span>(<span class="kw">c</span>(<span class="st">&quot;hover&quot;</span>), <span class="dt">full_width =</span> F)</span></code></pre></div>
+<p>Next, we should find out which media was the most used one.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="job-interview-social-media-data.html#cb17-1"></a>media &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(<span class="kw">table</span>(data<span class="op">$</span><span class="st">`</span><span class="dt">PUBLISHER-NAME</span><span class="st">`</span>))</span>
+<span id="cb17-2"><a href="job-interview-social-media-data.html#cb17-2"></a><span class="kw">colnames</span>(media) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Media&quot;</span>,<span class="st">&quot;Freq&quot;</span>)</span>
+<span id="cb17-3"><a href="job-interview-social-media-data.html#cb17-3"></a></span>
+<span id="cb17-4"><a href="job-interview-social-media-data.html#cb17-4"></a><span class="co"># Top 10 media used</span></span>
+<span id="cb17-5"><a href="job-interview-social-media-data.html#cb17-5"></a>media &lt;-<span class="st"> </span><span class="kw">head</span>(media[<span class="kw">order</span>(media<span class="op">$</span>Freq,<span class="dt">decreasing =</span> T),],<span class="dv">10</span>)</span>
+<span id="cb17-6"><a href="job-interview-social-media-data.html#cb17-6"></a>media<span class="op">%&gt;%</span><span class="st"> </span>kableExtra<span class="op">::</span><span class="kw">kable</span>(<span class="dt">escape =</span> T) <span class="op">%&gt;%</span></span>
+<span id="cb17-7"><a href="job-interview-social-media-data.html#cb17-7"></a><span class="st">  </span>kableExtra<span class="op">::</span><span class="kw">kable_paper</span>(<span class="kw">c</span>(<span class="st">&quot;hover&quot;</span>), <span class="dt">full_width =</span> F)</span></code></pre></div>
 <table class=" lightable-paper lightable-hover" style='font-family: "Arial Narrow", arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;'>
 <thead>
 <tr>
@@ -632,21 +656,21 @@ Google+
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb116"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb116-1"><a href="job-interview-social-media-data.html#cb116-1"></a><span class="co"># Plot</span></span>
-<span id="cb116-2"><a href="job-interview-social-media-data.html#cb116-2"></a><span class="kw">ggplot</span>(media,<span class="kw">aes</span>(<span class="dt">fill=</span>Media)) <span class="op">+</span></span>
-<span id="cb116-3"><a href="job-interview-social-media-data.html#cb116-3"></a><span class="st">  </span><span class="kw">geom_bar</span>(<span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>,<span class="kw">aes</span>(<span class="kw">reorder</span>(Media,Freq),Freq)) <span class="op">+</span></span>
-<span id="cb116-4"><a href="job-interview-social-media-data.html#cb116-4"></a><span class="st">  </span><span class="kw">coord_flip</span>() <span class="op">+</span></span>
-<span id="cb116-5"><a href="job-interview-social-media-data.html#cb116-5"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>)<span class="op">+</span></span>
-<span id="cb116-6"><a href="job-interview-social-media-data.html#cb116-6"></a><span class="st">  </span><span class="kw">scale_y_log10</span>()<span class="op">+</span></span>
-<span id="cb116-7"><a href="job-interview-social-media-data.html#cb116-7"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&quot;Media&quot;</span>, <span class="dt">y=</span><span class="st">&quot;Count&quot;</span>,<span class="dt">title =</span> <span class="st">&quot;Top 10 Most Used Media&quot;</span>)<span class="op">+</span></span>
-<span id="cb116-8"><a href="job-interview-social-media-data.html#cb116-8"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
-<p><img src="main_files/figure-html/unnamed-chunk-94-1.png" width="672" style="display: block; margin: auto;" /></p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="job-interview-social-media-data.html#cb18-1"></a><span class="co"># Plot</span></span>
+<span id="cb18-2"><a href="job-interview-social-media-data.html#cb18-2"></a><span class="kw">ggplot</span>(media,<span class="kw">aes</span>(<span class="dt">fill=</span>Media)) <span class="op">+</span></span>
+<span id="cb18-3"><a href="job-interview-social-media-data.html#cb18-3"></a><span class="st">  </span><span class="kw">geom_bar</span>(<span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>,<span class="kw">aes</span>(<span class="kw">reorder</span>(Media,Freq),Freq)) <span class="op">+</span></span>
+<span id="cb18-4"><a href="job-interview-social-media-data.html#cb18-4"></a><span class="st">  </span><span class="kw">coord_flip</span>() <span class="op">+</span></span>
+<span id="cb18-5"><a href="job-interview-social-media-data.html#cb18-5"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>)<span class="op">+</span></span>
+<span id="cb18-6"><a href="job-interview-social-media-data.html#cb18-6"></a><span class="st">  </span><span class="kw">scale_y_log10</span>()<span class="op">+</span></span>
+<span id="cb18-7"><a href="job-interview-social-media-data.html#cb18-7"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&quot;Media&quot;</span>, <span class="dt">y=</span><span class="st">&quot;Count&quot;</span>,<span class="dt">title =</span> <span class="st">&quot;Top 10 Most Used Media&quot;</span>)<span class="op">+</span></span>
+<span id="cb18-8"><a href="job-interview-social-media-data.html#cb18-8"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
+<p><img src="main_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <p>The most used media is Twitter, followed by GiffGaff and Facebook.</p>
-<div class="sourceCode" id="cb117"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb117-1"><a href="job-interview-social-media-data.html#cb117-1"></a>media_perc&lt;-<span class="kw">as.data.frame</span>(<span class="kw">prop.table</span>(<span class="kw">table</span>(data<span class="op">$</span><span class="st">`</span><span class="dt">PUBLISHER-NAME</span><span class="st">`</span>)))</span>
-<span id="cb117-2"><a href="job-interview-social-media-data.html#cb117-2"></a>media_perc<span class="op">$</span>Freq &lt;-<span class="st"> </span><span class="kw">round</span>(media_perc<span class="op">$</span>Freq<span class="op">*</span><span class="dv">100</span>,<span class="dv">4</span>)</span>
-<span id="cb117-3"><a href="job-interview-social-media-data.html#cb117-3"></a><span class="kw">head</span>(media_perc[<span class="kw">order</span>(media_perc<span class="op">$</span>Freq,<span class="dt">decreasing =</span> T),],<span class="dv">10</span>) <span class="op">%&gt;%</span></span>
-<span id="cb117-4"><a href="job-interview-social-media-data.html#cb117-4"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">Author=</span>Var1,<span class="dt">Percentage=</span>Freq)<span class="op">%&gt;%</span><span class="st"> </span><span class="kw">kable</span>(<span class="dt">escape =</span> T) <span class="op">%&gt;%</span></span>
-<span id="cb117-5"><a href="job-interview-social-media-data.html#cb117-5"></a><span class="st">  </span><span class="kw">kable_paper</span>(<span class="kw">c</span>(<span class="st">&quot;hover&quot;</span>), <span class="dt">full_width =</span> F)</span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="job-interview-social-media-data.html#cb19-1"></a>media_perc&lt;-<span class="kw">as.data.frame</span>(<span class="kw">prop.table</span>(<span class="kw">table</span>(data<span class="op">$</span><span class="st">`</span><span class="dt">PUBLISHER-NAME</span><span class="st">`</span>)))</span>
+<span id="cb19-2"><a href="job-interview-social-media-data.html#cb19-2"></a>media_perc<span class="op">$</span>Freq &lt;-<span class="st"> </span><span class="kw">round</span>(media_perc<span class="op">$</span>Freq<span class="op">*</span><span class="dv">100</span>,<span class="dv">4</span>)</span>
+<span id="cb19-3"><a href="job-interview-social-media-data.html#cb19-3"></a><span class="kw">head</span>(media_perc[<span class="kw">order</span>(media_perc<span class="op">$</span>Freq,<span class="dt">decreasing =</span> T),],<span class="dv">10</span>) <span class="op">%&gt;%</span></span>
+<span id="cb19-4"><a href="job-interview-social-media-data.html#cb19-4"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">Author=</span>Var1,<span class="dt">Percentage=</span>Freq)<span class="op">%&gt;%</span><span class="st"> </span><span class="kw">kable</span>(<span class="dt">escape =</span> T) <span class="op">%&gt;%</span></span>
+<span id="cb19-5"><a href="job-interview-social-media-data.html#cb19-5"></a><span class="st">  </span><span class="kw">kable_paper</span>(<span class="kw">c</span>(<span class="st">&quot;hover&quot;</span>), <span class="dt">full_width =</span> F)</span></code></pre></div>
 <table class=" lightable-paper lightable-hover" style='font-family: "Arial Narrow", arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;'>
 <thead>
 <tr>
@@ -766,10 +790,10 @@ Google+
 </div>
 <div id="what-is-the-percentage-of-positive-negative-and-neutral-comments" class="section level2">
 <h2><span class="header-section-number">4.4</span> What is the percentage of positive, negative and neutral comments?</h2>
-<div class="sourceCode" id="cb118"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb118-1"><a href="job-interview-social-media-data.html#cb118-1"></a><span class="kw">as.data.frame</span>(<span class="kw">prop.table</span>(<span class="kw">table</span>(data<span class="op">$</span>SENTIMENT))<span class="op">*</span><span class="dv">100</span>) <span class="op">%&gt;%</span></span>
-<span id="cb118-2"><a href="job-interview-social-media-data.html#cb118-2"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">Sentiment=</span>Var1,<span class="dt">Percentage=</span>Freq) <span class="op">%&gt;%</span></span>
-<span id="cb118-3"><a href="job-interview-social-media-data.html#cb118-3"></a><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(Percentage))<span class="op">%&gt;%</span><span class="st"> </span><span class="kw">kable</span>(<span class="dt">escape =</span> T) <span class="op">%&gt;%</span></span>
-<span id="cb118-4"><a href="job-interview-social-media-data.html#cb118-4"></a><span class="st">  </span><span class="kw">kable_paper</span>(<span class="kw">c</span>(<span class="st">&quot;hover&quot;</span>), <span class="dt">full_width =</span> F)</span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="job-interview-social-media-data.html#cb20-1"></a><span class="kw">as.data.frame</span>(<span class="kw">prop.table</span>(<span class="kw">table</span>(data<span class="op">$</span>SENTIMENT))<span class="op">*</span><span class="dv">100</span>) <span class="op">%&gt;%</span></span>
+<span id="cb20-2"><a href="job-interview-social-media-data.html#cb20-2"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">Sentiment=</span>Var1,<span class="dt">Percentage=</span>Freq) <span class="op">%&gt;%</span></span>
+<span id="cb20-3"><a href="job-interview-social-media-data.html#cb20-3"></a><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(Percentage))<span class="op">%&gt;%</span><span class="st"> </span><span class="kw">kable</span>(<span class="dt">escape =</span> T) <span class="op">%&gt;%</span></span>
+<span id="cb20-4"><a href="job-interview-social-media-data.html#cb20-4"></a><span class="st">  </span><span class="kw">kable_paper</span>(<span class="kw">c</span>(<span class="st">&quot;hover&quot;</span>), <span class="dt">full_width =</span> F)</span></code></pre></div>
 <table class=" lightable-paper lightable-hover" style='font-family: "Arial Narrow", arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;'>
 <thead>
 <tr>
@@ -824,12 +848,14 @@ Percentage
 </tr>
 </tbody>
 </table>
-<p>Based on the analysis, around 77% of comments are neutral, 12% slightly negative and 11% slightly positive. Percentage of extremely positive or extremely negative comments is in total around 0.8%.</p>
+<p>The range of sentiment scores in the data set spans from -2 (negative sentiment) to +2(positive sentiment). Based on the analysis, around 77% of comments are neutral, 12% slightly negative and 11% slightly positive. Percentage of extremely positive or extremely negative comments is in total around 0.8%.</p>
 </div>
 <div id="what-is-the-average-sentiment-in-twitter" class="section level2">
 <h2><span class="header-section-number">4.5</span> What is the average sentiment in Twitter?</h2>
-<div class="sourceCode" id="cb119"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb119-1"><a href="job-interview-social-media-data.html#cb119-1"></a><span class="kw">mean</span>(data<span class="op">$</span>SENTIMENT)</span></code></pre></div>
+<p>Finally, average sentiment can be easily calculated by addressing the “SENTIMENT” column in the data base with <code>mean()</code> function.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="job-interview-social-media-data.html#cb21-1"></a><span class="kw">mean</span>(data<span class="op">$</span>SENTIMENT)</span></code></pre></div>
 <pre><code>## [1] -0.004452777</code></pre>
+<p>Based on the average sentiment value, comments are rather neutral as the average value is close to 0.</p>
 </div>
 <div id="visalisation-task" class="section level2">
 <h2><span class="header-section-number">4.6</span> Visalisation task</h2>
@@ -843,14 +869,14 @@ Percentage
 <p>First we filtered data to retain publishers such as Twitter, Facebook, Instagram, GiffGaff and O2 UK.
 Subsequently, we pivot the table so that the final sheet look like this (only first 6 rows):</p>
 </div>
-<div class="sourceCode" id="cb121"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb121-1"><a href="job-interview-social-media-data.html#cb121-1"></a>plot&lt;-<span class="kw">subset</span>(data,<span class="st">`</span><span class="dt">PUBLISHER-NAME</span><span class="st">`</span><span class="op">==</span><span class="st">&quot;Twitter&quot;</span> <span class="op">|</span><span class="st"> `</span><span class="dt">PUBLISHER-NAME</span><span class="st">`</span><span class="op">==</span><span class="st">&quot;Facebook&quot;</span> <span class="op">|</span><span class="st"> `</span><span class="dt">PUBLISHER-NAME</span><span class="st">`</span><span class="op">==</span><span class="st">&quot;Instagram&quot;</span> <span class="op">|</span><span class="st"> `</span><span class="dt">PUBLISHER-NAME</span><span class="st">`</span><span class="op">==</span><span class="st">&quot;GiffGaff&quot;</span> <span class="op">|</span><span class="st"> `</span><span class="dt">PUBLISHER-NAME</span><span class="st">`</span><span class="op">==</span><span class="st">&quot;O2 UK&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb121-2"><a href="job-interview-social-media-data.html#cb121-2"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">Publisher=</span><span class="st">`</span><span class="dt">PUBLISHER-NAME</span><span class="st">`</span>,<span class="dt">Sentiment=</span>SENTIMENT) <span class="op">%&gt;%</span></span>
-<span id="cb121-3"><a href="job-interview-social-media-data.html#cb121-3"></a><span class="st">  </span><span class="kw">group_by</span>(Publisher,PUBDATE) <span class="op">%&gt;%</span></span>
-<span id="cb121-4"><a href="job-interview-social-media-data.html#cb121-4"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Date=</span>PUBDATE,</span>
-<span id="cb121-5"><a href="job-interview-social-media-data.html#cb121-5"></a>         <span class="dt">Publisher=</span><span class="kw">as.factor</span>(Publisher))<span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb121-6"><a href="job-interview-social-media-data.html#cb121-6"></a><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">Sentiment=</span><span class="kw">mean</span>(Sentiment))</span>
-<span id="cb121-7"><a href="job-interview-social-media-data.html#cb121-7"></a>plot<span class="op">%&gt;%</span><span class="st"> </span><span class="kw">head</span>()<span class="op">%&gt;%</span><span class="st"> </span><span class="kw">kable</span>(<span class="dt">escape =</span> T) <span class="op">%&gt;%</span></span>
-<span id="cb121-8"><a href="job-interview-social-media-data.html#cb121-8"></a><span class="st">  </span><span class="kw">kable_paper</span>(<span class="kw">c</span>(<span class="st">&quot;hover&quot;</span>), <span class="dt">full_width =</span> F)</span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="job-interview-social-media-data.html#cb23-1"></a>plot&lt;-<span class="kw">subset</span>(data,<span class="st">`</span><span class="dt">PUBLISHER-NAME</span><span class="st">`</span><span class="op">==</span><span class="st">&quot;Twitter&quot;</span> <span class="op">|</span><span class="st"> `</span><span class="dt">PUBLISHER-NAME</span><span class="st">`</span><span class="op">==</span><span class="st">&quot;Facebook&quot;</span> <span class="op">|</span><span class="st"> `</span><span class="dt">PUBLISHER-NAME</span><span class="st">`</span><span class="op">==</span><span class="st">&quot;Instagram&quot;</span> <span class="op">|</span><span class="st"> `</span><span class="dt">PUBLISHER-NAME</span><span class="st">`</span><span class="op">==</span><span class="st">&quot;GiffGaff&quot;</span> <span class="op">|</span><span class="st"> `</span><span class="dt">PUBLISHER-NAME</span><span class="st">`</span><span class="op">==</span><span class="st">&quot;O2 UK&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb23-2"><a href="job-interview-social-media-data.html#cb23-2"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">Publisher=</span><span class="st">`</span><span class="dt">PUBLISHER-NAME</span><span class="st">`</span>,<span class="dt">Sentiment=</span>SENTIMENT) <span class="op">%&gt;%</span></span>
+<span id="cb23-3"><a href="job-interview-social-media-data.html#cb23-3"></a><span class="st">  </span><span class="kw">group_by</span>(Publisher,PUBDATE) <span class="op">%&gt;%</span></span>
+<span id="cb23-4"><a href="job-interview-social-media-data.html#cb23-4"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Date=</span>PUBDATE,</span>
+<span id="cb23-5"><a href="job-interview-social-media-data.html#cb23-5"></a>         <span class="dt">Publisher=</span><span class="kw">as.factor</span>(Publisher))<span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb23-6"><a href="job-interview-social-media-data.html#cb23-6"></a><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">Sentiment=</span><span class="kw">mean</span>(Sentiment))</span>
+<span id="cb23-7"><a href="job-interview-social-media-data.html#cb23-7"></a>plot<span class="op">%&gt;%</span><span class="st"> </span><span class="kw">head</span>()<span class="op">%&gt;%</span><span class="st"> </span><span class="kw">kable</span>(<span class="dt">escape =</span> T) <span class="op">%&gt;%</span></span>
+<span id="cb23-8"><a href="job-interview-social-media-data.html#cb23-8"></a><span class="st">  </span><span class="kw">kable_paper</span>(<span class="kw">c</span>(<span class="st">&quot;hover&quot;</span>), <span class="dt">full_width =</span> F)</span></code></pre></div>
 <table class=" lightable-paper lightable-hover" style='font-family: "Arial Narrow", arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;'>
 <thead>
 <tr>
@@ -937,17 +963,17 @@ Facebook
 <div style="text-align: justify">
 <p>In the first column are publishers we retained. The second column is the exact date and time of publishing the comment. Finally, the last column denotes the sentiment score associated with each comment.</p>
 <p>We are in a position to vizualise sentiment scores across platforms in the given observation time.</p>
-<div class="sourceCode" id="cb122"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb122-1"><a href="job-interview-social-media-data.html#cb122-1"></a>plot <span class="op">%&gt;%</span></span>
-<span id="cb122-2"><a href="job-interview-social-media-data.html#cb122-2"></a><span class="st">  </span><span class="kw">filter</span>(Publisher<span class="op">==</span><span class="st">&quot;Facebook&quot;</span><span class="op">|</span>Publisher<span class="op">==</span><span class="st">&quot;Instagram&quot;</span><span class="op">|</span>Publisher<span class="op">==</span><span class="st">&quot;Twitter&quot;</span>)<span class="op">%&gt;%</span></span>
-<span id="cb122-3"><a href="job-interview-social-media-data.html#cb122-3"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">avg_sentiment=</span><span class="kw">mean</span>(Sentiment))<span class="op">%&gt;%</span></span>
-<span id="cb122-4"><a href="job-interview-social-media-data.html#cb122-4"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> PUBDATE, <span class="dt">y =</span> Sentiment)) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb122-5"><a href="job-interview-social-media-data.html#cb122-5"></a><span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">color =</span> Publisher), <span class="dt">size =</span> <span class="fl">0.5</span>) <span class="op">+</span></span>
-<span id="cb122-6"><a href="job-interview-social-media-data.html#cb122-6"></a><span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> plot<span class="op">$</span>avg_sentiment)<span class="op">+</span></span>
-<span id="cb122-7"><a href="job-interview-social-media-data.html#cb122-7"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;How is sentiment across platform?&quot;</span>,<span class="dt">x=</span><span class="st">&quot;&quot;</span>,<span class="dt">subtitle =</span><span class="st">&quot;Number of comments: FB=177; IG=4; TW=3798&quot;</span>)<span class="op">+</span></span>
-<span id="cb122-8"><a href="job-interview-social-media-data.html#cb122-8"></a><span class="st">  </span><span class="kw">facet_grid</span>(Publisher<span class="op">~</span>.)<span class="op">+</span></span>
-<span id="cb122-9"><a href="job-interview-social-media-data.html#cb122-9"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
-<p><img src="main_files/figure-html/unnamed-chunk-99-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>We could see that Twitter is the most balanced publisher, as the sentiment scores are constant in the time observed. Moreover, Twitter has the biggest count of comments, 3798. Some good news were published on May 27 after 18 PM as the sentiment scores for Twitter, Facebook in this period were extremely positive. Instagram doesn’t seem to be a channel for the company as there are bearly any comments.</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="job-interview-social-media-data.html#cb24-1"></a>plot <span class="op">%&gt;%</span></span>
+<span id="cb24-2"><a href="job-interview-social-media-data.html#cb24-2"></a><span class="st">  </span><span class="kw">filter</span>(Publisher<span class="op">==</span><span class="st">&quot;Facebook&quot;</span><span class="op">|</span>Publisher<span class="op">==</span><span class="st">&quot;Instagram&quot;</span><span class="op">|</span>Publisher<span class="op">==</span><span class="st">&quot;Twitter&quot;</span>)<span class="op">%&gt;%</span></span>
+<span id="cb24-3"><a href="job-interview-social-media-data.html#cb24-3"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">avg_sentiment=</span><span class="kw">mean</span>(Sentiment))<span class="op">%&gt;%</span></span>
+<span id="cb24-4"><a href="job-interview-social-media-data.html#cb24-4"></a><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> PUBDATE, <span class="dt">y =</span> Sentiment)) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb24-5"><a href="job-interview-social-media-data.html#cb24-5"></a><span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">color =</span> Publisher), <span class="dt">size =</span> <span class="dv">1</span>) <span class="op">+</span></span>
+<span id="cb24-6"><a href="job-interview-social-media-data.html#cb24-6"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;What Are Sentiment Scores Across Platforms?&quot;</span>,<span class="dt">x=</span><span class="st">&quot;&quot;</span>,<span class="dt">subtitle =</span><span class="st">&quot;Number of comments: Facebook=177; Instagram=4; Twitter=3798&quot;</span>)<span class="op">+</span></span>
+<span id="cb24-7"><a href="job-interview-social-media-data.html#cb24-7"></a><span class="st">  </span><span class="kw">facet_grid</span>(Publisher<span class="op">~</span>.)<span class="op">+</span></span>
+<span id="cb24-8"><a href="job-interview-social-media-data.html#cb24-8"></a><span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept=</span><span class="kw">mean</span>(plot<span class="op">$</span>Sentiment),<span class="dt">size=</span><span class="fl">0.1</span>,<span class="dt">colour=</span><span class="st">&quot;black&quot;</span>)<span class="op">+</span></span>
+<span id="cb24-9"><a href="job-interview-social-media-data.html#cb24-9"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
+<p><img src="main_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p>Averages for each media channel are depicted as a black horizontal line in each plot. For all three media channels averages are at around 0. We could see that Twitter is the most balanced publisher as the sentiment scores are pretty constant in the observed time frame. Moreover, Twitter has the biggest count of comments, 3798. Some good news were obviously published on May 27 after 18 PM as the sentiment scores for Twitter, Facebook in this period were extremely positive. On the other hand, Instagram doesn’t seem to be a channel for the company as there is barely any activity.</p>
 </div>
 
 </div>
