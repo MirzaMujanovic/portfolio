@@ -5,7 +5,6 @@ fig:unnamed-chunk-49
 fig:unnamed-chunk-85
 fig:unnamed-chunk-100
 fig:unnamed-chunk-118
-fig:unnamed-chunk-140
 emotions-in-online-customer-reviews
 dictionaries-for-nlp
 data-set
@@ -62,17 +61,6 @@ data-partition
 random-forest-model
 evaluating-model
 references
-prediction-with-rfm
-the-problem
-a-possible-solution
-background-information
-recency---frequency---monetary-analysis
-assignment
-visaul-exploration
-response-rate-in-training-data
-prediction-of-response-rate---single-cluster
-prediction-of-response-rate---3-clusters
-reference
 recommender-for-beauty-products
 data-collection
 data-preparation-and-preprocessing
