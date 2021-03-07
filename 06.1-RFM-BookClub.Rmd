@@ -231,7 +231,7 @@ data %>%
 Customers who responded to the "Florence" campaign have on average lower recency than customers who did not respond. All in all, we can conclude that customers who responded to the campaign are, on average, slightly more frequent and recent than customers who did not respond to campaign.
 
 
-## Overall response rate in training data
+## Overall response rate
 
 Now we can start with addressing the following question: What is the response rate for training data customers taken as whole? Let us compare the percentage of customers in the training data set who responded against those who did not.
 
@@ -366,7 +366,7 @@ validation_data %>%
 By visual inspection we could see that predicted response rates are above the the ones in two out of 3 segments.Customers who had response rate at least twice the initial response rate (9%) were expected to have around 25% response rate, but the true response rate is at significantly lower 9.5% response rate. Similarly, the RFM prediction in case of customers who had response rate between 9 and 18% was slightly inaccurate as well(predicted 14.1 % vs 10.4% true response rate). The only case where true response rate exceeded the predicted response rate is the segment with the response rate below 9%.
 
 
-## Lift/Gain chart
+## Efficiency of the predicitions
 
 So far, our analysis helped us identify customer segments who are more or less likely to respond to our campaign. However, in order to determine how effectively we can proceed with our campaign, i.e. target those who are most likely to respond to our campaign, we will construct a gain chart. We aim at selecting a relatively small number of customers and getting a relatively large portion of respondents. For a given number of customers expressed in percentages, the gain curve value on the y-axis will shows us how much better we are doing compared to random choice of customers.
 
