@@ -56,11 +56,11 @@ prediction-with-rfm
 background-information
 recency---frequency---monetary-analysis
 assignment
-visaul-exploration
+visual-exploration
 overall-response-rate
 prediction-of-response-rate
 prediction-of-response-rate-with-3-segments
-efficiency-of-the-predicitions
+efficiency-of-the-predictions
 summary-of-the-solution
 reference
 recommender-for-beauty-products
