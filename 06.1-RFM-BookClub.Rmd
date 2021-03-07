@@ -176,7 +176,7 @@ validation_data  <- data[-trainIndex,]
 ```
 
 
-## Visaul exploration 
+## Visual exploration 
 
 It would be beneficial to inspect relationship between recency, frequency and monetary value in the whole data set before we continue. A quite convenient way to do it is a heatmap. There we can plot all three variables at the same time and inspect the monetary value (= amount spend in the time frame observed) of each customer based on his/her frequency and recency.
 
@@ -197,7 +197,7 @@ set.seed(1)
   theme_bw())
 ```
 
-Unsuprisingly, customers who purchased more frequently generated more revenue compared to those who visited less frequently. However, customers who spent the most are not the most recent ones (= last purchase in 0-2): the heaviest spenders are the frequent ones, but they haven't made a purchase 3 to 6 months. Usually, we assume that the customers who visited the book club in the recent past (0-2 months) are more likely to return compared to those who made a purchase some time ago as most of those could potentially be lost customers. As such, higher revenue would be associated with most recent visits, but we see that is not really the case here. This could be related to the nature of books as products and the fact that they are not frequently purchased items such as daily products for instance. Nevertheless, it would definitively be worth to consider giving incentives to these customers who spent the most and the company has not heard of them for 3-6 months.
+Unsurprisingly, customers who purchased more frequently generated more revenue compared to those who visited less frequently. However, customers who spent the most are not the most recent ones (= last purchase in 0-2): the heaviest spenders are the frequent ones, but they haven't made a purchase 3 to 6 months. Usually, we assume that the customers who visited the book club in the recent past (0-2 months) are more likely to return compared to those who made a purchase some time ago as most of those could potentially be lost customers. As such, higher revenue would be associated with most recent visits, but we see that is not really the case here. This could be related to the nature of books as products and the fact that they are not frequently purchased items such as daily products for instance. Nevertheless, it would definitively be worth to consider giving incentives to these customers who spent the most and the company has not heard of them for 3-6 months.
 
 A legit question for better understanding of our target group would be about the difference in recency of customers who responded to advertising of "Florence".
 
@@ -366,9 +366,9 @@ validation_data %>%
 By visual inspection we could see that predicted response rates are above the the ones in two out of 3 segments.Customers who had response rate at least twice the initial response rate (9%) were expected to have around 25% response rate, but the true response rate is at significantly lower 9.5% response rate. Similarly, the RFM prediction in case of customers who had response rate between 9 and 18% was slightly inaccurate as well(predicted 14.1 % vs 10.4% true response rate). The only case where true response rate exceeded the predicted response rate is the segment with the response rate below 9%.
 
 
-## Efficiency of the predicitions
+## Efficiency of the predictions
 
-So far, our analysis helped us identify customer segments who are more or less likely to respond to our campaign. However, in order to determine how effectively we can proceed with our campaign, i.e. target those who are most likely to respond to our campaign, we will construct a gain chart. We aim at selecting a relatively small number of customers and getting a relatively large portion of respondents. For a given number of customers expressed in percentages, the gain curve value on the y-axis will shows us how much better we are doing compared to random choice of customers.
+So far, our analysis helped us identify customer segments who are more or less likely to respond to our campaign. However, in order to determine how effectively we can proceed with our campaign, i.e. target those who are most likely to respond to our campaign, we will construct a gain chart. We aim at selecting a relatively small number of customers and getting a relatively large portion of respondents. For a given number of customers expressed in percentages, the gain curve value on the y-axis will show us how much better we are doing compared to random choice of customers.
 
 ```{r,echo=FALSE,message=FALSE,warning=FALSE}
 set.seed(1)
@@ -384,7 +384,7 @@ prediction<-validation_data %>%
 head(prediction)
 ```
 
-In order to create such a chart, we will need the information who responded and who did not respond to our mailing offer from the validation set (= "Florence" column), and the information about the expected response rate based on what we did in our training data. Additionally, we will create a cumulative sum, so that with every customer who responded to our mailing offer the cumulative sum increases for 1.
+In order to create such a chart, we will need the information on who responded and who did not respond to our mailing offer from the validation set (= "Florence" column), and the information about the expected response rate based on what we did in our training data. Additionally, we will create a cumulative sum, so that with every customer who responded to our mailing offer the cumulative sum increases by 1.
 
 ```{r,warning=FALSE,message=FALSE,error=FALSE,echo=FALSE}
 (gain_data<-prediction[,c("Florence","Predicted_RR")] %>%
