@@ -32,20 +32,12 @@ In an attempt to combat these trends, some book clubs have begun to offer books 
 carefully tailored to meet their customer segments’ varying needs.
 
 
-## The Problem
+## Background information
+
+A new title, The Art History of Florence, is ready for release. CBC sent a test mailing to a random sample of 4000 customers from its customer base. The customer responses have been collated with past purchase data.
+Each row (or case) in the spreadsheet (other than the header) corresponds to one market test customer. Each column is a variable, with the header row giving the name of the variable.
 
 CBC sent mailings to its club members each month containing the latest offerings. On the surface, CBC appeared very successful: mailing volume was increasing, book selection was diversifying and growing, and their customer database was increasing. However, their bottom-line profits were falling. The decreasing profits led CBC to revisit their original plan of using database marketing to improve mailing yields and to stay profitable.
-
-
-## Background Information 
-
-A new title, The Art History of Florence, is ready for release. CBC sent a test mailing to a random sample of 4000 customers from its customer base. The customer responses have been collated with past purchase data. The dataset was randomly partitioned into three parts: 
-
-* Training Data (1800 customers): initial data to be used to fit models,
-* Validation Data (1400 customers): holdout data used to compare the performance of different models,
-* and Test Data (800 customers): data to be used only after a final model has been selected to estimate the probable performance of the model when it is deployed.
-
-Each row (or case) in the spreadsheet (other than the header) corresponds to one market test customer. Each column is a variable, with the header row giving the name of the variable.
 
 ## Recency - Frequency - Monetary Analysis
 
@@ -59,8 +51,7 @@ In the direct marketing business, the most commonly used variables are the RFM v
 
 The assumption is that the more recent the last purchase, the more products bought from the company in the past, and the more money spent in the past buying the company’s products, the more likely the customer is to purchase the product offered.
 
-The 1800 observations in the dataset were divided into recency, frequency,
-and monetary categories as follows:
+The observations in the dataset were divided into recency, frequency, and monetary categories as follows:
 
 * Recency:
 
@@ -165,7 +156,7 @@ data[1:10,"RFM_score"]
 ```
 
 Now we will proceed with data partition. For that we will use `sample()` function, where we indicate rownames and the number of randomly selected row numbers we want to separate from the remaining data set.
-In our case, out of 4000 rows (Customers), we will randomly assign 2800 to train data set, and the rest to test data.
+In our case, out of 4000 rows (Customers), we will randomly assign 2400 to train data set, and the rest to test data.
 
 ```{r}
 # Train data
@@ -189,7 +180,7 @@ validation_data  <- data[-trainIndex,]
 
 It would be beneficial to inspect relationship between recency, frequency and monetary value in the whole data set before we continue. A quite convenient way to do it is a heatmap. There we can plot all three variables at the same time and inspect the monetary value (= amount spend in the time frame observed) of each customer based on his/her frequency and recency.
 
-```{r,echo=FALSE}
+```{r,echo=FALSE,warning=FALSE,message=FALSE}
 set.seed(1)
 (data %>%
   rename(Revenue=M) %>%
@@ -210,7 +201,7 @@ Unsuprisingly, customers who purchased more frequently generated more revenue co
 
 A legit question for better understanding of our target group would be about the difference in recency of customers who responded to advertising of "Florence".
 
-```{r}
+```{r,echo=FALSE, warning=FALSE, message=FALSE}
 data %>%
   rename(Revenue=M,
          Response=Yes_Florence) %>%
@@ -242,7 +233,7 @@ Customers who responded to the "Florence" campaign have on average lower recency
 
 ## Overall response rate in training data
 
-Now we can start with addressing the following question: **what is the response rate for training data customers taken as whole?** Let us compare the percentage of customers in the training data set who responded against those who did not.
+Now we can start with addressing the following question: What is the response rate for training data customers taken as whole? Let us compare the percentage of customers in the training data set who responded against those who did not.
 
 ```{r,warning=FALSE,echo=FALSE,message=FALSE}
 set.seed(1)
@@ -288,6 +279,7 @@ set.seed(1)
   filter(Response_rate>RR_train)) %>%
   arrange(desc(Response_rate))
 ```
+
 By doing so, we can already identify customers who are more likely to respond to our marketing campaign.
 However, let us check how well these response rate from corresponding RFM categories predict the response rate of the same RFM category in the validation data. Therefore, we will compare the average response rate of RFM combinations with above 9% response rate from training data with the average response rate of the same corresponding RFM combinations from the validation data.
 
@@ -380,7 +372,7 @@ So far, our analysis helped us identify customer segments who are more or less l
 
 ```{r,echo=FALSE,message=FALSE,warning=FALSE}
 set.seed(1)
-(prediction<-validation_data %>% 
+prediction<-validation_data %>% 
   inner_join(segments3,by="RFM_score") %>%
   group_by(RFM_score) %>%
   mutate(True_RR=mean(Florence==1),
@@ -388,13 +380,14 @@ set.seed(1)
                         ifelse(True_RR>RR_train & True_RR<(2*RR_train),"RR_Above","RR_Below")))%>%
   rename(Predicted_RR=Response_rate,
          Predicted_Cluster=Cluster)%>%
-  arrange(desc(Predicted_RR)))
+  arrange(desc(Predicted_RR))
+head(prediction)
 ```
 
 In order to create such a chart, we will need the information who responded and who did not respond to our mailing offer from the validation set (= "Florence" column), and the information about the expected response rate based on what we did in our training data. Additionally, we will create a cumulative sum, so that with every customer who responded to our mailing offer the cumulative sum increases for 1.
 
-```{r}
-(gain_data<-prediction[,c("RFM_score","Florence","Predicted_RR")] %>%
+```{r,warning=FALSE,message=FALSE,error=FALSE}
+(gain_data<-prediction[,c("Florence","Predicted_RR")] %>%
   mutate(Cumulative_Class=cumsum(Florence)) %>%
   arrange(desc(Predicted_RR)))
 ```
