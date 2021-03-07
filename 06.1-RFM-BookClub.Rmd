@@ -386,7 +386,7 @@ head(prediction)
 
 In order to create such a chart, we will need the information who responded and who did not respond to our mailing offer from the validation set (= "Florence" column), and the information about the expected response rate based on what we did in our training data. Additionally, we will create a cumulative sum, so that with every customer who responded to our mailing offer the cumulative sum increases for 1.
 
-```{r,warning=FALSE,message=FALSE,error=FALSE}
+```{r,warning=FALSE,message=FALSE,error=FALSE,echo=FALSE}
 (gain_data<-prediction[,c("Florence","Predicted_RR")] %>%
   mutate(Cumulative_Class=cumsum(Florence)) %>%
   arrange(desc(Predicted_RR)))
