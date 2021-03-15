@@ -1,7 +1,7 @@
---- 
+---
 knit: "bookdown::render_book"
 site: bookdown::bookdown_site
-title: "Marketing in R"
+title: "Marketing Analytics and Data Science"
 output_dir: "docs"
 documentclass: book
 bibliography: [book.bib, packages.bib]
@@ -10,39 +10,27 @@ link-citations: yes
 css: style.css
 ---
 
-# (PART) Introduction {-}
+# (PART) Introduction {.unnumbered}
 
-# About me {-}
-
+# About me {.unnumbered}
 
 ```{r, echo = FALSE, fig.align = "center"}
 knitr::include_graphics("Graphics/my_picture1.png")
 ```
 
+::: {style="text-align: justify"}
+My name is Mirza Mujanović, I am an ever-curious, eager to learn and ready to adapt student in his final semester of Marketing master program at the Vienna University of Economics and Business. Originally, I come from Tuzla, Bosnia & Herzegovina, where I finished high school and first two semesters at the Faculty of Economics. In 2015, I moved to Vienna to study, and in 2019 completed a bachelor's program in business administration at the Vienna University of Economics and Business (WU) in 2019. Thinking of my future plans I see myself working in the field of data analytics or data science for marketing.
+:::
 
-<div style="text-align: justify">  
-
-
-My name is Mirza Mujanović, I am an ever-curious, eager to learn and ready to adapt student in his final semester of Marketing master program at the Vienna University of Economics and Business. Originally, I come from Tuzla, Bosnia & Herzegovina, where I finished high school and first two semesters at the Faculty of Economics. In 2015, I moved to Vienna to study, and in 2019 completed a bachelor’s program in business administration at the Vienna University of Economics and Business (WU) in 2019. Thinking of my future plans I see myself working in the field of data analytics or data science for marketing.
-
-
-</div>
- 
-<div style="text-align: justify"> 
-
+::: {style="text-align: justify"}
 Random facts about me:
 
-* Big basketball fan. Nowadays, fan of sports analytics.
-* Interested in psychology-related topics.
-* Used to collect old money together with my older sister. 
-* Favorite food: Bulgogi and pudding (but not together, of course!).
-
-
+-   Big basketball fan. Nowadays, fan of sports analytics.
+-   Interested in psychology-related topics.
+-   Used to collect old money together with my older sister.
+-   Favorite food: Bulgogi and pudding (but not together, of course!).
 
 ::: {.infobox .download data-latex="{download}"}
 [You can download my CV here](CV/my_cv.pdf)
 :::
-
-
-
-</div>
+:::

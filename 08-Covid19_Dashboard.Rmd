@@ -1,5 +1,5 @@
 ---
-title: "04-Covid19_Dashboard"
+title: ""
 output:
   html_document:
     keep_md: true
