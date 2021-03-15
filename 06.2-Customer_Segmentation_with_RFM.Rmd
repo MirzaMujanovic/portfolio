@@ -1,0 +1,480 @@
+---
+title: "Customer Segmentation with RFM"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+editor_options:
+  chunk_output_type: inline
+---
+
+::: {style="text-align: justify"}
+# RFM for Customer Segmentation
+
+```{r,echo=FALSE, fig.align='center', out.width="50%",fig.cap="Photo by Nathan Dumlao"}
+knitr::include_graphics("Graphics/nathan-dumlao1.jpg")
+```
+
+The goal of the project was to perform customer segmentation using certain clustering method on transactional data. More specifically, the intention is to apply *Recency-Frequency-Monetary* analysis. RFM is used for analyzing and estimating the value of customer segments, based on three data points:
+
+-   *Recency* (How recently did the customer make a purchase?),
+-   *Frequency* (How often do they purchase),
+-   *Monetary Value* (How much did they spend over given period of time?).
+
+This analysis is supposed to help the company to identify customers who are more likely to respond to promotions by segmenting them into various categories, and finally improve LTV of customers. In the end, the retailer, whose data we will use, would be able to:
+
+-   Differ among customers based on the importance of a customer to the retailer,
+-   Adapt communication towards each customer segment, in a way that customers feel that the retailer recognized their needs,
+-   Come up with associated tactics which will motivate customers to exhibit higher LTV.
+
+## Data set
+
+Data set we use in this project is a transactional data set from an anonymous company.
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
+library(lubridate)
+library(dplyr)
+library(tidyr)
+library(rfm)
+library(ggplot2)
+library(plotly)
+options(scipen = 99999)
+```
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
+data <- read.csv("data/conslidated_cleaned_T_data.csv")
+data$Date <- as.Date(data$Date)
+head(data)
+```
+
+In the data set each row represents a transaction, while columns represent customer information and product features, including price and different costs. The data has been already preprocessed and prepared for the analysis, so we can immediately proceed with RFM analysis.
+
+In order to conduct RFM analysis we will need to reshape our data in accordance with needs of the analysis. Therefore, we will use `rfm` pacakge to obtain the following features:
+
+```{r eval = TRUE, echo = FALSE, warning=FALSE, message = FALSE}
+library(dplyr)
+library(kableExtra)
+mytable_sub = data.frame(
+    Variable = c("customer_id",
+                 "date_most_recent",
+                 "recency_days",
+                 "transaction_count",
+                 "amount",
+                 "recency_score",
+                 "frequency_score",
+                 "monetary_score",
+                 "rfm_score"
+                 
+                 ),
+    Description = c("Identification number of customer",
+              "The date of the most recent transaction of a customer",
+              "How many days elapsed from the last transaction.",
+              "Number of transactions per customer",
+              "Total revenue per customer",
+              "Recency score where 1 indicates the lowest and 5 the highest recency.",
+              "Frequency score where 1 indicates the lowest and 5 the highest frequency.",
+              "Monetary score where 1 indicates the lowest and 5 the highest average revenue",
+              "Combination of recency, frequency and monetary score."
+              ))
+
+mytable_sub %>% kable(escape = T) %>%
+  kable_paper(c("hover"), full_width = F) 
+```
+
+To get such a table from our data we need to do a couple of adjustments. First, we will create a subset of the current data set, retaining information on customer identification, date of transaction and the total revenue generated.
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
+# A head of the created subset
+(rfm <- data[,c("Customer.ID","Date","Revenue")])%>%head()
+```
+
+Next, the date of the analysis needs to be defined. The analysis date is important for the recency variable, as it serves as a point in time to which the recency measure is being counted. As analysis date we will take the first day after the day of the most recent transaction: 21.12.2018.
+
+```{r}
+# Date of analysis
+analysis_date <- lubridate::as_date("2018-12-21")
+```
+
+By using `rfm` package we obtained the desirable table:
+
+```{r,echo=TRUE,message=FALSE,warning=FALSE}
+# Creation of RFM table
+rfm_data<-rfm_table_order(data=rfm,Customer.ID,Date,Revenue,analysis_date = analysis_date)
+(rfm_data$rfm)
+```
+
+## Exploratory Analysis
+
+Let us now explore a bit our data. For instance, we might be interested in how many days on average elapsed since the last transaction, i.e. in what time intervals our customers purchase. Moreover we might want to know average number of transactions per customer, or average amount a customer spent over the period of analysis. Therefore, we will proceed with summary statistics.
+
+```{r,message=FALSE,warning=FALSE}
+summary(rfm_data$rfm)
+```
+
+From the summary statistics we could see a great difference between mean and median in the number of days ("recency_days"), average spending per customer ("amount"), and even number of transactions per customer ("transaction_count"), so we will concentrate on median as a measure for central tendency.
+
+```{r,message=FALSE,warning=FALSE,echo=FALSE}
+p<-ggplot(rfm_data$rfm, aes(x="Recency", y=recency_days)) + 
+   geom_boxplot(notch = TRUE,color="black", fill="orange", alpha=0.4)+
+   theme_bw()+
+   geom_text(aes(y = median(recency_days),label= median(recency_days)),vjust=-1)+
+   labs(x="",
+        y="Days",
+        title = "What is the median number of days since the last purchase per customer?",
+        subtitle = "Median number of days per customer since the last transaction is 198.")
+
+ggplotly(p) %>%
+  layout(title = list(text = paste0("What is the median number of days since the last purchase per customer?",
+                                    '<br>',
+                                    '<sup>',
+                                     "Median number of days per customer since the last transaction is 198",'</sup>')))
+
+```
+
+It seems that customers come back every 198 days to purchase again. Here we need to take into account the nature of the products in our data set. It is a B2B product, which is not frequently purchased. As a result, we have an average customer coming back every 6 months. From the boxplot we could see that 50% middle values range from 78 days to 386 days.
+
+```{r,message=FALSE,warning=FALSE,echo=FALSE}
+p<-ggplot(rfm_data$rfm, aes(x="Frequency", y=transaction_count)) + 
+   geom_boxplot(notch = TRUE,color="black", fill="darkgreen", alpha=0.4)+
+   theme_bw()+
+   geom_text(aes(y = median(transaction_count),label= median(transaction_count)),vjust=1)+
+   scale_y_log10()+
+   labs(x="",
+        y="Transactions",
+        title = "What is the median number of transactions per customer over the given period?",
+        subtitle = "Median number of transactions per customer is 3.")
+ggplotly(p) %>%
+  layout(title = list(text = paste0("What is the median number of transactions per customer?",
+                                    '<br>',
+                                    '<sup>',
+                                     'Median number of transactions per customer is 3.','</sup>')))
+```
+
+When it comes to count of transactions, it seems that each customer made around 3 transactions over the last period. 50% of the middle values suggest the range from 2 to 8 transactions. Moreover, we can see several outliers, even with more than 100 transactions. These outliers are eXpected to be the most frequent customers the company has in its customer pool.
+
+```{r,message=FALSE,warning=FALSE,echo=FALSE}
+p<-ggplot(rfm_data$rfm, aes(x="Total generated revenue per customer", y=amount)) + 
+   geom_boxplot(notch = TRUE,color="black", fill="skyblue", alpha=0.4)+
+   theme_bw()+
+   geom_text(aes(y = median(amount),label= median(amount),vjust=2))+
+   scale_y_log10()+
+   labs(x="",
+        y="EUR",
+        title = "What is the median number of the total amount spent per customer?",
+        subtitle = "Median of the total amount spent per customer is 127.676,64 EUR")
+
+ggplotly(p) %>%
+  layout(title = list(text = paste0("What is the median number of the total amount spent per customer?",
+                                    '<br>',
+                                    '<sup>',
+                                     "Median of the total amount spent per customer is 127.676,64 EUR",'</sup>')))
+```
+
+Finally, the median of the total revenue generated per customer is at 127.676,64 EUR. 50% of the middle values range from 42.764,00 EUR to 427.848,00 EUR. There are some outliers, which can make the company happy. The revenues generated are pretty high, but it does not surprise since the data belongs to a company that sells high-end products.
+
+## Identification of segments
+
+After each customer has been evaluated in terms of his recency-, frequency- and monetary-value, a combination of these three values indicates certain characteristics of a corresponding customer. In the table below you can find "a translation" of the most common combinations of R-,F-, and M-scores into customer traits. For instance, customers who have R-score equal or less than 2, F-score and M-score between 2 and 5, are indicated as "customers at risk". They have spent considerable amount of money, used to purchase frequently, but you haven't heard of him/her a long time.
+
+```{r eval = TRUE, echo = FALSE, warning=FALSE, message = FALSE}
+library(dplyr)
+library(kableExtra)
+mytable_sub = data.frame(
+    Segment = c("Champions",
+                "Loyal",
+                "Potential Loyalist",
+                "New Customers",
+                "Promising Customers",
+                "Need Attention",
+                "About To Sleep",
+                "At Risk",
+                "Can’t Lose Them",
+                "Hibernating",
+                "Lost"
+                 ),
+    Description = c("Bought recently, buy often and spend the most",
+              "Spend good money. Responsive to promotions",
+              "Recent customers, spent good amount, bought more than once",
+              "Bought more recently, but not often",
+              "Recent shoppers, but haven’t spent much",
+              "Above average recency, frequency & monetary values",
+              "Below average recency, frequency & monetary values",
+              "Spent big money, purchased often but long time ago",
+              "Made big purchases and often, but long time ago",
+              "Low spenders, low frequency, purchased long time ago",
+              "Lowest recency, frequency & monetary scores"),
+    Recency=c("4 - 5",
+              "2 - 5",
+              "3 - 5",
+              "4 - 5",
+              "3 - 4",
+              "2 - 3",
+              "2 - 3",
+              "<= 2",
+              "<= 1",
+              "1 - 2",
+              "<= 2"),
+    
+    Frequency=c("4 - 5",
+                "3 - 5",
+                "1 - 3",
+                "<= 1",
+                "<= 1",
+                "2 - 3",
+                "<= 2",
+                "2 - 5",
+                "4 - 5",
+                "1 - 2",
+                "<= 2"),
+    
+    Monetary=c("4 - 5",
+               "3 - 5",
+               "1 - 3",
+               "<= 1",
+               "<= 1",
+               "2 - 3",
+               "<= 2",
+               "2 - 5",
+               "4 - 5",
+               "1 - 2",
+               "<= 2"))
+
+mytable_sub %>% kable(escape = T) %>%
+  kable_paper(c("hover"), full_width = F) %>%
+  footnote(general = " Information collected from https://www.r-bloggers.com/2019/02/rfm-analysis-in-r/",
+           general_title = "Note: ", 
+           footnote_as_chunk = T, title_format = c("italic")
+           ) 
+```
+
+```{r,include=TRUE,eval=TRUE,echo=FALSE}
+cluster_names <- 
+  c("Champions",
+    "Loyal Customers",
+    "Potential Loyalist",
+    "New Customers",
+    "Promising",
+    "Need Attention", 
+    "About To Sleep",
+    "At Risk",
+    "Can't Lose Them",
+    "Hibernating",
+    "Lost")
+recency_lower   <- c(4, 2, 3, 4, 3, 3, 2, 1, 1, 2, 1)
+recency_upper   <- c(5, 5, 5, 5, 4, 4, 3, 2, 1, 3, 1)
+frequency_lower <- c(4, 3, 1, 1, 1, 3, 1, 2, 4, 2, 1)
+frequency_upper <- c(5, 5, 3, 1, 1, 4, 2, 5, 5, 3, 1)
+monetary_lower  <- c(4, 3, 1, 1, 1, 3, 1, 2, 4, 2, 1)
+monetary_upper  <- c(5, 5, 3, 1, 1, 4, 2, 5, 5, 3, 1)
+cluster <- 
+  rfm_segment(rfm_data, cluster_names, recency_lower, 
+              recency_upper, frequency_lower, frequency_upper, 
+              monetary_lower, monetary_upper)
+```
+
+```{r,echo=FALSE,message=FALSE}
+new_rfm_data<-rfm_data$rfm
+new_rfm_data$Cluster <- ifelse(new_rfm_data$recency_score >= 4 & new_rfm_data$recency_score <= 5 
+                               & new_rfm_data$frequency_score >= 4 & new_rfm_data$frequency_score <= 5 
+                               & new_rfm_data$monetary_score >= 4 & new_rfm_data$monetary_score <= 5,"Champions",
+                       #Loyal Customers
+                         ifelse(new_rfm_data$recency_score >= 2 & new_rfm_data$recency_score <= 5 
+                                & new_rfm_data$frequency_score >= 3 & new_rfm_data$frequency_score <= 5 
+                                & new_rfm_data$monetary_score >= 3 & new_rfm_data$monetary_score <= 5,"Loyal Customers",
+                        #Potential Loyalist        
+                         ifelse(new_rfm_data$recency_score >= 3 & new_rfm_data$recency_score <= 5 
+                                & new_rfm_data$frequency_score >= 1 & new_rfm_data$frequency_score <= 3 
+                                & new_rfm_data$monetary_score >= 1 & new_rfm_data$monetary_score <= 3,"Potential Loyalist",
+                        #New Customers        
+                         ifelse(new_rfm_data$recency_score >= 4 & new_rfm_data$recency_score <= 5 
+                                & new_rfm_data$frequency_score <= 1 
+                                & new_rfm_data$monetary_score <= 1,"New Customers",
+                        #Promising        
+                         ifelse(new_rfm_data$recency_score >= 3 & new_rfm_data$recency_score <= 4 
+                                & new_rfm_data$frequency_score <= 1 
+                                & new_rfm_data$monetary_score <= 1,"Promising",
+                        # Need attention        
+                         ifelse(new_rfm_data$recency_score >= 2 & new_rfm_data$recency_score <= 3 
+                                & new_rfm_data$frequency_score >= 2 & new_rfm_data$frequency_score <= 3 
+                                & new_rfm_data$monetary_score >= 2 & new_rfm_data$monetary_score <= 3,"Need Attention",
+                        # About To Sleep
+                         ifelse(new_rfm_data$recency_score >= 2 & new_rfm_data$recency_score <= 3 
+                                & new_rfm_data$frequency_score <= 2 
+                                & new_rfm_data$monetary_score <= 2,"About To Sleep",
+                        # At Risk        
+                         ifelse(new_rfm_data$recency_score <= 2 
+                                & new_rfm_data$frequency_score >= 2 & new_rfm_data$frequency_score <= 5 
+                                & new_rfm_data$monetary_score >= 2 & new_rfm_data$monetary_score <= 5,"At Risk",
+                        #Can't Lose Them    
+                         ifelse(new_rfm_data$recency_score <= 1 
+                                & new_rfm_data$frequency_score >= 4 & new_rfm_data$frequency_score <= 5 
+                                & new_rfm_data$monetary_score >= 4 & new_rfm_data$monetary_score <= 5,"Can't Lose Them",
+                        #Hibernating
+                         ifelse(new_rfm_data$recency_score >= 1 & new_rfm_data$recency_score <= 2 
+                                & new_rfm_data$frequency_score >= 1 & new_rfm_data$frequency_score <= 2 
+                                & new_rfm_data$monetary_score >= 1 & new_rfm_data$monetary_score <= 2,"Hibernating",
+                        #Lost
+                        ifelse(new_rfm_data$recency_score <= 2 
+                                & new_rfm_data$frequency_score <= 2 
+                                & new_rfm_data$monetary_score <= 2,"Lost","Unknown")))))))))))
+                        
+```
+
+We can use 3D visualisation of the RFM analysis with color-coded clusters to depict identified clusters.
+
+```{r,message=FALSE,warning=FALSE,echo=FALSE}
+plot_ly(new_rfm_data, x = ~transaction_count, y = ~amount, z = ~recency_days,color =~Cluster) %>% 
+  add_markers() %>% 
+  layout(scene = list(xaxis = list(title = 'Frequency'),
+                     yaxis = list(title = 'Monetary mean'),
+                     zaxis = list(title = 'Recency')))
+```
+
+## Clusters
+
+For many companies, a prediction when or which consumer will stay or leave is a huge challenge. Thus, with a help of RFM, customers at risk of quitting are flagged so that constructive measures to keep these clients can be planned.
+
+```{r,message=FALSE,echo=FALSE,warning=FALSE}
+p<-new_rfm_data %>%
+  group_by(Cluster) %>%
+  summarise(Count=n()) %>%
+  arrange(desc(Count)) %>%
+  ggplot(aes(x=reorder(Cluster,Count),y=Count,fill=Cluster)) +
+  geom_bar(stat = "identity")+
+  labs(title="Recency-Frequency-Monetary Analysis",subtitle = "Count of customers across segments",y="Number of customers",x="")+
+  geom_text(aes(y = Count,label=Count))+
+  coord_flip() +
+  theme_bw()
+ggplotly(p)
+```
+
+This type of visualization provides a great insight in the customer structure, as one can immediately spot what type of customers dominates. In our case we are glad to have high number of loyal and champion customers. What is more, potential loyalist promise a good pool for future loyalists. On the other side, we have 25 customers whose combination of R-F-M scores hasn't been recognized. 123 customers are hibernating, 88 at risk, 66 "about to sleep", and 52 need attention. Based on the given clusters we can already craft suitable marketing strategies. However, let us go further and check another, similar segmentation approach.
+
+## Clustering via Heatmap
+
+From the RFM heatmap it becomes clear why frequent customers are important. In the graph we can see that customers with the frequency score of 5 seem to be highest revenue contributors on average, while the customers with the frequency score lower than 5 have significantly lower average revenue contribution (= how much the company earns from them on average.). Moreover, we could see that the very frequent customers with high recency scores (4 and 5) are the highest revenue contributors.
+
+That implies that the company would benefit from the marketing strategy that incentives customers to purchase more frequently. Additionally, it shows that very frequent customers (frequency score= 5) who does not belong to the recent customers (score =2) have pretty high contribution to the revenue. It is an alarm to check these customers and try to understand why they haven't made any transactions recently.
+
+```{r,warning=FALSE,message=FALSE, echo=FALSE}
+p<-rfm_data$rfm%>%
+  group_by(recency_score,frequency_score) %>%
+  summarize(Avg.Revenue=mean(amount))%>%
+  ggplot(aes(recency_score, frequency_score)) +
+  geom_tile(aes(fill = Avg.Revenue)) + 
+  geom_text(aes(label = round(Avg.Revenue, 1))) +
+  scale_fill_gradient(low = "white", high = "red")+
+  labs(x="Recency score (days)",
+       y="Frequency score (# of transactions)",
+       title = "Heatmap")+
+  scale_x_discrete(limits=c("1 (438+)","2 (258-437)","3 (150-257)","4 (61-149)","5 (1-60)"))+
+  scale_y_discrete(limits=c("1 (1-2)","2 (2-3)","3 (3-6)","4 (6-12)","5 (12+)"))+
+ theme_bw()
+ggplotly(p)
+```
+
+We can use this map to identify customer segments that could provide us with actionable measures.Therefore, instead of 10 segments, we will segment them into 6 segments based:
+
+-   Lost customers
+-   Lapsed customers
+-   Infrequent customers
+-   Repeated customers
+-   New customers
+-   High value customers
+
+```{r,message=FALSE,warning=FALSE, echo=FALSE}
+library(RColorBrewer)
+plot <- rfm_data$rfm%>%
+  group_by(recency_score,frequency_score) %>%
+  summarize(Avg.Revenue=mean(amount))%>%
+  ggplot(aes(recency_score, frequency_score)) +
+  geom_tile(aes(fill = Avg.Revenue)) + 
+  geom_text(aes(label = round(Avg.Revenue, 1))) +
+  scale_fill_gradient(low = "white", high = "red")+
+  labs(x="Recency(days)",
+       y="Frequency(# of transactions)",
+       title = "Who Are High-Value Customers?")+
+ scale_x_discrete(limits=c("1 (438+)","2 (258-437)","3 (150-257)","4 (61-149)","5 (1-60)"))+
+  scale_y_discrete(limits=c("1 (1-2)","2 (2-3)","3 (3-6)","4 (6-12)","5 (12+)"))+
+  ggplot2::annotate("rect", xmin=0, xmax=1.5, ymin=0, ymax= 6,fill="coral3", colour="coral3") +
+  ggplot2::annotate("rect", xmin=1.5, xmax=2.5, ymin=0, ymax= 1.5,
+             fill="coral3", colour="coral3") +
+   ggplot2::annotate("rect", xmin=1.5, xmax=2.5, ymin=4.5, ymax= 6,fill="coral3", color="coral3")+
+   ggplot2::annotate("rect", xmin=2.5, xmax=4.5, ymin=0, ymax= 2.5,
+             fill="darkgreen") +
+   ggplot2::annotate("rect", xmin=1.5, xmax=2.5, ymin=1.5, ymax= 4.5,
+             fill="skyblue1") +
+   ggplot2::annotate("rect", xmin=3.5, xmax=4.5, ymin=4.5, ymax= 6,
+             fill="skyblue1", colour="skyblue1") +
+   ggplot2::annotate("rect", xmin=2.5, xmax=3.5, ymin=2.5, ymax= 6,
+             fill="skyblue1", colour="skyblue1") +
+   ggplot2::annotate("rect", xmin=2.5, xmax=3.5, ymin=2.5, ymax= 6,
+             fill="skyblue1", colour="skyblue1")+
+   ggplot2::annotate("rect", xmin=3.5, xmax=6, ymin=2.5, ymax= 4.5,
+             fill="dodgerblue", colour="dodgerblue")+
+   ggplot2::annotate("rect", xmin=4.5, xmax=6, ymin=4.5, ymax= 6,
+            fill="gold")+
+    ggplot2::annotate("rect", xmin=4.5, xmax=6, ymin=0, ymax= 2.5,
+             fill="purple")+
+   ggplot2::annotate("text", x=3.0, y=3.5, label="Lost", size=5,hjust=+3)+
+   ggplot2::annotate("text", x=3.5, y=1.2, label="Infrequent", size=5, hjust=-1)+
+   ggplot2::annotate("text", x=0.8, y=3.5, label="Lapsed", size=5, hjust=-3)+
+   ggplot2::annotate("text", x=4.5, y=3.5, label="Repeated", size=5, hjust=-1)+
+   ggplot2::annotate("text", x=5.2, y=5.0, label="High-value", size=5, hjust=-1)+
+   ggplot2::annotate("text", x=5.2, y=1, label="New customers", size=5, hjust=-1)+
+  theme_bw()+
+  theme(legend.position = "none")
+ggplotly(plot)
+
+```
+
+Finally, this type of segmentation enables corresponding marketing based on the nature of each segment. Let us analyze possible measures a company can introduce for each segment.
+
+### New customers {style="text-align: justify"}
+
+It has been proven that if you don't get first-time buyers to convert as quickly as possible, it will become more challenging to get those customers to convert later. Thus, for successful customer retention, getting new customers in the door, attention, and managing their expectations are critical. A good way to get along with new customers could be
+
+-   To accompany the product with a "thank you" card,
+-   To showcase the impact made by the purchase of the product/service,
+-   To use special packaging for first time-buyers.
+
+### Repeated customers {style="text-align: justify"}
+
+There is a general misperception that if consumers are repeatedly purchasing the product or service and constantly return as a consumer that you do not need to pay much attention to them. It is certainly far from the truth. In case of repeat customers, designing treatment strategy would entail knowing customers from a value, behavior, interaction, and brand viewpoint.
+
+-   Spot the details that they pointed out or shared with to you. For instance, during their next visit, simply ask how did the previously bought service or product helped them. It is good to have a long-term plan to keep them around so you can discover what they want.
+
+-   Maintain a quick response rate. Frequent responses show consumers that you are there to serve their needs.
+
+### Lost customers {style="text-align: justify"}
+
+You can always "cut out the dead wood" and make your company more effective. Offer positive reinforcement when nudging your prospects to come back. As much as "how can I help you?" could get consumers' interest. The messaging and offers should be increased in volume as time goes. At certain points, it will become more and more difficult to convince customers to do business with you again. **Again, one should consider the repurchase window of the customer.** Some products have lengthier time-frame between two purchases, it isn't so effective to send out reminders if you know from past behavior that your client purchase 2-3 times a year and stock your product.
+
+### Lapsed customers {style="text-align: justify"}
+
+Lapsed customer are those who haven't bought for very long time (e.g., in our case already after cca 250 days) and have very low likelihood to buy. According to Artun & Levin (2015) 10 % of past, lapsed customers can be reactivated to return as customers in the next year. The goal for marketeers here should be to reactivate these customers and give them reason to try again. Why? For most companies, acquisition requires 7 to 10 marketing touches and each touch is three to five times more expensive. On the other hand, existing customers require only three to five touches.
+
+### Infrequent customers {style="text-align: justify"}
+
+A research by Ting and Thurasamy (2016) conducted in the B2C market suggests that the quantitative results, product-,service- and experience quality have a positive influence on consumer's perception of value they receive and their intention to revisit. However, the experience quality has shown to exert a greater impact than other factors on infrequent customer's desire to come again. Repurchase window needs to be considered in case of infrequent customers too. Additionally, once a company identifies infrequent customers, it can be leveraged when setting prices. Infrequent and new customers are usually charged different price from loyal or repeated customers. However, one should keep in mind the fact that a customer can certainly be a loyal customer yet be an infrequent (Gentry and Kalliny, 2008), so frequency of consumption should not be confused with loyalty.
+
+### High-value customers {style="text-align: justify"}
+
+These customers usually draw the most of marketeers' attention. It is common to allocate a great portion of marketing budget to appreciate and retain these customers. Close attention should be paid to retention metrics of this segment. The pioneers in retention of their high-value customers are airlines, banks, and casinos, while many mid-size businesses have still a hard time to focus on high-value customers. Spending to retain high-value customers pays off. **Often a small percentage of customers make up the majority of revenues.** Moreover, if you have an accurate projection of future customer lifetime value, you can experiment on what it takes to retain this customer. Some organizations might consider crafting separate marketing plans or even build separate marketing teams to focus on acquisition and retention efforts.
+
+## Limitations {style="text-align: justify"}
+
+::: {style="text-align: justify"}
+Although RFM has been widely used in customer segmentation, it shows certain limitations. There are so many other variables that can be derived from data that can serve as additional excellent predictors. Furthermore, past results are no guarantee for future performance. RFM is in particular looking at historical data, rather than comparing customers' current behavior to the future behavior of others who came before them. Consequently, one can not be able to recognize high-value customers upfront, but only when they buy something. Finally, RFM models performs better in an environment where there are frequent rates of purchases, such as retail, as it takes frequency as one of the main determining dimensions.
+
+## References {style="text-align: justify"}
+
+Amaresan, S. (2019). 6 Secrets for Getting Repeat Customers That Stick Around. HubSpot. <https://blog.hubspot.com/service/repeat-customers>
+
+Artun, O., & Levin, D. (2015). Predictive Marketing: Easy Ways Every Marketer Can Use Customer Analytics and Big Data (1st ed.). Wiley.
+
+Gentry and Kalliny (2008).Consumer loyalty-? synthesis, conceptual framework and research propositions. Journal of American Academy of Business Vol.14.
+
+Ting, H., & Thurasamy, R. (2016). What matters to infrequent customers: a pragmatic approach to understanding perceived value and intention to revisit trendy coffee café. SpringerPlus, 5, 651.
+:::
+:::
