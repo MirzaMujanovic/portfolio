@@ -5,7 +5,7 @@ fig:unnamed-chunk-67
 fig:unnamed-chunk-82
 fig:unnamed-chunk-100
 fig:unnamed-chunk-123
-fig:unnamed-chunk-141
+fig:unnamed-chunk-172
 emotions-in-online-customer-reviews
 dictionaries-for-nlp
 data-set
@@ -78,6 +78,17 @@ infrequent-customers
 high-value-customers
 limitations
 references-1
+identification-of-price-insensitive-customers
+data-preparation
+exploratory-analysis-1
+clustering-based-on-frequency-and-monetary-value
+k-means-clustering
+cluster-1-infrequent-low-contributors
+cluster-2-extremely-frequent-high-contributors
+cluster-3-occasional-high-contributors
+cluster-4-occasional-extremely-high-contributors
+cluster-5-frequent-high-contributors
+conclusion-after-customer-segmentation
 recommender-for-beauty-products
 data-collection
 data-preparation-and-preprocessing

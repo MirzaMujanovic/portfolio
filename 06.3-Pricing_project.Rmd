@@ -1,0 +1,593 @@
+---
+title: "Identification of price-insensitive customers"
+output:
+  html_document:
+    toc: yes
+    df_print: paged
+  html_notebook: default
+  pdf_document:
+    toc: yes
+---
+
+# Identification of price-insensitive customers
+
+A company in the B2B market attempts to improve its profitability and tackle all areas of profit potential by reviewing their pricing processes. Based on the literature, [customers who purchase frequently are also more price sensitive than less frequent buyers](https://oroinc.com/b2b-ecommerce/blog/basic-pricing-strategies-b2b-commerce/#:~:text=Customers%20who%20purchase%20frequently%20are,sensitive%20than%20less%20frequent%20buyers.&text=Customers%20who%20place%20a%20high,elements%20to%20be%20less%20significant.). Therefore, in order to introduce some price changes we will try to identify price-insensitive customers.
+
+
+## Data preparation
+
+First thing we need to do is data mearging and cleaning. Data is provided in separate files, so the files need to be consolidated.
+
+```{r,error=FALSE,message=FALSE,warning=FALSE,include=FALSE}
+options(scipen = 9999)
+library(tidyverse)
+library(plotly)
+library(fpc)
+library(ggpubr)
+library(stringr)
+library(factoextra)
+library(xml2)
+```
+
+Let us read in transactional data set.
+
+```{r}
+data<-read.delim("data/T_data.txt",header = TRUE, sep = "\t", dec = ".")
+head(as.data.frame(data))
+```
+
+Let us inspect the transactional data. 
+
+```{r}
+glimpse(data)
+```
+
+In our data set we have information about 12.521 transactions, as well as customer IDs, certain product features, total costs incurred regarding each transaction and the revenue generated from each transaction. 
+In the following section we need to assign correct classes to each column as they are not in desirable classes by default.
+
+```{r, warning=FALSE,message=FALSE}
+#Date
+data$Date<- as.Date(data$Date,"%d.%m.%Y")
+
+# Sum.of.angels
+data$Sum.of.angels<-gsub("[.]", "", data$Sum.of.angels)
+data$Sum.of.angels<-gsub("[,]", ".", data$Sum.of.angels)
+data$Sum.of.angels<- as.numeric(data$Sum.of.angels) 
+
+# CustomerID
+data$Customer.ID <- as.numeric(data$Customer.ID)
+data$Customer.ID <- as.factor(data$Customer.ID)
+
+# Weight
+data$Weight<-gsub("[.]", "", data$Weight)
+data$Weight<-gsub("[,]", ".", data$Weight)
+data$Weight<- as.numeric(data$Weight) 
+
+#Strip thickness
+data$Strip.thickness<-gsub("[,]", ".", data$Strip.thickness)
+data$Strip.thickness<-as.numeric(data$Strip.thickness)
+
+# Meters
+data$Meters<-gsub("[.]", "", data$Meters)
+data$Meters<-gsub("[,]", ".", data$Meters)
+data$Meters<-as.numeric(data$Meters)
+
+# Revenue
+data$Revenue<-gsub("[.]", "", data$Revenue)
+data$Revenue<-gsub("[,]", ".", data$Revenue)
+data$Revenue<-as.numeric(data$Revenue)
+
+# Raw material cost
+data$Raw.material.cost<-gsub("[.]", "", data$Raw.material.cost)
+data$Raw.material.cost<-gsub("[,]", ".", data$Raw.material.cost)
+data$Raw.material.cost<-as.numeric(data$Raw.material.cost)
+
+# Total costs
+data$Total.costs<-gsub("[.]", "", data$Total.costs)
+data$Total.costs<-gsub("[,]", ".", data$Total.costs)
+data$Total.costs<-as.numeric(data$Total.costs)
+
+# Punching holes turning to 0s and 1s
+data$Punching.holes <- gsub("","0",data$Punching.holes)
+data$Punching.holes <- gsub("0X0","1",data$Punching.holes)
+data$Punching.holes <- as.numeric(data$Punching.holes)
+data$Punching.holes <- factor(data$Punching.holes,levels = (0:1),labels = c("No","Yes"))
+
+# Surface treatment turning to 0s and 1s
+data$Surface.treatment <- gsub("","0",data$Surface.treatment)
+data$Surface.treatment <- gsub("0X0","1",data$Surface.treatment)
+data$Surface.treatment <- as.numeric(data$Surface.treatment)
+data$Surface.treatment <- factor(data$Surface.treatment,levels = (0:1),labels = c("No","Yes"))
+
+# Open turning to 0s and 1s
+data$Open <- gsub("","0",data$Open)
+data$Open <- gsub("0X0","1",data$Open)
+data$Open <- as.numeric(data$Open)
+data$Open <- factor(data$Open,levels = (0:1),labels = c("No","Yes"))
+```
+
+```{r,echo=FALSE,message=FALSE,warning=FALSE}
+TotalRevenue<-sum(data$Revenue)
+```
+
+We might create some additional features and calucaltions columns such as:
+
+* Complexity based on sum of angels and thickness of the product:
+
+```{r}
+data$Complexity_Angels_Thickness <- ifelse(data$Strip.thickness < 2 & data$Sum.of.angels < 180,"not complex",
+                          ifelse(data$Strip.thickness >= 2 & data$Strip.thickness <= 4 & data$Sum.of.angels < 180, "not complex",
+                          ifelse(data$Strip.thickness > 4 & data$Sum.of.angels < 180,"not complex",
+                          # Sum of Angels < 360 degree
+                          ifelse(data$Strip.thickness < 2 & data$Sum.of.angels < 360,"not complex",
+                          ifelse(data$Strip.thickness >= 2 & data$Strip.thickness <= 4 & data$Sum.of.angels < 360, "not complex",
+                          ifelse(data$Strip.thickness > 4 & data$Sum.of.angels < 360,"little complex",
+                          # Sum of Angles < 630
+                          ifelse(data$Strip.thickness < 2 & data$Sum.of.angels < 630,"not complex",
+                          ifelse(data$Strip.thickness >= 2 & data$Strip.thickness <= 4 & data$Sum.of.angels < 630, "not complex",
+                          ifelse(data$Strip.thickness > 4 & data$Sum.of.angels < 630,"little complex",
+                          # Sum of Angles < 1080
+                          ifelse(data$Strip.thickness < 2 & data$Sum.of.angels < 1080,"not complex",
+                          ifelse(data$Strip.thickness >= 2 & data$Strip.thickness <= 4 & data$Sum.of.angels < 1080, "little complex",
+                          ifelse(data$Strip.thickness > 4 & data$Sum.of.angels < 1080,"complex",
+                          # Sum of Angles < 1350
+                          ifelse(data$Strip.thickness < 2 & data$Sum.of.angels < 1350,"little complex",
+                          ifelse(data$Strip.thickness >= 2 & data$Strip.thickness <= 4 & data$Sum.of.angels < 1350, "medium complex",
+                          ifelse(data$Strip.thickness > 4 & data$Sum.of.angels < 1350,"complex",
+                          # Sum of Angles < 1790
+                          ifelse(data$Strip.thickness < 2 & data$Sum.of.angels < 1790,"little complex",
+                          ifelse(data$Strip.thickness >= 2 & data$Strip.thickness <= 4 & data$Sum.of.angels < 1790, "complex",
+                          ifelse(data$Strip.thickness > 4 & data$Sum.of.angels < 1790,"very complex",
+                          # Sum of Angles < 2000
+                          ifelse(data$Strip.thickness < 2 & data$Sum.of.angels < 2000,"medium complex",
+                          ifelse(data$Strip.thickness >= 2 & data$Strip.thickness <= 4 & data$Sum.of.angels < 2000, "complex",
+                          ifelse(data$Strip.thickness > 4 & data$Sum.of.angels < 2000,"very complex",
+                          # Sum of Angles > 2000
+                          ifelse(data$Strip.thickness < 2 & data$Sum.of.angels >= 2000,"complex",
+                          ifelse(data$Strip.thickness >= 2 & data$Strip.thickness <= 4 & data$Sum.of.angels >= 2000, "very complex",
+                          ifelse(data$Strip.thickness > 4 & data$Sum.of.angels >= 2000,"very complex","NO CLUE"
+                          ))))))))))))))))))))))))
+```
+
+
+
+* Difficulty of production based on thickness
+
+
+```{r}
+data$Difficulty_Thickness <- ifelse(data$Strip.thickness < 2, "medium",
+                          ifelse(data$Strip.thickness >= 2 & data$Strip.thickness <3, "low",
+                          ifelse(data$Strip.thickness == 3, "medium",
+                          ifelse(data$Strip.thickness > 3 & data$Strip.thickness <=6.5, "high",
+                          ifelse(data$Strip.thickness > 6.5, "very high","NO CLUE")))))
+```
+
+* Complexity based on tolerance of the product
+
+```{r}
+data$Complexity_Tolerance <- ifelse(data$Tolerance == 1, "low",
+                          ifelse(data$Tolerance >= 2 & data$Tolerance <=3, "medium",
+                          ifelse(data$Tolerance > 3, "high","NO CLUE")))
+```
+
+
+* Profit column:
+
+```{r}
+data$profit_loss <- data$Revenue - data$Total.costs
+```
+
+
+* Margin column:
+
+```{r}
+data <- data %>%
+  mutate(Margin = data$profit_loss/data$Revenue)
+```
+
+* Costs per meter of the product:
+
+```{r}
+data <- data %>%
+  mutate(Costs_per_Meter=Total.costs/Meters)
+```
+
+
+Now, we can see that in the data set there are several variables related to complexity of products. Thus, we decided to conduct dimension reduction i.e. to condense all variables related to product complexity to one variable. This has been done by multiplying complexity scores (1=not complex products; 5=very complex products) of each product complexity variable. Subsequently, the output variable was segmented in the following levels of complexity:
+
+1) Products with the score in the range from 1 to 5  are defined as *not complex*
+2) Products with the score in the range from 6 to 8 are defined as *little complex*
+3) Products with the score in the range from 8 to 12 are defined as *medium complex*
+4) Products with the score in the range from 12 to 20 are defined as *complex*
+5) Products with the score in the range from 20 to 48 are defined as *very complex*
+
+```{r, echo=FALSE,warning=FALSE,message=FALSE}
+# Turning columns to factors
+data$Complexity_Angels_Thickness <- as.factor(data$Complexity_Angels_Thickness)
+data$Complexity_Tolerance <- as.factor(data$Complexity_Tolerance)
+data$Difficulty_Thickness <- as.factor(data$Difficulty_Thickness)
+
+# Descending order of complexity and turning columns in numeric
+
+## Complexity Angles Thickness 
+data$Complexity_Angels_Thickness_Numeric<- as.numeric(data$Complexity_Angels_Thickness)
+data$Complexity_Angels_Thickness_Order<-factor(data$Complexity_Angels_Thickness_Numeric,labels = c("not complex","little complex","medium complex","complex","very complex"),levels = c(4,2,3,1,5))
+data$Complexity_Angels_Thickness_Numeric <- as.numeric(data$Complexity_Angels_Thickness_Order)
+data$Complexity_Angels_Thickness_Order<-NULL
+
+
+## Complexity Tolerance
+data$Complexity_Tolerance_Numeric <- as.numeric(data$Complexity_Tolerance)
+data$Complexity_Tolerance_Order <- factor(data$Complexity_Tolerance_Numeric, labels = c("low","medium","high"),levels = c(2,3,1))
+data$Complexity_Tolerance_Numeric <- as.numeric(data$Complexity_Tolerance_Order)
+data$Complexity_Tolerance_Order <- NULL
+
+
+## Difficulty Thickness
+data$Difficulty_Thickness_Numeric <- as.numeric(data$Difficulty_Thickness)
+data$Difficulty_Thickness_Order <- factor(data$Difficulty_Thickness_Numeric,labels = c("low","medium","high","very high"),levels = c(2,3,1,4))
+data$Difficulty_Thickness_Numeric <- as.numeric(data$Difficulty_Thickness_Order)
+data$Difficulty_Thickness_Order <-NULL
+
+# "ICE" Score
+data$Complexity_Sum <- data$Difficulty_Thickness_Numeric * data$Complexity_Tolerance_Numeric * data$Complexity_Angels_Thickness_Numeric
+#summary(data$Complexity_Sum)
+#table(data$Complexity_Sum)
+
+# New variable
+data$Aggregated_Complexity <- ifelse(data$Complexity_Sum >= 1 & data$Complexity_Sum < 6,"not complex", 
+                   ifelse(data$Complexity_Sum >= 6 & data$Complexity_Sum < 8,"little complex",
+                   ifelse(data$Complexity_Sum >= 8 & data$Complexity_Sum < 12," medium complex",
+                   ifelse(data$Complexity_Sum >= 12 & data$Complexity_Sum < 20,"complex",
+                   ifelse(data$Complexity_Sum >= 20 & data$Complexity_Sum <= 48,"very complex","NO CLUE")))))
+
+# Distribution of the new variable
+#table(data$Aggregated_Complexity)
+
+# Visualisation 
+complexity<-(as.data.frame(table(data$Aggregated_Complexity)))
+#ggplot(complexity,aes(x=reorder(Var1,-Freq),y=Freq,fill=Var1))+
+  #geom_bar(stat="identity")+
+  #labs(x="Complexity",y="Count",title = "Aggregated complexity")
+
+# Removing unnecessary columns
+data$Difficulty_Thickness_Numeric <- NULL
+data$Complexity_Tolerance_Numeric <- NULL
+data$Complexity_Angels_Thickness_Numeric <- NULL
+```
+
+Finally, we can inspect the distribution of newly created categories for complexity.
+
+```{r}
+# Distribution of categories
+as.data.frame(table(data$Aggregated_Complexity)) %>% 
+  rename(Complexity=Var1,
+         Count=Freq)
+```
+
+Let us now clean our data a bit. We will remove transactions with:
+
+* Negative revenues
+* Negative total costs
+* Negative raw materials
+* Outliers in margins (bigger than 0.8)
+* Negative margins
+* Products that have 0 length
+* Cost per meter higher than 20
+
+```{r}
+data <- data %>% 
+  na.omit() %>%
+  subset(Revenue>0)%>%
+  subset(Total.costs>0)%>%
+  subset(Raw.material.cost > 0)%>%
+  subset(Margin > 0 & Margin < 0.8)%>%
+  subset(Meters > 0)%>%
+  subset(Costs_per_Meter<20)
+```
+
+
+In the end, we can take a glimpse of out final data:
+
+```{r}
+glimpse(data)
+```
+
+## Exploratory analysis
+
+As we decided to focus on customers, it would be interesting to know how many unique customers we have in our data set. 
+
+```{r}
+length(unique(data$Customer.ID))
+```
+
+Since our client operates in various countries, it would be interesting to see the number of customers per country.
+
+```{r,echo=FALSE,warning=FALSE,message=FALSE}
+p<-data %>% 
+  group_by(Rgn) %>%
+  count(Customer.ID) %>%
+  select(Rgn) %>%
+  count()%>%
+  arrange(desc(n))%>%
+  head(15) %>%
+  rename(Country=Rgn,Count_of_Customers=n)%>%
+  ggplot(aes(reorder(Country,Count_of_Customers),Count_of_Customers,fill=Country))+
+  geom_bar(stat = "identity")+
+  labs(title = "Number of Customers Per Country",
+       subtitle = "Top 15 countries with the most customers",
+       y= "Number of customers",
+       x="Country")+ 
+  geom_text(aes(y=Count_of_Customers,label=Count_of_Customers))+
+  theme_bw()+
+  theme(legend.position = "none")+
+  coord_flip()
+ggplotly(p)
+```
+By far the biggest number of customers come from Germany, followed by Austria and Switzerland. Nevertheless, it could be that the distribution of transactions across markets differs from this picture.
+Let us inspect it.
+
+```{r,message=FALSE,warning=FALSE,echo=FALSE}
+## Number of Customers vs Number of Transactions
+
+#First data set
+first<-data %>% 
+  group_by(Rgn) %>%
+  count(Customer.ID) %>%
+  select(Rgn) %>%
+  count()%>%
+  arrange(desc(n))%>%
+  rename(Country=Rgn,Count_of_Customers=n)
+
+#Second data set
+second<-data %>% 
+  group_by(Rgn) %>%
+  count() %>%
+  arrange(desc(n))%>%
+  rename(Country=Rgn,Count_of_Transactions=n)
+
+#Merged
+graph <- merge(first,second)
+p<-reshape2::melt(graph) %>%
+  filter(Country=="DE"|Country=="AT"|Country=="IT"|Country=="CH"|Country=="FR"|Country=="PL"|Country=="ES"|Country=="NL"|Country=="CZ"|Country=="GB"|Country=="BE"|Country=="SE"|Country=="RU"|Country=="TR"|Country=="HU")%>%
+  ggplot(aes(reorder(Country,value),value,fill=variable)) +
+  geom_bar(stat = "identity",position = "dodge") +
+  geom_text(aes(y=value,label=value),position = position_dodge(width = 1))+
+  scale_y_log10()+
+  scale_fill_discrete(name = "Count", labels = c("Customers", "Transactions"))+
+  coord_flip()+
+  labs(title = "Number of Customers vs Number of Transactions",
+       subtitle = "Top 15 countries with the highest number of customers",x="",y="Count")+
+  theme_bw()
+ggplotly(p)
+```
+
+Although our client has less customers in France than in the Switzerland, the French customers make more transactions than those from the Switzerland.
+
+
+We would be interested to know which customers are the biggest revenue contributors. Based on our approach, these customers are likely to be more price sensitive, so we would not really tackle them.
+
+```{r,echo=FALSE,warning=FALSE,message=FALSE}
+# Revenue
+revenue_per_customer<-data %>% 
+  group_by(Customer=Customer.ID) %>%
+  summarise(Total_Revenue=sum(Revenue))%>%
+  mutate(Percentage_of_Revenue=round((Total_Revenue/sum(Total_Revenue)),4)*100) %>%
+  arrange(desc(Percentage_of_Revenue)) %>%
+  mutate(cum_Revenue = cumsum(Percentage_of_Revenue),
+                              Number=seq(1:1063),
+                              Percentage_of_Customers=1/1063,
+         cum_Customer=cumsum(Percentage_of_Customers))
+
+# Gain chart
+p<-ggplot(revenue_per_customer,aes(x = cum_Customer,y = cum_Revenue ))+
+  geom_point()+
+  labs(title = "Cumulative Function - Revenue Contribution per Customer",
+       x="Total Number of Customers (%)",
+       y="Total Revenue(%)",
+       subtitle = "28.32% of customers contributes to 90% of the total revenue")+
+  #geom_hline(yintercept=75,linetype="dashed",color = "#94374aff")+
+  #geom_vline(xintercept = 0.1194731891, linetype="dashed" ,color = "#94374aff")+
+  geom_hline(yintercept=90,linetype="dashed",color = "#94374aff")+
+  geom_vline(xintercept = 0.2831608655,linetype="dashed", color = "#94374aff")+
+  theme_bw()
+ggplotly(p)
+
+```
+
+It seems that 28.32% of customers contributes to 90% of the total company's revenue. This means that a pretty small number of customers make for the biggest portion of the company's revenue. Consequently, customer relationships with these customers should be well maintained. 
+
+## Clustering based on frequency and monetary value
+
+In order to identify the price-insensitive customer segment, we will introduce an additional feature called "frequency of purchase". More specifically, it shows how how many transactions a customer had over the observation period. In combination with the average amount each customer spent over the observed period, we will segment our customers. Usually, in this combination comes feature called "recency", which indicates how many days elapsed from the last purchase. However, in this case we will omit this feature as the product is not so frequently bought. The period of observation in our data set is from 1.2.2017 to 20.12.2018
+
+Let us then wrangle our data.
+
+```{r}
+RMF_data <- data[,c("Customer.ID","Revenue","Date")]
+colnames(RMF_data)<-c("Customer_ID","Revenue","Date")
+```
+
+Using some SQL functions we will create the new feature "Frequency".
+
+```{r,warning=FALSE,message=FALSE}
+library(sqldf)
+customers<- sqldf("SELECT Customer_ID,
+                           COUNT(*) AS 'frequency',
+                           AVG(Revenue) AS 'amount'
+                    FROM RMF_data GROUP BY 1")
+```
+
+
+### K-means clustering
+
+As a clustering method we will use K-means clustering. To do so, we would need to determine the number of clusters we want to find. Therefore, we use some indicators such as WSS and to ASW to identify the ideal number of clusters.
+
+```{r,warning=FALSE,message=FALSE,echo=FALSE}
+set.seed(1995)
+#Scaling
+customers_scaled <- as.data.frame(scale(customers[,-1]))
+# WSS
+K <- 2:15
+nstart <- 5
+WSS <- sapply(K, function(x) { 
+  kmeans(customers_scaled, centers = x,
+         nstart=nstart)$tot.withinss
+})
+plot(K, WSS, type = "b")
+
+#ASW
+# Average Silhouette Width
+d <- dist(customers_scaled) # Euclidean distance matrix
+ASW <- sapply(K, function(x) { 
+  cl <- kmeans(customers_scaled, centers = x,
+               nstart=nstart)$cluster
+  cluster.stats(d, cl)$avg.silwidth
+})
+plot(K, ASW, type="b")
+```
+The sharp decerease from 2 to 5 suggests a 5-cluster solution. Based on the average silhouette width, the proposed number of clusters is 3, but 5 seems to be the second best option. From the business perspective of segmentation task, 3 seems to be to little, as we would then have 3 quite big clusters. Therefore, we will go for 5.
+
+```{r,echo=FALSE}
+# Manually select the number of initial centroids
+nstart <- 6
+# Manually select optimal number of clusters 
+clusters <- 5
+# k-means Clustering
+set.seed(1995)
+model.pc <- kmeans(customers_scaled, 
+                   centers = clusters, 
+                   nstart = nstart)
+# Merging data
+customers <- customers %>%
+  mutate(cl = model.pc$cluster)
+customers$Customer <- 1:nrow(customers)
+data$Customer <- as.numeric(factor(data$Customer,labels = 1:1063))
+temp <- customers[,c("cl","Customer")]
+data<-merge(data,temp)
+```
+
+Now we are able to depict our segmentation.
+
+```{r}
+library(plotly)
+set.seed(1995)
+customers$cl <- as.factor(customers$cl)
+(cluster_graph<-ggplotly(ggplot() +
+  geom_point(data = customers, aes(x = frequency, y = amount, col = cl))+
+  labs(y="Revenue",x="Frequency",title = "Clusters based on Revenue and Purchase Frequency",subtitle = "Data on both axes is normalized")+
+    theme_bw()+
+   # geom_hline(yintercept = mean(customers$amount), col="blue")+
+   # geom_vline(xintercept = mean(customers$frequency), col="blue")+
+    scale_y_continuous()+
+    scale_x_continuous()))
+```
+
+
+In order to identify potential segment in which our client might raise prices, we will take a closer inspect each cluster, whose median revenue and median frequency are above the overall medians. The main reason for that is that customers in these clusters belong to more frequent customers. 
+
+```{r}
+set.seed(1995)
+(psych::describeBy(customers[,2:3], model.pc$cluster))
+```
+
+Let us now explore segments we identified, and see how we can use it.
+
+#### Cluster 1: Infrequent Low-Contributors
+
+* The biggest clusters with 826 customers
+* Cluster frequency median (3) = overall frequency median (3)
+* Cluster frequency mean (5.19) < overall frequency mean (9.55)
+* Cluster revenue median (29.333,69 EUR) < overall revenue median (35.968,00 EUR)
+
+
+```{r,echo=FALSE}
+data$cl[data$cl==1]<-"Infrequent Low-Contributors"
+customers$cl<-as.numeric(customers$cl)
+customers$cl[customers$cl==1]<-"Infrequent Low-Contributors"
+```
+
+#### Cluster 2: Extremely Frequent High-Contributors
+
+* A few customers (only 5)
+* Cluster frequency median (235) >> overall frequency median (3)
+* Cluster revenue median (55.847,43 EUR) > overall revenue median (35.968,00 EUR)
+
+
+```{r,echo=FALSE,warning=FALSE,message=FALSE}
+data$cl[data$cl== 2]<-"Extremely Frequent High-Contributors"
+customers$cl[customers$cl== 2 ]<-"Extremely Frequent High-Contributors"
+```
+
+
+#### Cluster 3: Occasional High-Contributors
+
+* The second biggest cluster with 171 customers
+* Cluster frequency median (6) > overall frequency median (3)
+* Cluster revenue median (104.050,3 EUR) >> overall revenue median (35.968,00 EUR)
+
+
+```{r,echo=FALSE,warning=FALSE,message=FALSE}
+data$cl[data$cl==3]<-"Occasional High-Contributors"
+customers$cl[customers$cl==3]<-"Occasional High-Contributors"
+```
+
+
+#### Cluster 4: Occasional Extremely High-Contributors
+
+* A few customers (15 only)
+* Cluster frequency median (6) > overall frequency median (3)
+* Cluster revenue median (398.863,5 EUR) >> overall revenue median (35.968,00 EUR)
+
+
+```{r,echo=FALSE,warning=FALSE,message=FALSE}
+data$cl[data$cl==4]<-"Occasional Extremely High-Contributors"
+customers$cl[customers$cl==4]<-"Occasional Extremely High-Contributors"
+```
+
+
+#### Cluster 5: Frequent High-Contributors
+
+* A few customers (46 only)
+* Cluster frequency median (56.5) >> overall frequency median (3)
+* Cluster revenue median (60.789,87 EUR) > overall revenue median (35.968,00 EUR)
+
+
+```{r,echo=FALSE,warning=FALSE,message=FALSE}
+data$cl[data$cl==5]<-"Frequent High-Contributors"
+customers$cl[customers$cl==5]<-"Frequent High-Contributors"
+```
+
+## Conclusion after customer segmentation
+
+After segmenting customers based on their revenue and purchase frequency, we identified 5 clusters.
+
+1) **"Infrequent Low-Contributors"** 
+
+This cluster is about customers who are infrequent buyers and who are not the biggest contributors to the revenue. In order to use them for improving price strategy, we will consider an increase in margin. There are 2 reasons for that. First, less frequent buyers in B2B are supposed to be less price sensitive, thus price increase would be less risky. Customers similar to these customers should be in the future classified as those to whom margins should not be decreased (as sales reps usually tend to do). We will inspect what are characteristics of these customers in detail.
+
+The remaining clusters are: 
+
+* **"Occasional High-Contributors"**
+* **"Occasional Extremely High-Contributors"**
+* **"Extremely Frequent High-Contributors"**
+* **"Frequent High-Contributors"**
+
+and they all seem to belong to more frequent, i.e. more price sensitive customers.
+
+```{r}
+set.seed(1995)
+p<-(cluster_graph<-ggplot() +
+  geom_point(data = customers, aes(x = frequency, y = amount, col = cl))+
+  labs(y="Revenue",x="Frequency",title = "Clusters based on Revenue and Purchase Frequency",subtitle = "Clustering algorithm: k-means")+
+    #geom_hline(yintercept = mean(customers$amount), col="blue")+
+    #geom_vline(xintercept = mean(customers$frequency), col="blue")+
+    scale_y_continuous()+
+    scale_x_continuous()+
+    theme_bw()+
+    theme(legend.title = element_blank()))
+ggplotly(p)
+```
+
+
+
