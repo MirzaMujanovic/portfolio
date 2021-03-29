@@ -11,6 +11,10 @@ output:
 
 # Identification of price-insensitive customers
 
+```{r,echo=FALSE, fig.align='center', out.width="50%",fig.cap="Photo by Lala Azizli on Unsplash"}
+knitr::include_graphics("Graphics/lala-azizli-wIgwNGYOp7g-unsplash.jpg")
+```
+
 A company in the B2B market attempts to improve its profitability and tackle all areas of profit potential by reviewing their pricing processes. Based on the literature, [customers who purchase frequently are also more price sensitive than less frequent buyers](https://oroinc.com/b2b-ecommerce/blog/basic-pricing-strategies-b2b-commerce/#:~:text=Customers%20who%20purchase%20frequently%20are,sensitive%20than%20less%20frequent%20buyers.&text=Customers%20who%20place%20a%20high,elements%20to%20be%20less%20significant.). Therefore, in order to introduce some price changes we will try to identify price-insensitive customers.
 
 

@@ -320,7 +320,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="recommender-for-beauty-products" class="section level1" number="8">
 <h1><span class="header-section-number">8</span> Recommender For Beauty Products</h1>
-<div class="figure" style="text-align: center"><span id="fig:unnamed-chunk-172"></span>
+<div class="figure" style="text-align: center"><span id="fig:unnamed-chunk-173"></span>
 <img src="Graphics/beauty.jpg" alt="Foto von Andrea Piacquadio von Pexels" width="50%" />
 <p class="caption">
 Figure 8.1: Foto von Andrea Piacquadio von Pexels
@@ -596,7 +596,7 @@ Review userId
 <div id="what-is-the-distribution-of-ratings" class="section level3" number="8.3.5">
 <h3><span class="header-section-number">8.3.5</span> What is the distribution of ratings?</h3>
 <div class="sourceCode" id="cb204"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb204-1"><a href="recommender-for-beauty-products.html#cb204-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(<span class="fu">as.numeric</span>(my_data<span class="sc">$</span><span class="st">`</span><span class="at">review/score</span><span class="st">`</span>),<span class="at">main =</span> <span class="st">&quot;Histogramm of scores&quot;</span>,<span class="at">xlab =</span> <span class="st">&quot;Score&quot;</span>)</span></code></pre></div>
-<p><img src="main_files/figure-html/unnamed-chunk-193-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="main_files/figure-html/unnamed-chunk-194-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Products seem to be favorably rated as the distribution of scores showes that the best score is the most frequent.</p>
 </div>
 <div id="what-is-the-average-number-of-reviews-per-user" class="section level3" number="8.3.6">
@@ -708,7 +708,7 @@ Thus, we will transform our data to so called rating matrix:</p>
 <h3><span class="header-section-number">8.4.4</span> Inspecting real rating matrix</h3>
 <p>We can plot an image of the rating matrix for the first 250 users and 250 products:</p>
 <div class="sourceCode" id="cb217"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb217-1"><a href="recommender-for-beauty-products.html#cb217-1" aria-hidden="true" tabindex="-1"></a><span class="fu">image</span>(ratings[<span class="dv">1</span><span class="sc">:</span><span class="dv">250</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">250</span>])</span></code></pre></div>
-<p><img src="main_files/figure-html/unnamed-chunk-201-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="main_files/figure-html/unnamed-chunk-202-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>From the visualisation we can see that rating matrix is very sparse, i.e. that not every user did rate/review every product in our data set.</p>
 <p>We can inspect the data for the first 10 users and the first 4 products:</p>
 <div class="sourceCode" id="cb218"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb218-1"><a href="recommender-for-beauty-products.html#cb218-1" aria-hidden="true" tabindex="-1"></a>ratings[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>]<span class="sc">@</span>data</span></code></pre></div>
@@ -843,7 +843,7 @@ From the qualitative perspective it seems that our recommendation system provide
 <span id="cb236-17"><a href="recommender-for-beauty-products.html#cb236-17" aria-hidden="true" tabindex="-1"></a><span class="fu">wordcloud</span>(<span class="at">words =</span> d<span class="sc">$</span>word, <span class="at">freq =</span> d<span class="sc">$</span>freq, <span class="at">min.freq =</span> <span class="dv">10</span>,</span>
 <span id="cb236-18"><a href="recommender-for-beauty-products.html#cb236-18" aria-hidden="true" tabindex="-1"></a>          <span class="at">max.words=</span><span class="dv">200</span>, <span class="at">random.order=</span><span class="cn">FALSE</span>, <span class="at">rot.per=</span><span class="fl">0.35</span>,</span>
 <span id="cb236-19"><a href="recommender-for-beauty-products.html#cb236-19" aria-hidden="true" tabindex="-1"></a>          <span class="at">colors=</span><span class="fu">brewer.pal</span>(<span class="dv">8</span>, <span class="st">&quot;Dark2&quot;</span>))</span></code></pre></div>
-<p><img src="main_files/figure-html/unnamed-chunk-212-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="main_files/figure-html/unnamed-chunk-213-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>From the wordcloud we can see that words “color,” “hair” and “gloves” are quite frequent in the text corpus analyzed. That could be a hint that the user was referring to the usage of the product.
 The term “cheap” could be easily spotted as well. This word is not very likable among marketers as it brings unfavorable image to the brand. Nevertheless, it seems that the user believes that the product is affordable.</p>
 </div>
