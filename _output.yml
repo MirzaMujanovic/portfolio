@@ -7,6 +7,7 @@ bookdown::gitbook:
         <li><a href="./"><B>Mirza Mujanovic Portfolio</B></a></li>
       after:  |
         <li><a href="https://at.linkedin.com/in/mirzamujanovic?trk=profile-badge" target="blank">LinkedIn: Mirza Mujanovic</a></li>
+        <li><a href="https://mirzamujanovic.github.io/mirza_mujanovic_website/" target="blank">Personal Website</a></li>
     edit: https://github.com/rstudio/bookdown-demo/edit/master/%s
     download: ["pdf", "epub"]
 bookdown::pdf_book:
