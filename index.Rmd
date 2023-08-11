@@ -19,7 +19,7 @@ knitr::include_graphics("Graphics/my_picture1.png")
 ```
 
 ::: {style="text-align: justify"}
-My name is Mirza Mujanović, I am an ever-curious, eager to learn and ready to adapt student in his final semester of Marketing master program at the Vienna University of Economics and Business. Originally, I come from Tuzla, Bosnia & Herzegovina, where I finished high school and first two semesters at the Faculty of Economics. In 2015, I moved to Vienna to study, and in 2019 completed a bachelor's program in business administration at the Vienna University of Economics and Business (WU) in 2019. Thinking of my future plans I see myself working in the field of data analytics or data science for marketing.
+My name is Mirza Mujanović, I am passionate data professional with expertise in marketing analytics. Originally from Tuzla, Bosnia & Herzegovina, I moved to Vienna in 2015 to pursue my bachelor's and master's degrees in business administration and marketing at Vienna University of Economics and Business (WU). During my master's, I gained valuable experience as a teaching student and remote learning assistant at the Institute for Interactive Marketing and Social Media, as well as the Institute for Marketing and Customer Analytics. Currently, I hold a Data Analyst position at Tellonym, specializing in marketing and product analytics. My diverse background equips me with strong skills in marketing and data analysis, making me well-prepared for dynamic business challenges.
 :::
 
 ::: {style="text-align: justify"}
@@ -29,8 +29,4 @@ Random facts about me:
 -   Interested in psychology-related topics.
 -   Used to collect old money together with my older sister.
 -   Favorite food: Bulgogi and pudding (but not together, of course!).
-
-::: {.infobox .download data-latex="{download}"}
-[You can download my CV here](CV/my_cv.pdf)
-:::
 :::
